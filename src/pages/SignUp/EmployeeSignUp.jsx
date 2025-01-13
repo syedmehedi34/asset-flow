@@ -1,16 +1,21 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import SocialLogin from "../../components/SocialLogin/SocialLogin";
 import useRole from "../../hooks/useRole";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 const EmployeeSignUp = () => {
   const [, , , userRoleRefetch] = useRole();
-  console.log(userRoleRefetch);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const dateOfBirth = moment(selectedDate).format("DD-MM-YYYY");
+
+  console.log(dateOfBirth);
 
   const axiosPublic = useAxiosPublic();
   const {
@@ -26,13 +31,14 @@ const EmployeeSignUp = () => {
     createUser(data.email, data.password).then((result) => {
       const loggedUser = result.user;
       console.log(loggedUser);
-      updateUserProfile(data.name, data.photoURL)
+      updateUserProfile(data.name)
         .then(() => {
           // create user entry in the database
           const userInfo = {
             name: data.name,
             email: data.email,
             role: "employee",
+            dob: dateOfBirth,
           };
           axiosPublic.post("/users", userInfo).then((res) => {
             if (res.data.insertedId) {
@@ -80,20 +86,7 @@ const EmployeeSignUp = () => {
                 <span className="text-red-600">Name is required</span>
               )}
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Photo URL</span>
-              </label>
-              <input
-                type="text"
-                {...register("photoURL", { required: true })}
-                placeholder="Photo URL"
-                className="input input-bordered"
-              />
-              {errors.photoURL && (
-                <span className="text-red-600">Photo URL is required</span>
-              )}
-            </div>
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -109,6 +102,26 @@ const EmployeeSignUp = () => {
                 <span className="text-red-600">Email is required</span>
               )}
             </div>
+            {/* 
+            
+            
+            */}
+            <div>
+              <label className="label">
+                <span className="label-text">Date of Birth</span>
+              </label>
+
+              <DatePicker
+                showIcon
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                className="bg-white"
+              />
+            </div>
+            {/* 
+            
+            
+            */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Password</span>
@@ -160,7 +173,6 @@ const EmployeeSignUp = () => {
               Already have an account <Link to="/login">Login</Link>
             </small>
           </p>
-          <SocialLogin></SocialLogin>
         </div>
       </div>
     </>
