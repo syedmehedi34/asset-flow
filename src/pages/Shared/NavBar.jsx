@@ -1,15 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-// import { FaUserAlt } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
-// import useAuth from "../../hooks/useAuth";
+import logo from "../../../public/logo.png";
 
 const NavBar = () => {
   //  set the role here
   const [isRole] = useRole();
   const role = isRole?.role;
+  const companyLogo = isRole?.logo || { logo };
+
   //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
@@ -109,65 +110,70 @@ const NavBar = () => {
 
   return (
     <div className="">
-      <div className="navbar fixed top-0 z-10 bg-opacity-30 bg-white backdrop-blur-md text-[#121212]">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              {navOptions}
-            </ul>
-          </div>
-          <a className="btn btn-ghost normal-case text-xl">Bistro Boss</a>
-        </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{navOptions}</ul>
-        </div>
-        <div className="navbar-end">
-          {user ? (
-            <div className="relative">
-              <div
-                onClick={toggleModal}
-                className="w-12 h-12 bg-black rounded-full cursor-pointer p-[1px]"
-              >
-                <img className="rounded-full" src={user?.photoURL} alt="" />
-              </div>
-              {isModalOpen && (
-                <div
-                  ref={modalRef} // Attach the modal ref here
-                  className="absolute right-0 mt-2 p-4 bg-white shadow-lg rounded-md w-40"
+      <div>
+        <div className="navbar fixed top-0 z-10 bg-opacity-30 bg-white backdrop-blur-md text-[#121212]">
+          <div className="navbar-start">
+            <div className="dropdown">
+              <label tabIndex={0} className="btn btn-ghost lg:hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <button
-                    onClick={handleLogOut}
-                    className="btn btn-ghost w-full text-left"
-                  >
-                    Log Out
-                  </button>
-                </div>
-              )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h8m-8 6h16"
+                  />
+                </svg>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                {navOptions}
+              </ul>
             </div>
-          ) : (
-            <Link to="/login" className="btn btn-ghost">
-              Login
-            </Link>
-          )}
+            {/* <a className="btn btn-ghost normal-case text-xl">Bistro Boss</a> */}
+            <div>
+              <img className="w-24 " src={logo} alt="" />
+            </div>
+          </div>
+          <div className="navbar-center hidden lg:flex">
+            <ul className="menu menu-horizontal px-1">{navOptions}</ul>
+          </div>
+          <div className="navbar-end">
+            {user ? (
+              <div className="relative">
+                <div
+                  onClick={toggleModal}
+                  className="w-12 h-12 bg-black rounded-full cursor-pointer p-[1px]"
+                >
+                  <img className="rounded-full" src={user?.photoURL} alt="" />
+                </div>
+                {isModalOpen && (
+                  <div
+                    ref={modalRef} // Attach the modal ref here
+                    className="absolute right-0 mt-2 p-4 bg-white shadow-lg rounded-md w-40"
+                  >
+                    <button
+                      onClick={handleLogOut}
+                      className="btn btn-ghost w-full text-left"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="btn btn-ghost">
+                Login
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
