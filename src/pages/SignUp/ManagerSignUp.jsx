@@ -32,7 +32,7 @@ const ManagerSignUp = () => {
           };
           axiosPublic.post("/users", userInfo).then((res) => {
             if (res.data.insertedId) {
-              console.log("user added to the database");
+              // console.log("user added to the database");
               reset();
               Swal.fire({
                 position: "top-end",
