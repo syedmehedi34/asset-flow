@@ -1,12 +1,19 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 // import { FaUserAlt } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
+import useRole from "../../hooks/useRole";
 // import useAuth from "../../hooks/useAuth";
 
 const NavBar = () => {
   // ? need to change here
-  const role = "employee";
+  // const role = "employee";
+  const [isRole] = useRole();
+
+  console.log(isRole?.role);
+  const role = isRole?.role;
+  // ?
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
