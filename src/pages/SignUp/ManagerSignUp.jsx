@@ -6,9 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import useRole from "../../hooks/useRole";
 
 const ManagerSignUp = () => {
+  const [, , , userRoleRefetch] = useRole();
   const axiosPublic = useAxiosPublic();
+
   const {
     register,
     handleSubmit,
@@ -42,6 +45,7 @@ const ManagerSignUp = () => {
                 timer: 1500,
               });
               navigate("/");
+              userRoleRefetch();
             }
           });
         })
