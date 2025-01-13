@@ -2,14 +2,16 @@ import { useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import useRole from "../../hooks/useRole";
 
 const EmployeeSignUp = () => {
-  const location = useLocation();
-  console.log(location.pathname);
+  const [, , , userRoleRefetch] = useRole();
+  console.log(userRoleRefetch);
+
   const axiosPublic = useAxiosPublic();
   const {
     register,
@@ -44,6 +46,7 @@ const EmployeeSignUp = () => {
                 timer: 1500,
               });
               navigate("/");
+              userRoleRefetch();
             }
           });
         })

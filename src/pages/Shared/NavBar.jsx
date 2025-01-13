@@ -7,14 +7,10 @@ import useRole from "../../hooks/useRole";
 // import useAuth from "../../hooks/useAuth";
 
 const NavBar = () => {
-  // ? need to change here
-  // const role = "employee";
+  //  set the role here
   const [isRole] = useRole();
-
-  console.log(isRole?.role);
   const role = isRole?.role;
-  // ?
-
+  //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
