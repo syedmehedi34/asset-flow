@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { Users, Package, Plus, UserPlus, Search } from "lucide-react";
 import useUnaffiliatedUsers from "../../hooks/useUnAffiliatedUsers";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useRole from "../../hooks/useRole";
+import Swal from "sweetalert2";
 
 function RadialProgress({ value, max }) {
   const percentage = (value / max) * 100;
@@ -43,8 +46,61 @@ function RadialProgress({ value, max }) {
 }
 
 const AddEmployee = () => {
-  const [unaffiliatedUsersList] = useUnaffiliatedUsers();
-  console.log(unaffiliatedUsersList);
+  // ?
+  const axiosSecure = useAxiosSecure();
+  const [unaffiliatedUsersList, , , unaffiliatedUsersRefetch] =
+    useUnaffiliatedUsers(); // get all unaffiliated employees
+  const [isRole] = useRole();
+
+  // * add employee function
+  const handleAddEmployeeToTeam = async (employee) => {
+    const hr_email = isRole?.email;
+    const _id = employee._id;
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, add to team!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosSecure.patch("/users", { _id, hr_email });
+          if (res.data.modifiedCount) {
+            Swal.fire({
+              title: "Added!",
+              text: "Employee has been successfully added to the team.",
+              icon: "success",
+            });
+            unaffiliatedUsersRefetch();
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: "Failed to add employee to the team. Please try again.",
+              icon: "error",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "Error!",
+            text: "An error occurred while adding the employee to the team.",
+            icon: "error",
+          });
+          console.error("Error updating employee:", error);
+        }
+      }
+    });
+  };
+
+  // ?
+  //
+  //
+  //
+
+  // console.log(unaffiliatedUsersList);
 
   const [showPackages, setShowPackages] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -203,25 +259,49 @@ const AddEmployee = () => {
               {currentUsers?.map((user) => (
                 <div
                   key={user?._id}
-                  className="border shadow-sm flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
+                  className="border shadow-sm flex items-center space-x-6 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
                 >
-                  <input
-                    type="checkbox"
-                    // checked={user?.isSelected}
-                    // onChange={() => toggleUserSelection(user?.id)}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <img
-                    src={user?.image || "https://i.ibb.co.com/F4YFTCb/1.jpg"}
-                    alt={user?.name}
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                  <p className="flex-1 font-medium text-gray-900">
-                    {user?.name}
-                  </p>
-
                   <div>
-                    <button className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-black hover:text-white bg-white hover:bg-indigo-700 border-indigo-600">
+                    <input
+                      type="checkbox"
+                      // checked={user?.isSelected}
+                      // onChange={() => toggleUserSelection(user?.id)}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div>
+                    <img
+                      src={user?.image || "https://i.ibb.co.com/F4YFTCb/1.jpg"}
+                      alt={user?.name}
+                      className="h-14 w-14 border border-blue-gray-500 rounded-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="font-medium text-gray-800">
+                      <span className="font-semibold text-gray-700">
+                        Employee Name :
+                      </span>{" "}
+                      {user?.name}
+                    </p>
+                    <p className="font-medium text-gray-800">
+                      <span className="font-semibold text-gray-700">
+                        Email :
+                      </span>{" "}
+                      <span className="hover:text-blue-900 hover:underline cursor-pointer">
+                        {user?.email}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="space-x-1">
+                    <button className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-white hover:text-white bg- btn-active hover:bg-indigo-700 border-indigo-600">
+                      Details
+                    </button>
+
+                    <button
+                      onClick={() => handleAddEmployeeToTeam(user)}
+                      className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-black hover:text-white bg-white hover:bg-indigo-700 border-indigo-600"
+                    >
                       Add to Team
                     </button>
                   </div>
