@@ -12,6 +12,7 @@ import AllRequest from "../pages/AllRequest/AllRequest";
 import EmployeeList from "../pages/EmployeeList/EmployeeList";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import ManagerProfile from "../pages/ManagerProfile/ManagerProfile";
+import UpdateAssetData from "../pages/UpdateAssetData";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,14 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <AssetList></AssetList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "asset/update",
+        element: (
+          <ManagerRoute>
+            <UpdateAssetData></UpdateAssetData>
           </ManagerRoute>
         ),
       },
