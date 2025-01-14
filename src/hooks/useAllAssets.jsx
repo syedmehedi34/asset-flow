@@ -5,8 +5,9 @@ import useRole from "./useRole";
 const useAllAssets = () => {
   const axiosSecure = useAxiosSecure();
   const [isRole] = useRole();
+  console.log(isRole.email);
 
-  const hr_email = isRole?.hr_email;
+  const hr_email = isRole?.email;
 
   const {
     data: assets = [],

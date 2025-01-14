@@ -9,7 +9,7 @@ import { FaSquareArrowUpRight } from "react-icons/fa6";
 
 const AssetList = () => {
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
-  // console.log(assets);
+  // console.log(assets, loadingAssets);
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
