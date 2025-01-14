@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-// import useAxiosPublic from "./useAxiosPublic";
 import useAxiosSecure from "./useAxiosSecure";
 import useRole from "./useRole";
 
 const useAllAssets = () => {
   const axiosSecure = useAxiosSecure();
-  const [isRole, isRoleLoading] = useRole();
+  const [isRole] = useRole();
 
   const hr_email = isRole?.hr_email;
 
@@ -16,8 +15,7 @@ const useAllAssets = () => {
   } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
-      //   const res = await axiosSecure.get("/assets");
-      const res = await axiosSecure.post("/assets", { hr_email });
+      const res = await axiosSecure.get("/assets", { params: { hr_email } });
 
       return res.data;
     },
