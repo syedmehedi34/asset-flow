@@ -5,6 +5,8 @@ import Login from "../pages/Login/Login";
 import EmployeeSignUp from "../pages/SignUp/EmployeeSignUp";
 import Error from "../pages/Error";
 import ManagerSignUp from "../pages/SignUp/ManagerSignUp";
+import AssetList from "../pages/AssetList/AssetList";
+import ManagerRoute from "./ManagerRoute";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +30,16 @@ export const router = createBrowserRouter([
       {
         path: "hr_signup",
         element: <ManagerSignUp></ManagerSignUp>,
+      },
+
+      // HR pages layout
+      {
+        path: "assets_list",
+        element: (
+          <ManagerRoute>
+            <AssetList></AssetList>
+          </ManagerRoute>
+        ),
       },
     ],
   },
