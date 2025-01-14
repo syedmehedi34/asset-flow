@@ -3,13 +3,13 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
-import logo from "../../../public/logo.png";
 
 const NavBar = () => {
   //  set the role here
   const [isRole] = useRole();
   const role = isRole?.role;
-  const companyLogo = isRole?.logo || { logo };
+  const companyLogo =
+    isRole?.companyLogo || "https://i.ibb.co.com/ctGMctF/assetflow.png";
 
   //
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,7 +139,7 @@ const NavBar = () => {
             </div>
             {/* <a className="btn btn-ghost normal-case text-xl">Bistro Boss</a> */}
             <div>
-              <img className="w-24 " src={logo} alt="" />
+              <img className="w-24 " src={companyLogo} alt="" />
             </div>
           </div>
           <div className="navbar-center hidden lg:flex">
