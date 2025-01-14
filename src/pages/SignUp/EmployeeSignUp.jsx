@@ -15,8 +15,6 @@ const EmployeeSignUp = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const dateOfBirth = moment(selectedDate).format("DD-MM-YYYY");
 
-  console.log(dateOfBirth);
-
   const axiosPublic = useAxiosPublic();
   const {
     register,
@@ -102,10 +100,7 @@ const EmployeeSignUp = () => {
                 <span className="text-red-600">Email is required</span>
               )}
             </div>
-            {/* 
-            
-            
-            */}
+
             <div>
               <label className="label">
                 <span className="label-text">Date of Birth</span>
@@ -118,10 +113,7 @@ const EmployeeSignUp = () => {
                 className="bg-white"
               />
             </div>
-            {/* 
-            
-            
-            */}
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Password</span>
