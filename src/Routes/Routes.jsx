@@ -7,6 +7,11 @@ import Error from "../pages/Error";
 import ManagerSignUp from "../pages/SignUp/ManagerSignUp";
 import AssetList from "../pages/AssetList/AssetList";
 import ManagerRoute from "./ManagerRoute";
+import AddAsset from "../pages/AddAsset/AddAsset";
+import AllRequest from "../pages/AllRequest/AllRequest";
+import EmployeeList from "../pages/EmployeeList/EmployeeList";
+import AddEmployee from "../pages/AddEmployee/AddEmployee";
+import ManagerProfile from "../pages/ManagerProfile/ManagerProfile";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +43,46 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <AssetList></AssetList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "add_asset",
+        element: (
+          <ManagerRoute>
+            <AddAsset></AddAsset>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "all_requests",
+        element: (
+          <ManagerRoute>
+            <AllRequest></AllRequest>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "employee_list",
+        element: (
+          <ManagerRoute>
+            <EmployeeList></EmployeeList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "add_employee",
+        element: (
+          <ManagerRoute>
+            <AddEmployee></AddEmployee>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "hr_profile",
+        element: (
+          <ManagerRoute>
+            <ManagerProfile></ManagerProfile>
           </ManagerRoute>
         ),
       },
