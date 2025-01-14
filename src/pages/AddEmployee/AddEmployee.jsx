@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Users, Package, Plus, UserPlus, Search } from "lucide-react";
 import useUnaffiliatedUsers from "../../hooks/useUnAffiliatedUsers";
@@ -42,10 +43,9 @@ function RadialProgress({ value, max }) {
 }
 
 const AddEmployee = () => {
-  // ?
   const [unaffiliatedUsersList] = useUnaffiliatedUsers();
   console.log(unaffiliatedUsersList);
-  // ?
+
   const [showPackages, setShowPackages] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [stats, setStats] = useState({
@@ -53,67 +53,42 @@ const AddEmployee = () => {
     memberLimit: 5,
   });
 
-  const [unaffiliatedUsers, setUnaffiliatedUsers] = useState([
-    {
-      id: "1",
-      name: "Sarah Wilson",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-      isSelected: false,
-    },
-    {
-      id: "2",
-      name: "Michael Chen",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-      isSelected: false,
-    },
-    {
-      id: "3",
-      name: "Emma Rodriguez",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-      isSelected: false,
-    },
-  ]);
-
   const packageOptions = [
     { id: 1, members: 5, price: 5 },
     { id: 2, members: 10, price: 8 },
     { id: 3, members: 20, price: 15 },
   ];
 
-  const toggleUserSelection = (userId) => {
-    setUnaffiliatedUsers((users) =>
-      users.map((user) =>
-        user.id === userId ? { ...user, isSelected: !user.isSelected } : user
-      )
-    );
-  };
-
   const addSelectedToTeam = () => {
-    const selectedCount = unaffiliatedUsers.filter((u) => u.isSelected).length;
-    if (stats.currentMembers + selectedCount > stats.memberLimit) {
-      alert("Cannot add more members than the package limit allows");
-      return;
-    }
-
-    setStats((prev) => ({
-      ...prev,
-      currentMembers: prev.currentMembers + selectedCount,
-    }));
-
-    setUnaffiliatedUsers((users) => users.filter((user) => !user.isSelected));
+    console.log("Clicked to select");
   };
 
-  const purchasePackage = (option) => {
-    setStats((prev) => ({
-      ...prev,
-      memberLimit: option.members,
-    }));
-    setShowPackages(false);
-  };
-
-  const filteredUsers = unaffiliatedUsers.filter((user) =>
+  // text search option
+  const filteredUsers = unaffiliatedUsersList?.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Pagination setup
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
+
+  const totalPages = Math.ceil(filteredUsers?.length / usersPerPage);
+  const currentUsers = filteredUsers?.slice(
+    (currentPage - 1) * usersPerPage,
+    currentPage * usersPerPage
+  );
+
+  const changePage = (page) => {
+    setCurrentPage(page);
+  };
+
+  const generatePageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 my-24">
@@ -145,8 +120,8 @@ const AddEmployee = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
               <div className="flex justify-center">
                 <RadialProgress
-                  value={stats.currentMembers}
-                  max={stats.memberLimit}
+                  value={stats?.currentMembers}
+                  max={stats?.memberLimit}
                 />
               </div>
 
@@ -158,13 +133,13 @@ const AddEmployee = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-2xl font-bold text-indigo-600">
-                        {stats.currentMembers}
+                        {stats?.currentMembers}
                       </p>
                       <p className="text-sm text-gray-500">Active Members</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-indigo-600">
-                        {stats.memberLimit - stats.currentMembers}
+                        {stats?.memberLimit - stats?.currentMembers}
                       </p>
                       <p className="text-sm text-gray-500">Available Slots</p>
                     </div>
@@ -176,10 +151,10 @@ const AddEmployee = () => {
                     Package Status
                   </h3>
                   <p className="text-sm text-indigo-600">
-                    {stats.currentMembers >= stats.memberLimit
+                    {stats?.currentMembers >= stats?.memberLimit
                       ? "You've reached your member limit. Consider upgrading your package."
                       : `You can add ${
-                          stats.memberLimit - stats.currentMembers
+                          stats?.memberLimit - stats?.currentMembers
                         } more members to your team.`}
                   </p>
                 </div>
@@ -213,7 +188,7 @@ const AddEmployee = () => {
 
                 <button
                   onClick={addSelectedToTeam}
-                  disabled={!unaffiliatedUsers.some((u) => u.isSelected)}
+                  // disabled={!unaffiliatedUsersList?.some((u) => u.isSelected)}
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
@@ -224,28 +199,70 @@ const AddEmployee = () => {
           </div>
 
           <div className="p-6">
-            <div className="space-y-4">
-              {filteredUsers.map((user) => (
+            <div className="space-y-3">
+              {currentUsers?.map((user) => (
                 <div
-                  key={user.id}
-                  className="flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
+                  key={user?._id}
+                  className="border shadow-sm flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
                 >
                   <input
                     type="checkbox"
-                    checked={user.isSelected}
-                    onChange={() => toggleUserSelection(user.id)}
+                    // checked={user?.isSelected}
+                    // onChange={() => toggleUserSelection(user?.id)}
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                   <img
-                    src={user.image}
-                    alt={user.name}
+                    src={user?.image || "https://i.ibb.co.com/F4YFTCb/1.jpg"}
+                    alt={user?.name}
                     className="h-10 w-10 rounded-full object-cover"
                   />
                   <p className="flex-1 font-medium text-gray-900">
-                    {user.name}
+                    {user?.name}
                   </p>
+
+                  <div>
+                    <button className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-black hover:text-white bg-white hover:bg-indigo-700 border-indigo-600">
+                      Add to Team
+                    </button>
+                  </div>
                 </div>
               ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => changePage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 mx-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2 text-sm font-medium text-gray-600">
+                Page {currentPage} of {totalPages}
+              </span>
+              <div className="flex space-x-2">
+                {generatePageNumbers().map((number) => (
+                  <button
+                    key={number}
+                    onClick={() => changePage(number)}
+                    className={`px-4 py-2 text-sm font-medium rounded-md ${
+                      number === currentPage
+                        ? "bg-indigo-600 text-white"
+                        : "bg-white text-indigo-600"
+                    }`}
+                  >
+                    {number}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => changePage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 mx-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
@@ -255,35 +272,32 @@ const AddEmployee = () => {
       {showPackages && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Select Package
-              </h3>
-              <button
-                onClick={() => setShowPackages(false)}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                &times;
-              </button>
-            </div>
-
-            <div className="mt-4 space-y-4">
-              {packageOptions.map((option) => (
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Select a Package
+            </h2>
+            <div className="space-y-4">
+              {packageOptions.map((pkg) => (
                 <div
-                  key={option.id}
-                  className="flex justify-between items-center py-2 px-4 border-b"
+                  key={pkg.id}
+                  className="flex justify-between items-center border-b py-3"
                 >
                   <div>
-                    <p className="text-lg font-medium text-gray-900">
-                      {option.members} Members
+                    <p className="text-gray-900 font-semibold">
+                      {pkg.members} Members
                     </p>
                     <p className="text-sm text-gray-500">
-                      ${option.price}/month
+                      Price: ${pkg.price}/month
                     </p>
                   </div>
                   <button
-                    onClick={() => purchasePackage(option)}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                    onClick={() => {
+                      setStats({
+                        currentMembers: stats.currentMembers,
+                        memberLimit: pkg.members,
+                      });
+                      setShowPackages(false);
+                    }}
+                    className="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
                   >
                     Select
                   </button>
