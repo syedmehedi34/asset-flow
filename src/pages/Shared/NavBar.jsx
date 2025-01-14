@@ -75,7 +75,7 @@ const NavBar = () => {
             <Link to="/request_assets">Request for an Asset</Link>
           </li>
           <li>
-            <Link to="/my_profile">Profile</Link>
+            <Link to="/employee_profile">Profile</Link>
           </li>
         </>
       )}
@@ -99,7 +99,7 @@ const NavBar = () => {
             <Link to="/add_employee">Add an Employee</Link>
           </li>
           <li>
-            <Link to="/my_profile">Profile</Link>
+            <Link to="/hr_profile">Profile</Link>
           </li>
         </>
       )}
@@ -111,7 +111,7 @@ const NavBar = () => {
   return (
     <div className="">
       <div>
-        <div className="navbar fixed top-0 z-10 bg-opacity-30 bg-white backdrop-blur-md text-[#121212]">
+        <div className="navbar fixed top-0 z-10 bg-opacity-30 bg-blue-gray-400 backdrop-blur-md text-[#121212]">
           <div className="navbar-start">
             <div className="dropdown">
               <label tabIndex={0} className="btn btn-ghost lg:hidden">
