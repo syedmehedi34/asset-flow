@@ -188,7 +188,7 @@ const AssetRequest = () => {
                     className="border-b hover:bg-gray-50 transition-colors"
                   >
                     <td className="w-[40px] px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {index + 1}.
+                      {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {asset?.productName}
