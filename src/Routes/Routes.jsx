@@ -13,6 +13,10 @@ import EmployeeList from "../pages/EmployeeList/EmployeeList";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import ManagerProfile from "../pages/ManagerProfile/ManagerProfile";
 import UpdateAssetData from "../pages/UpdateAssetData";
+import EmployeeRoute from "./EmployeeRoute";
+import MyAssets from "../pages/MyAssets";
+import MyTeam from "../pages/MyTeam";
+import AssetRequest from "../pages/AssetRequest";
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +42,7 @@ export const router = createBrowserRouter([
         element: <ManagerSignUp></ManagerSignUp>,
       },
 
-      // HR pages layout
+      // HR pages route
       {
         path: "assets_list",
         element: (
@@ -93,6 +97,42 @@ export const router = createBrowserRouter([
           <ManagerRoute>
             <ManagerProfile></ManagerProfile>
           </ManagerRoute>
+        ),
+      },
+
+      // employee pages route
+      {
+        path: "my_assets",
+        element: (
+          <EmployeeRoute>
+            <MyAssets></MyAssets>
+          </EmployeeRoute>
+        ),
+      },
+      {
+        path: "my_team",
+        element: (
+          <EmployeeRoute>
+            <MyTeam></MyTeam>
+          </EmployeeRoute>
+        ),
+      },
+      {
+        path: "request_assets",
+        element: (
+          <EmployeeRoute>
+            <AssetRequest></AssetRequest>
+          </EmployeeRoute>
+        ),
+      },
+      {
+        path: "employee_profile",
+        element: (
+          <EmployeeRoute>
+            <h1 className="my-24">
+              employee profile, need to create a component
+            </h1>
+          </EmployeeRoute>
         ),
       },
     ],

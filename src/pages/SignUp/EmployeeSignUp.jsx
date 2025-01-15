@@ -36,6 +36,7 @@ const EmployeeSignUp = () => {
             name: data.name,
             email: data.email,
             role: "employee",
+            hr_email: "unaffiliated@hostname.com",
             dob: dateOfBirth,
           };
           axiosPublic.post("/users", userInfo).then((res) => {
