@@ -16,10 +16,12 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const AssetRequest = () => {
   const [isRole] = useRole();
-  const [assets, loadingAssets, refetchAssets] = useAllAssets();
+  const [assets, loadingAssets, refetchAssets, setSearchText, setCategory] =
+    useAllAssets();
   const axiosSecure = useAxiosSecure();
 
   // Modal state
@@ -29,6 +31,7 @@ const AssetRequest = () => {
   const handleOpen = (asset) => {
     setSelectedAsset(asset);
     setOpen(!open);
+    refetchAssets();
     // console.log(asset);
   };
 
@@ -43,19 +46,23 @@ const AssetRequest = () => {
   } = useForm();
 
   // Handle form submission
-
   const onSubmit = async (data) => {
+    const time = new Date().toLocaleDateString("en-GB");
     setOpen(false);
+
     const requestData = {
       assetData: selectedAsset,
       requestData: data,
     };
-    const isPendingData = [isRole?.email];
-
+    const isPendingData = [
+      {
+        requesterName: isRole?.name,
+        requesterEmail: isRole?.email,
+        requestingTime: time,
+        requestMessage: data.requestInfo,
+      },
+    ];
     const _id = requestData.assetData._id;
-
-    // sending data
-    console.log(_id, isPendingData);
 
     // send the data to backend
     try {
@@ -63,12 +70,24 @@ const AssetRequest = () => {
         _id,
         isPendingData,
       });
-      console.log("Response:", res.data);
+      if (res.data.modifiedCount) {
+        refetchAssets();
+        Swal.fire({
+          // position: "top-end",
+          icon: "success",
+          title: "Your request has been send",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
     } catch (error) {
-      console.error(
-        "Error sending data to backend:",
-        error.response?.data || error.message
-      );
+      Swal.fire({
+        // position: "top-end",
+        icon: "error",
+        title: "Their is a problem sending request.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
 
     //
@@ -103,6 +122,7 @@ const AssetRequest = () => {
                   Product Name
                 </label>
                 <input
+                  onChange={(e) => setSearchText(e.target.value)}
                   type="text"
                   placeholder="Search by name..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -118,15 +138,18 @@ const AssetRequest = () => {
                   <div className="absolute left-3 top-3 text-gray-400">
                     <Filter className="h-4 w-4" />
                   </div>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-9">
+                  <select
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-9"
+                  >
                     <option value="" disabled>
                       Filter by type
                     </option>
-                    <option value="all">All Assets</option>
-                    <option value="returnable">Returnable</option>
-                    <option value="non-returnable">Non-returnable</option>
-                    <option value="in-stock">In Stock</option>
-                    <option value="out-of-stock">Out of Stock</option>
+                    <option value="">All Assets</option>
+                    <option value="Returnable">Returnable</option>
+                    <option value="Non-returnable">Non-returnable</option>
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
                   </select>
                 </div>
               </div>
@@ -186,13 +209,26 @@ const AssetRequest = () => {
                         </p>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right w-[auto]">
-                      <button
-                        className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
-                        onClick={() => handleOpen(asset)}
-                      >
-                        Request
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
+                      {!asset?.isPending?.some(
+                        (request) => request.requesterEmail === isRole.email
+                      ) && (
+                        <button
+                          className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                          onClick={() => handleOpen(asset)}
+                        >
+                          Request
+                        </button>
+                      )}
+
+                      {/* "Pending" Button */}
+                      {asset?.isPending?.some(
+                        (request) => request.requesterEmail === isRole.email
+                      ) && (
+                        <button className="btn btn-warning min-h-0 h-9 text-xs font-semibold ">
+                          Pending
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -232,7 +268,7 @@ const AssetRequest = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <div className="text-gray-700 flex items-center gap-2">
+                <div className="text-gray-700">
                   <Textarea
                     size="md"
                     label="Your request information"
