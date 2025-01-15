@@ -15,10 +15,12 @@ import {
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const AssetRequest = () => {
   const [isRole] = useRole();
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
+  const axiosSecure = useAxiosSecure();
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -36,18 +38,40 @@ const AssetRequest = () => {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm();
 
   // Handle form submission
-  const onSubmit = (data) => {
+
+  const onSubmit = async (data) => {
+    setOpen(false);
     const requestData = {
       assetData: selectedAsset,
       requestData: data,
     };
-    // handleRequest(requestData);
-    console.log(requestData);
-    setOpen(false);
+    const isPendingData = [isRole?.email];
+
+    const _id = requestData.assetData._id;
+
+    // sending data
+    console.log(_id, isPendingData);
+
+    // send the data to backend
+    try {
+      const res = await axiosSecure.patch(`/assets`, {
+        _id,
+        isPendingData,
+      });
+      console.log("Response:", res.data);
+    } catch (error) {
+      console.error(
+        "Error sending data to backend:",
+        error.response?.data || error.message
+      );
+    }
+
+    //
   };
 
   return (
