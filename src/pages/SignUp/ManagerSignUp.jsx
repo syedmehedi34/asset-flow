@@ -137,7 +137,7 @@ const ManagerSignUp = () => {
               )}
             </div>
 
-            {/* // ? : company logo  */}
+            {/* // todo : company logo  */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Company Logo URL</span>
