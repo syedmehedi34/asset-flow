@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Users, Package, Plus, UserPlus, Search } from "lucide-react";
 import useUnaffiliatedUsers from "../../hooks/useUnAffiliatedUsers";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
 import Swal from "sweetalert2";
+import useAllEmployees from "../../hooks/useAllEmployees";
 
 function RadialProgress({ value, max }) {
   const percentage = (value / max) * 100;
@@ -51,48 +52,66 @@ const AddEmployee = () => {
   const [unaffiliatedUsersList, , , unaffiliatedUsersRefetch] =
     useUnaffiliatedUsers(); // get all unaffiliated employees
   const [isRole] = useRole();
+  // console.log(isRole);
+  const [employees, , refetchEmployees] = useAllEmployees();
+  // console.log(employees?.length);
 
   // * add employee function
   const handleAddEmployeeToTeam = async (employee) => {
     const hr_email = isRole?.email;
     const _id = employee._id;
 
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, add to team!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const res = await axiosSecure.patch("/users", { _id, hr_email });
-          if (res.data.modifiedCount) {
-            Swal.fire({
-              title: "Added!",
-              text: "Employee has been successfully added to the team.",
-              icon: "success",
-            });
-            unaffiliatedUsersRefetch();
-          } else {
+    //
+    if (employees.length < 5) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, add to team!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await axiosSecure.patch("/users", { _id, hr_email });
+            console.log(res);
+            if (res.data.modifiedCount) {
+              Swal.fire({
+                title: "Added!",
+                text: "Employee has been successfully added to the team.",
+                icon: "success",
+              });
+              unaffiliatedUsersRefetch();
+              refetchEmployees();
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Failed to add employee to the team. Please try again.",
+                icon: "error",
+              });
+            }
+          } catch (error) {
             Swal.fire({
               title: "Error!",
-              text: "Failed to add employee to the team. Please try again.",
+              text: "An error occurred while adding the employee to the team.",
               icon: "error",
             });
+            console.error("Error updating employee:", error);
           }
-        } catch (error) {
-          Swal.fire({
-            title: "Error!",
-            text: "An error occurred while adding the employee to the team.",
-            icon: "error",
-          });
-          console.error("Error updating employee:", error);
         }
-      }
-    });
+      });
+    } else {
+      unaffiliatedUsersRefetch();
+      refetchEmployees();
+      // alert("sorry");
+
+      Swal.fire({
+        title: "You don't have any slot!",
+        text: "Upgrade your Subscription to get more slots",
+        icon: "error",
+      });
+    }
   };
 
   // ?
@@ -105,9 +124,31 @@ const AddEmployee = () => {
   const [showPackages, setShowPackages] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [stats, setStats] = useState({
-    currentMembers: 3,
-    memberLimit: 5,
+    currentMembers: employees?.length,
+    memberLimit:
+      isRole?.package === "basic"
+        ? 5
+        : isRole?.package === "premium"
+        ? 10
+        : isRole?.package === "pro"
+        ? 15
+        : 0,
   });
+  useEffect(() => {
+    if (employees?.length) {
+      setStats({
+        currentMembers: employees.length,
+        memberLimit:
+          isRole?.package === "basic"
+            ? 5
+            : isRole?.package === "premium"
+            ? 10
+            : isRole?.package === "pro"
+            ? 15
+            : 0,
+      });
+    }
+  }, [employees, isRole]); // for updating the UI
 
   const packageOptions = [
     { id: 1, members: 5, price: 5 },
@@ -350,7 +391,7 @@ const AddEmployee = () => {
 
       {/* Package Modal */}
       {showPackages && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 mt-16">
           <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Select a Package
