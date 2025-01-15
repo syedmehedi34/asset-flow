@@ -32,11 +32,8 @@ const AssetRequest = () => {
     setSelectedAsset(asset);
     setOpen(!open);
     refetchAssets();
-    // console.log(asset);
   };
 
-  //
-  //
   // Initialize react-hook-form
   const {
     handleSubmit,
@@ -64,7 +61,7 @@ const AssetRequest = () => {
     ];
     const _id = requestData.assetData._id;
 
-    // send the data to backend
+    // Send the data to backend
     try {
       const res = await axiosSecure.patch(`/assets`, {
         _id,
@@ -72,41 +69,49 @@ const AssetRequest = () => {
       });
       if (res.data.modifiedCount) {
         refetchAssets();
+        reset();
         Swal.fire({
-          // position: "top-end",
           icon: "success",
-          title: "Your request has been send",
+          title: "Your request has been sent",
           showConfirmButton: false,
           timer: 1500,
         });
       }
     } catch (error) {
       Swal.fire({
-        // position: "top-end",
         icon: "error",
-        title: "Their is a problem sending request.",
+        title: "There is a problem sending the request.",
         showConfirmButton: false,
         timer: 1500,
       });
     }
-
-    //
   };
 
   return (
     <div className="min-h-screen bg-gray-50 my-24">
       <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
+        {/* Page Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Asset Management
           </h1>
           <p className="text-gray-600">
             Manage and track your company assets efficiently
           </p>
-        </div>
+        </motion.div>
 
         {/* Search and Filters Section */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-white rounded-lg shadow-md overflow-hidden mb-6"
+        >
           <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
               <SlidersHorizontal className="h-5 w-5 mr-2" />
@@ -117,7 +122,12 @@ const AssetRequest = () => {
           <div className="p-6 grid gap-6">
             <div className="flex justify-between items-center gap-4">
               {/* Name Search */}
-              <div className="flex-1">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex-1"
+              >
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Product Name
                 </label>
@@ -127,10 +137,15 @@ const AssetRequest = () => {
                   placeholder="Search by name..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-              </div>
+              </motion.div>
 
               {/* Type Filter */}
-              <div className="flex-1">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex-1"
+              >
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Asset Type
                 </label>
@@ -152,13 +167,18 @@ const AssetRequest = () => {
                     <option value="Out of Stock">Out of Stock</option>
                   </select>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {/* Table Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="bg-white rounded-lg shadow-md overflow-hidden"
+        >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -183,9 +203,12 @@ const AssetRequest = () => {
               </thead>
               <tbody>
                 {assets.map((asset, index) => (
-                  <tr
+                  <motion.tr
                     key={index}
                     className="border-b hover:bg-gray-50 transition-colors"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
                   >
                     <td className="w-[40px] px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
@@ -213,29 +236,31 @@ const AssetRequest = () => {
                       {!asset?.isPending?.some(
                         (request) => request.requesterEmail === isRole.email
                       ) && (
-                        <button
+                        <motion.button
                           className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
                           onClick={() => handleOpen(asset)}
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.3 }}
                         >
                           Request
-                        </button>
+                        </motion.button>
                       )}
 
                       {/* "Pending" Button */}
                       {asset?.isPending?.some(
                         (request) => request.requesterEmail === isRole.email
                       ) && (
-                        <button className="btn btn-warning min-h-0 h-9 text-xs font-semibold ">
+                        <button className="btn btn-warning min-h-0 h-9 text-xs font-semibold">
                           Pending
                         </button>
                       )}
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Modal */}

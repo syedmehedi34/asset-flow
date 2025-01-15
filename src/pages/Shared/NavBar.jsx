@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
 
@@ -47,17 +47,17 @@ const NavBar = () => {
   const navOptions = (
     <>
       <li>
-        <Link to="/">Home</Link>
+        <NavLink to="/">Home</NavLink>
       </li>
 
       {/* user routes  */}
       {!user && (
         <>
           <li>
-            <Link to="/employee_signup">Join as Employee</Link>
+            <NavLink to="/employee_signup">Join as Employee</NavLink>
           </li>
           <li>
-            <Link to="/hr_signup">Join as HR Manager</Link>
+            <NavLink to="/hr_signup">Join as HR Manager</NavLink>
           </li>
         </>
       )}
@@ -66,16 +66,16 @@ const NavBar = () => {
       {role === "employee" && user && (
         <>
           <li>
-            <Link to="/my_assets">My Assets</Link>
+            <NavLink to="/my_assets">My Assets</NavLink>
           </li>
           <li>
-            <Link to="/my_team">My Team</Link>
+            <NavLink to="/my_team">My Team</NavLink>
           </li>
           <li>
-            <Link to="/request_assets">Request for an Asset</Link>
+            <NavLink to="/request_assets">Request for an Asset</NavLink>
           </li>
           <li>
-            <Link to="/employee_profile">Profile</Link>
+            <NavLink to="/employee_profile">Profile</NavLink>
           </li>
         </>
       )}
@@ -84,22 +84,22 @@ const NavBar = () => {
       {role === "hr_manager" && user && (
         <>
           <li>
-            <Link to="/assets_list">Asset List</Link>
+            <NavLink to="/assets_list">Asset List</NavLink>
           </li>
           <li>
-            <Link to="/add_asset">Add an Asset</Link>
+            <NavLink to="/add_asset">Add an Asset</NavLink>
           </li>
           <li>
-            <Link to="/all_requests">All Requests</Link>
+            <NavLink to="/all_requests">All Requests</NavLink>
           </li>
           <li>
-            <Link to="/employee_list">My Employee List</Link>
+            <NavLink to="/employee_list">My Employee List</NavLink>
           </li>
           <li>
-            <Link to="/add_employee">Add an Employee</Link>
+            <NavLink to="/add_employee">Add an Employee</NavLink>
           </li>
           <li>
-            <Link to="/hr_profile">Profile</Link>
+            <NavLink to="/hr_profile">Profile</NavLink>
           </li>
         </>
       )}

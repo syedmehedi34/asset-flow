@@ -6,10 +6,10 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import { FaSquareArrowUpRight } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 const AssetList = () => {
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
-  // console.log(assets, loadingAssets);
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
@@ -46,7 +46,13 @@ const AssetList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 my-24">
+    <motion.div
+      className="min-h-screen bg-gray-50 my-24"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="container mx-auto py-8 px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -58,7 +64,12 @@ const AssetList = () => {
         </div>
 
         {/* Search and Filters Section */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <motion.div
+          className="bg-white rounded-lg shadow-md overflow-hidden mb-6"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
               <SlidersHorizontal className="h-5 w-5 mr-2" />
@@ -115,10 +126,15 @@ const AssetList = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <motion.div
+          className="bg-white rounded-lg shadow-md overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -148,9 +164,12 @@ const AssetList = () => {
               </thead>
               <tbody>
                 {assets.map((asset, index) => (
-                  <tr
+                  <motion.tr
                     key={index}
                     className="border-b hover:bg-gray-50 transition-colors"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
@@ -195,14 +214,14 @@ const AssetList = () => {
                         Delete
                       </button>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
