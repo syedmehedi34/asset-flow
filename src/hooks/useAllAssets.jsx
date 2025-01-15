@@ -13,7 +13,7 @@ const useAllAssets = () =>
 
     const [searchText, setSearchText] = useState(null);
     const [category, setCategory] = useState(null);
-    console.log(searchText, category);
+    // console.log(searchText, category);
 
     let hr_email = "none@gmail.com";
     const location = useLocation();
