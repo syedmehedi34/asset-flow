@@ -53,8 +53,68 @@ const AddEmployee = () => {
     useUnaffiliatedUsers(); // get all unaffiliated employees
   const [isRole] = useRole();
   // console.log(isRole);
+
   const [employees, , refetchEmployees] = useAllEmployees();
   // console.log(employees?.length);
+
+  //
+  //
+  // const [showPackages, setShowPackages] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [stats, setStats] = useState({
+    currentMembers: employees?.length,
+    memberLimit:
+      isRole?.package === "starter"
+        ? 5
+        : isRole?.package === "basic"
+        ? 10
+        : isRole?.package === "pro"
+        ? 15
+        : 0,
+  });
+  useEffect(() => {
+    if (employees?.length) {
+      setStats({
+        currentMembers: employees.length,
+        memberLimit:
+          isRole?.package === "starter"
+            ? 5
+            : isRole?.package === "basic"
+            ? 10
+            : isRole?.package === "pro"
+            ? 15
+            : 0,
+      });
+    }
+  }, [employees, isRole]); // for updating the UI
+
+  const packageOptions = [
+    {
+      packageId: "starter",
+      members: 5,
+      price: 5,
+      title: "Starter Package - 5 Members",
+      description:
+        "Perfect for small teams. Manage up to 5 members for just $5",
+    },
+    {
+      packageId: "basic",
+      members: 10,
+      price: 8,
+      title: "Growth Package - 10 Members",
+      description: "Scale up with ease. Manage up to 10 members for only $8",
+    },
+    {
+      packageId: "pro",
+      members: 20,
+      price: 15,
+      title: "Pro Package - 20 Members",
+      description:
+        "deal for larger teams. Manage up to 20 members for just $15.",
+    },
+  ];
+  //
+  //
 
   // * add employee function
   const handleAddEmployeeToTeam = async (employee) => {
@@ -62,7 +122,8 @@ const AddEmployee = () => {
     const _id = employee._id;
 
     //
-    if (employees.length < 5) {
+    console.log(stats.memberLimit, stats.currentMembers);
+    if (employees.length < stats.memberLimit) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -75,7 +136,7 @@ const AddEmployee = () => {
         if (result.isConfirmed) {
           try {
             const res = await axiosSecure.patch("/users", { _id, hr_email });
-            console.log(res);
+            // console.log(res);
             if (res.data.modifiedCount) {
               Swal.fire({
                 title: "Added!",
@@ -120,41 +181,6 @@ const AddEmployee = () => {
   //
 
   // console.log(unaffiliatedUsersList);
-
-  const [showPackages, setShowPackages] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [stats, setStats] = useState({
-    currentMembers: employees?.length,
-    memberLimit:
-      isRole?.package === "basic"
-        ? 5
-        : isRole?.package === "premium"
-        ? 10
-        : isRole?.package === "pro"
-        ? 15
-        : 0,
-  });
-  useEffect(() => {
-    if (employees?.length) {
-      setStats({
-        currentMembers: employees.length,
-        memberLimit:
-          isRole?.package === "basic"
-            ? 5
-            : isRole?.package === "premium"
-            ? 10
-            : isRole?.package === "pro"
-            ? 15
-            : 0,
-      });
-    }
-  }, [employees, isRole]); // for updating the UI
-
-  const packageOptions = [
-    { id: 1, members: 5, price: 5 },
-    { id: 2, members: 10, price: 8 },
-    { id: 3, members: 20, price: 15 },
-  ];
 
   const addSelectedToTeam = () => {
     console.log("Clicked to select");
@@ -201,7 +227,7 @@ const AddEmployee = () => {
                 </h2>
               </div>
               <button
-                onClick={() => setShowPackages(true)}
+                // onClick={() => setShowPackages(true)}
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -243,11 +269,17 @@ const AddEmployee = () => {
                   </div>
                 </div>
 
-                <div className="bg-indigo-50 rounded-lg p-4">
+                <div
+                  className={`bg-indigo-50 rounded-lg p-4 ${
+                    stats?.currentMembers - stats?.memberLimit === 0
+                      ? "bg-red-200"
+                      : ""
+                  }`}
+                >
                   <h3 className="text-sm font-medium text-indigo-700 mb-1">
                     Package Status
                   </h3>
-                  <p className="text-sm text-indigo-600">
+                  <p className={`text-sm text-indigo-600 `}>
                     {stats?.currentMembers >= stats?.memberLimit
                       ? "You've reached your member limit. Consider upgrading your package."
                       : `You can add ${
@@ -388,46 +420,6 @@ const AddEmployee = () => {
           </div>
         </div>
       </div>
-
-      {/* Package Modal */}
-      {showPackages && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 mt-16">
-          <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Select a Package
-            </h2>
-            <div className="space-y-4">
-              {packageOptions.map((pkg) => (
-                <div
-                  key={pkg.id}
-                  className="flex justify-between items-center border-b py-3"
-                >
-                  <div>
-                    <p className="text-gray-900 font-semibold">
-                      {pkg.members} Members
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Price: ${pkg.price}/month
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setStats({
-                        currentMembers: stats.currentMembers,
-                        memberLimit: pkg.members,
-                      });
-                      setShowPackages(false);
-                    }}
-                    className="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
-                  >
-                    Select
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
