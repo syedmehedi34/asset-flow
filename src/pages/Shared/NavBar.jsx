@@ -9,7 +9,7 @@ const NavBar = () => {
   const [isRole] = useRole();
   const role = isRole?.role;
   const companyLogo =
-    isRole?.companyLogo || "https://i.ibb.co.com/ctGMctF/assetflow.png";
+    isRole?.companyLogo || "https://i.ibb.co.com/St0Nj3L/assetflow.png";
 
   //
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,9 +150,13 @@ const NavBar = () => {
               <div className="relative">
                 <div
                   onClick={toggleModal}
-                  className="w-12 h-12 bg-black rounded-full cursor-pointer p-[1px]"
+                  className="w-12 h-12 bg-blue-gray-900 rounded-full cursor-pointer flex items-center justify-center"
                 >
-                  <img className="rounded-full" src={user?.photoURL} alt="" />
+                  <img
+                    className="w-11 h-11 rounded-full object-cover"
+                    src={user?.photoURL}
+                    alt=""
+                  />
                 </div>
                 {isModalOpen && (
                   <div
@@ -169,9 +173,11 @@ const NavBar = () => {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="btn btn-ghost">
-                Login
-              </Link>
+              <>
+                <Link to="/login" className="btn btn-ghost">
+                  Login
+                </Link>
+              </>
             )}
           </div>
         </div>
