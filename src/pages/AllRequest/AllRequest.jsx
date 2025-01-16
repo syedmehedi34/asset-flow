@@ -36,9 +36,9 @@ const AllRequest = () => {
     )
   );
 
-  console.log(assets);
-  console.log(filteredAssets);
-  console.log(products);
+  // console.log(assets);
+  // console.log(filteredAssets);
+  // console.log(products);
 
   const handleReject = (productId) => {
     console.log("reject product with id:", productId);
