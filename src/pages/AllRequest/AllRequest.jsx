@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 // import { FaSquareArrowUpRight } from "react-icons/fa6";
@@ -8,12 +8,13 @@ import useAllAssets from "../../hooks/useAllAssets";
 const AllRequest = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
+  let serialNumber = 1;
 
   const filteredAssets = assets.filter(
     (item) => item.isPending && item.isPending.length > 0
   );
   // console.log(assets);
-  console.log(filteredAssets);
+  // console.log(filteredAssets);
 
   // todo change logic here
   const products = filteredAssets.filter(
@@ -75,7 +76,7 @@ const AllRequest = () => {
                 Date Added
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                Details
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -83,49 +84,58 @@ const AllRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {products?.map((product, index) => (
-              <motion.tr
-                key={product?._id}
-                className="border-b hover:bg-gray-50 transition-colors"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <td className="px-6  py-4 whitespace-nowrap text-sm text-gray-900">
-                  {index + 1}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {product?.productName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {product?.assetType}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex flex-col">
-                  <span>{product?.isPending[0].requesterName}</span>
-                  <span>{product?.isPending[0].requesterEmail}</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {product?.dateAdded}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
-                  <span className="badge">Pending</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <Link to={`/product/update/${product?._id}`}>
-                    <button className="px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                      Approve
+            {products?.map((product, i) => {
+              return product?.isPending?.map((pendingItem, idx) => (
+                <motion.tr
+                  key={`${product?._id}-${idx}`}
+                  className="border-b hover:bg-gray-50 transition-colors"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {serialNumber++}
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {product?.productName}
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {product?.assetType}
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex flex-col">
+                    <span>{pendingItem?.requesterName}</span>
+                    <span>{pendingItem?.requesterEmail}</span>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {product?.dateAdded}
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <button className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium ">
+                      View Details
                     </button>
-                  </Link>
-                  <button
-                    onClick={() => handleDeleteProduct(product?._id)}
-                    className="px-4 py-2 rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
-                    // className="btn btn-error"
-                  >
-                    Reject
-                  </button>
-                </td>
-              </motion.tr>
-            ))}
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <Link to={`/product/update/${product?._id}`}>
+                      <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
+                        Approve
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteProduct(product?._id)}
+                      className="btn min-h-0 h-9 border-none w-fit px-3 text-[12px] rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </motion.tr>
+              ));
+            })}
           </tbody>
         </table>
       </motion.div>
@@ -134,3 +144,42 @@ const AllRequest = () => {
 };
 
 export default AllRequest;
+
+// const products = [
+//   {
+//     _id: "6786925d2dc17aa79768e645",
+//     productName: "Whiteboard Markers",
+//     assetType: "Non-returnable",
+//     productQuantity: 0,
+//     productDescription:
+//       "Colorful markers for whiteboard use during brainstorming sessions and meetings.",
+//     hr_email: "mehedi@hr.com",
+//     dateAdded: "14/01/2025",
+//   },
+//   {
+//     _id: "6786925d2dc17aa79768e646",
+//     productName: "Dell UltraSharp Monitors",
+//     assetType: "Returnable",
+//     productQuantity: 0,
+//     productDescription:
+//       "High-resolution monitors for better clarity and performance at workstations.",
+//     hr_email: "mehedi@hr.com",
+//     dateAdded: "14/01/2025",
+//     isPending: [
+//       {
+//         requesterName: "Syed Mehedi Hasan",
+//         requesterEmail: "syedmehedi34@gmail.com",
+//         requestingTime: "16/01/2025",
+//         requestMessage: "fdcfdc",
+//       },
+//       {
+//         requesterName: "Ratul Hasan",
+//         requesterEmail: "ratul4@gmail.com",
+//         requestingTime: "16/01/2021",
+//         requestMessage: "hello sir",
+//       },
+//       // Remaining items...
+//     ],
+//   },
+//   // Remaining items...
+// ];
