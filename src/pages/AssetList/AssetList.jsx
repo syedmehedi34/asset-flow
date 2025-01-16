@@ -167,8 +167,8 @@ const AssetList = () => {
                   <motion.tr
                     key={index}
                     className="border-b hover:bg-gray-50 transition-colors"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
