@@ -1,32 +1,52 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-// import { FaSquareArrowUpRight } from "react-icons/fa6";
 import useAllAssets from "../../hooks/useAllAssets";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
 
 const AllRequest = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
+  // modal functions
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(!open);
+
   let serialNumber = 1;
 
   const filteredAssets = assets.filter(
-    (item) => item.isPending && item.isPending.length > 0
-  );
-  // console.log(assets);
-  // console.log(filteredAssets);
-
-  // todo change logic here
-  const products = filteredAssets.filter(
-    (product) =>
-      product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.hr_email.toLowerCase().includes(searchQuery.toLowerCase())
+    (item) => item.assetUser && item.assetUser.length > 0
   );
 
-  const handleDeleteProduct = (productId) => {
-    console.log("Delete product with id:", productId);
+  // filter search by name and email
+  const products = filteredAssets.filter((product) =>
+    product?.assetUser.some(
+      (pendingRequest) =>
+        pendingRequest.assetUserName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        pendingRequest.assetUserEmail
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+    )
+  );
+
+  console.log(assets);
+  console.log(filteredAssets);
+  console.log(products);
+
+  const handleReject = (productId) => {
+    console.log("reject product with id:", productId);
+
+    // send te data to
   };
 
+  //
   return (
     <div className="p-6 my-24">
       <h1 className="text-3xl font-semibold mb-6">
@@ -84,8 +104,8 @@ const AllRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {products?.map((product, i) => {
-              return product?.isPending?.map((pendingItem, idx) => (
+            {products.map((product, i) => {
+              return product?.assetUser?.map((pendingItem, idx) => (
                 <motion.tr
                   key={`${product?._id}-${idx}`}
                   className="border-b hover:bg-gray-50 transition-colors"
@@ -106,8 +126,8 @@ const AllRequest = () => {
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex flex-col">
-                    <span>{pendingItem?.requesterName}</span>
-                    <span>{pendingItem?.requesterEmail}</span>
+                    <span>{pendingItem?.assetUserName}</span>
+                    <span>{pendingItem?.assetUserEmail}</span>
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -115,19 +135,20 @@ const AllRequest = () => {
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium ">
+                    <button
+                      onClick={handleOpen}
+                      className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium "
+                    >
                       View Details
                     </button>
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <Link to={`/product/update/${product?._id}`}>
-                      <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                        Approve
-                      </button>
-                    </Link>
+                    <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
+                      Approve
+                    </button>
                     <button
-                      onClick={() => handleDeleteProduct(product?._id)}
+                      onClick={() => handleReject(product?._id)}
                       className="btn min-h-0 h-9 border-none w-fit px-3 text-[12px] rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
                     >
                       Reject
@@ -139,47 +160,30 @@ const AllRequest = () => {
           </tbody>
         </table>
       </motion.div>
+      <Dialog open={open} handler={handleOpen}>
+        <DialogHeader>Its a simple modal.</DialogHeader>
+        <DialogBody>
+          The key to more success is to have a lot of pillows. Put it this way,
+          it took me twenty five years to get these plants, twenty five years of
+          blood sweat and tears, and I&apos;m never giving up, I&apos;m just
+          getting started. I&apos;m up to something. Fan luv.
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpen}
+            className="mr-1"
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button variant="gradient" color="green" onClick={handleOpen}>
+            <span>Confirm</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 };
 
 export default AllRequest;
-
-// const products = [
-//   {
-//     _id: "6786925d2dc17aa79768e645",
-//     productName: "Whiteboard Markers",
-//     assetType: "Non-returnable",
-//     productQuantity: 0,
-//     productDescription:
-//       "Colorful markers for whiteboard use during brainstorming sessions and meetings.",
-//     hr_email: "mehedi@hr.com",
-//     dateAdded: "14/01/2025",
-//   },
-//   {
-//     _id: "6786925d2dc17aa79768e646",
-//     productName: "Dell UltraSharp Monitors",
-//     assetType: "Returnable",
-//     productQuantity: 0,
-//     productDescription:
-//       "High-resolution monitors for better clarity and performance at workstations.",
-//     hr_email: "mehedi@hr.com",
-//     dateAdded: "14/01/2025",
-//     isPending: [
-//       {
-//         requesterName: "Syed Mehedi Hasan",
-//         requesterEmail: "syedmehedi34@gmail.com",
-//         requestingTime: "16/01/2025",
-//         requestMessage: "fdcfdc",
-//       },
-//       {
-//         requesterName: "Ratul Hasan",
-//         requesterEmail: "ratul4@gmail.com",
-//         requestingTime: "16/01/2021",
-//         requestMessage: "hello sir",
-//       },
-//       // Remaining items...
-//     ],
-//   },
-//   // Remaining items...
-// ];

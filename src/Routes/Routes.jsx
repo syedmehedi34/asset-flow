@@ -17,6 +17,7 @@ import EmployeeRoute from "./EmployeeRoute";
 import MyAssets from "../pages/MyAssets";
 import MyTeam from "../pages/MyTeam";
 import AssetRequest from "../pages/AssetRequest";
+import MyProfile from "../pages/MyProfile";
 
 export const router = createBrowserRouter([
   {
@@ -129,9 +130,7 @@ export const router = createBrowserRouter([
         path: "employee_profile",
         element: (
           <EmployeeRoute>
-            <h1 className="my-24">
-              employee profile, need to create a component
-            </h1>
+            <MyProfile></MyProfile>
           </EmployeeRoute>
         ),
       },

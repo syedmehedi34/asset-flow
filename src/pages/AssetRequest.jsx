@@ -23,6 +23,7 @@ const AssetRequest = () => {
   const [assets, loadingAssets, refetchAssets, setSearchText, setCategory] =
     useAllAssets();
   const axiosSecure = useAxiosSecure();
+  // console.log(assets, isRole);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -51,12 +52,12 @@ const AssetRequest = () => {
       assetData: selectedAsset,
       requestData: data,
     };
-    const isPendingData = [
+    const assetUserData = [
       {
-        requesterName: isRole?.name,
-        requesterEmail: isRole?.email,
-        requestingTime: time,
-        requestMessage: data.requestInfo,
+        assetUserName: isRole?.name,
+        assetUserEmail: isRole?.email,
+        assetRequestingTime: time,
+        assetRequestMessage: data.requestInfo,
       },
     ];
     const _id = requestData.assetData._id;
@@ -65,7 +66,7 @@ const AssetRequest = () => {
     try {
       const res = await axiosSecure.patch(`/assets`, {
         _id,
-        isPendingData,
+        assetUserData,
       });
       if (res.data.modifiedCount) {
         refetchAssets();
@@ -233,8 +234,8 @@ const AssetRequest = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
-                      {!asset?.isPending?.some(
-                        (request) => request.requesterEmail === isRole.email
+                      {!asset?.assetUser?.some(
+                        (request) => request.assetUserEmail === isRole.email
                       ) && (
                         <motion.button
                           className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
@@ -247,8 +248,8 @@ const AssetRequest = () => {
                       )}
 
                       {/* "Pending" Button */}
-                      {asset?.isPending?.some(
-                        (request) => request.requesterEmail === isRole.email
+                      {asset?.assetUser?.some(
+                        (request) => request.assetUserEmail === isRole.email
                       ) && (
                         <button className="btn btn-warning min-h-0 h-9 text-xs font-semibold">
                           Pending
