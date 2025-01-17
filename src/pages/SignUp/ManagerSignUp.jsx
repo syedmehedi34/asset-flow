@@ -1,4 +1,3 @@
-// /* eslint-disable no-unused-vars */
 import { useContext, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Controller, useForm } from "react-hook-form";
@@ -7,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useRole from "../../hooks/useRole";
-import moment from "moment";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -88,13 +86,9 @@ const ManagerSignUp = () => {
 
     // send first image
     const formDataUserImage = new FormData();
-    console.log(formDataUserImage);
     formDataUserImage.append("image", profileImageFile);
-    // console.log(formDataUserImage);
     const responseUserImage = await fetch(
-      `https://api.imgbb.com/1/upload?key=${
-        import.meta.env.VITE_IMAGE_HOSTING_KEY
-      }`,
+      `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
       {
         method: "POST",
         body: formDataUserImage,
@@ -104,9 +98,7 @@ const ManagerSignUp = () => {
 
     // send 2nd image
     const formDataCompanyImage = new FormData();
-    // console.log(formDataCompanyImage);
     formDataCompanyImage.append("image", companyImageFile);
-    console.log(formDataCompanyImage);
     const responseCompanyImage = await fetch(
       `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
       {
@@ -116,7 +108,7 @@ const ManagerSignUp = () => {
     );
     const resultCompanyImage = await responseCompanyImage.json();
 
-    console.log(resultUserImage.data.url, resultCompanyImage.data.url);
+    // console.log(resultUserImage.data.url, resultCompanyImage.data.url);
     //
     //
     if (resultUserImage.success && resultCompanyImage.success) {
@@ -130,8 +122,8 @@ const ManagerSignUp = () => {
             const userInfo = {
               name: data.name,
               email: data.email,
-              photo: responseUserImage.data.url,
-              dob: "dateOfBirth",
+              photo: resultUserImage.data.url,
+              dob: data.dateOfBirth,
               companyName: data.companyName,
               companyLogo: resultCompanyImage.data.url,
               role: "hr_manager",
@@ -443,7 +435,7 @@ const ManagerSignUp = () => {
                       </h3>
                       <p className="text-3xl font-bold mb-2">
                         ${pkg.packagePrice}
-                        <span className="text-sm font-normal text-gray-500">
+                        <span className={`text-sm font-normal text-gray-500 `}>
                           /month
                         </span>
                       </p>
