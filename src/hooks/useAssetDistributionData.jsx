@@ -13,21 +13,24 @@ const useAssetDistributionData = () =>
 
     const [searchText, setSearchText] = useState("");
     const [category, setCategory] = useState("");
-    console.log(searchText, category);
+    // console.log(searchText, category);
 
-    let hr_email = "mehedi@hr.com";
-    // const location = useLocation();
-    // const path = location?.pathname;
+    let hr_email = "";
+    let requestStatus = "";
+    const location = useLocation();
+    const path = location?.pathname;
 
-    // if (path === "/request_assets") {
-    //   hr_email = isRole?.hr_email; // for employee route in the Request for a Asset page
-    // } else {
-    //   hr_email = isRole?.email; // for HR route in the Asset List page
-    // }
+    if (path === "/all_requests") {
+      hr_email = isRole?.email;
+      requestStatus = "Pending";
+    } else {
+      hr_email = isRole?.hr_email;
+    }
 
     // Define query params based on the conditions
     const queryParams = {
       hr_email,
+      requestStatus,
       ...(searchText && { searchText }), // Add searchText if available
       ...(category && { category }), // Add category if available
     };
