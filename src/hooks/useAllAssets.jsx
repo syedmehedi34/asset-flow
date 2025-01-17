@@ -20,9 +20,9 @@ const useAllAssets = () =>
     const path = location?.pathname;
 
     if (path === "/request_assets") {
-      hr_email = isRole?.hr_email;
+      hr_email = isRole?.hr_email; // for employee route in the Request for a Asset page
     } else {
-      hr_email = isRole?.email;
+      hr_email = isRole?.email; // for HR route in the Asset List page
     }
 
     // Define query params based on the conditions

@@ -73,6 +73,7 @@ const AssetRequest = () => {
     console.log(assetRequestData);
 
     // post api
+    // todo : have to add a option for backend checking that,,,one employee can not add a single asset for multiple time at the asset request.
     const res = await axiosSecure.post("/asset_distribution", assetRequestData);
     console.log(res);
     if (res.data.insertedId) {

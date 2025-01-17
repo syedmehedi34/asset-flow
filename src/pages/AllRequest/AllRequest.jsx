@@ -9,32 +9,30 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@material-tailwind/react";
+import useAssetDistributionData from "../../hooks/useAssetDistributionData";
+import { Filter, SlidersHorizontal } from "lucide-react";
 
 const AllRequest = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
   // modal functions
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
+  //
+  const [
+    assetDistributionData,
+    loadingAssetDistributionData,
+    refetchAssetDistributionData,
+    searchText,
+    setSearchText,
+    category,
+    setCategory,
+  ] = useAssetDistributionData();
+  console.log(assetDistributionData);
+  //
+
   let serialNumber = 1;
-
-  const filteredAssets = assets.filter(
-    (item) => item.assetUser && item.assetUser.length > 0
-  );
-
-  // filter search by name and email
-  const products = filteredAssets.filter((product) =>
-    product?.assetUser.some(
-      (pendingRequest) =>
-        pendingRequest.assetUserName
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        pendingRequest.assetUserEmail
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-    )
-  );
 
   // console.log(assets);
   // console.log(filteredAssets);
@@ -55,21 +53,62 @@ const AllRequest = () => {
 
       {/* Filter Section */}
       <motion.div
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 p-4 bg-gray-100 rounded-lg shadow-md"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        className="bg-white rounded-lg shadow-md overflow-hidden mb-6"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
       >
-        <input
-          type="text"
-          className="input input-bordered w-full sm:w-auto flex-grow mb-4 sm:mb-0"
-          placeholder="Search by Product Name or HR Email"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button className="btn btn-primary sm:ml-4">Search</button>
-      </motion.div>
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            <SlidersHorizontal className="h-5 w-5 mr-2" />
+            Search & Filters
+          </h2>
+        </div>
 
+        <div className="p-6 grid gap-6">
+          <div className="flex items-center gap-4">
+            {/* Name Search */}
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Name
+              </label>
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </div>
+
+            {/* Type Filter */}
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Asset Type
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-3 text-gray-400">
+                  <Filter className="h-4 w-4" />
+                </div>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-9"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Filter by type
+                  </option>
+                  <option value="">All Assets</option>
+                  <option value="Returnable">Returnable</option>
+                  <option value="Non-returnable">Non-returnable</option>
+                  <option value="In Stock">In Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
       {/* Product List Section */}
       <motion.div
         className="overflow-x-auto"
@@ -104,59 +143,57 @@ const AllRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, i) => {
-              return product?.assetUser?.map((pendingItem, idx) => (
-                <motion.tr
-                  key={`${product?._id}-${idx}`}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {serialNumber++}
-                  </td>
+            {assetDistributionData.map((item, i) => (
+              <motion.tr
+                key={item._id}
+                className="border-b hover:bg-gray-50 transition-colors"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {serialNumber++}
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {product?.productName}
-                  </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item?.assetName}
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {product?.assetType}
-                  </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item?.assetType}
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex flex-col">
-                    <span>{pendingItem?.assetUserName}</span>
-                    <span>{pendingItem?.assetUserEmail}</span>
-                  </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex flex-col">
+                  <span>{item?.employeeName}</span>
+                  <span>{item?.employeeEmail}</span>
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {product?.dateAdded}
-                  </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item?.assetRequestingDate}
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button
-                      onClick={handleOpen}
-                      className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium "
-                    >
-                      View Details
-                    </button>
-                  </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <button
+                    onClick={handleOpen}
+                    className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium "
+                  >
+                    View Details
+                  </button>
+                </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleReject(product?._id)}
-                      className="btn min-h-0 h-9 border-none w-fit px-3 text-[12px] rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
-                    >
-                      Reject
-                    </button>
-                  </td>
-                </motion.tr>
-              ));
-            })}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleReject(item?._id)}
+                    className="btn min-h-0 h-9 border-none w-fit px-3 text-[12px] rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
+                  >
+                    Reject
+                  </button>
+                </td>
+              </motion.tr>
+            ))}
           </tbody>
         </table>
       </motion.div>
