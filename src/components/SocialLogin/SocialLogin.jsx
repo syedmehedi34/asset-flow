@@ -1,4 +1,4 @@
-import { FaGoogle } from "react-icons/fa";
+import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,14 @@ const SocialLogin = () => {
   const handleGoogleSignIn = () => {
     googleSignIn().then((result) => {
       // console.log(result.user);
+      Swal.fire({
+        // position: "top-end",
+        icon: "success",
+        title: "Logged In successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
       const userInfo = {
         name: result.user?.displayName,
         email: result.user?.email,
@@ -28,9 +36,18 @@ const SocialLogin = () => {
     <div className="p-8">
       <div className="divider"></div>
       <div>
-        <button onClick={handleGoogleSignIn} className="btn">
-          <FaGoogle className="mr-2"></FaGoogle>
-          Google
+        <button
+          onClick={handleGoogleSignIn}
+          className="btn btn-outline w-full justify-start gap-3"
+        >
+          <span>
+            <img
+              className="w-7 h-7"
+              src="https://img.icons8.com/color/48/google-logo.png"
+              alt=""
+            />
+          </span>
+          Sign in with Google
         </button>
       </div>
     </div>
