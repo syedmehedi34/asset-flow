@@ -122,7 +122,7 @@ const AddEmployee = () => {
     const _id = employee._id;
 
     //
-    console.log(stats.memberLimit, stats.currentMembers);
+    // console.log(stats.memberLimit, stats.currentMembers);
     if (employees.length < stats.memberLimit) {
       Swal.fire({
         title: "Are you sure?",
