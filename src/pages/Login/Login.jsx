@@ -1,120 +1,152 @@
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from "react";
-import {
-  loadCaptchaEnginge,
-  LoadCanvasTemplate,
-  validateCaptcha,
-} from "react-simple-captcha";
+
 import { AuthContext } from "../../providers/AuthProvider";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import LoginLottie from "../../assets/lottieFiles/login_page_lottie.json";
+import Lottie from "lottie-react";
 
 const Login = () => {
-  const [disabled, setDisabled] = useState(true);
-  const { signIn } = useContext(AuthContext);
+  const { user, signIn } = useContext(AuthContext);
+  const [error, setError] = useState(""); // State for error message
   const navigate = useNavigate();
   const location = useLocation();
+  // console.log(user);
 
   const from = location.state?.from?.pathname || "/";
   // console.log("state in the location login page", location.state);
-
+  // Redirect logged-in users to the homepage
   useEffect(() => {
-    loadCaptchaEnginge(6);
-  }, []);
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, from]);
 
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
-    signIn(email, password).then((result) => {
-      const user = result.user;
-      // console.log(user);
-      Swal.fire({
-        title: "User Login Successful.",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutUp",
-        },
-      });
-      navigate(from, { replace: true });
-    });
-  };
+    // console.log(email, password);
+    signIn(email, password)
+      .then((result) => {
+        const user = result.user;
+        // console.log(user);
+        Swal.fire({
+          // position: "top-end",
+          icon: "success",
+          title: "Logged In successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        setError("Invalid email or password. Please try again."); // Set error message
 
-  const handleValidateCaptcha = (e) => {
-    const user_captcha_value = e.target.value;
-    if (validateCaptcha(user_captcha_value)) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+        Swal.fire({
+          // position: "top-end",
+          icon: "error",
+          title: "Invalid credentials",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        // console.error("ERROR", error.message);
+        event.target.password.value = "";
+      });
   };
 
   return (
     <>
-      <div className="min-h-screen bg-base-200 w-full">
-        <div className="hero-content flex-col md:flex-row-reverse">
-          <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100 mt-24">
-            <form onSubmit={handleLogin} className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="email"
-                  className="input input-bordered"
-                />
+      <div className="flex min-h-screen bg-base-200 w-full my-24 items-center ">
+        <div className="w-full  hidden lg:block">
+          <Lottie animationData={LoginLottie} loop={true} />
+        </div>
+        <div className="w-full hero-content">
+          <div className="card md:w-2/3 w-full max--sm shadow-2xl bg-base-100">
+            <form onSubmit={handleLogin} className="card-body w-full h-[380px]">
+              <div className="text-center pt-2">
+                <motion.h1
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text mb-4"
+                >
+                  Login Now
+                </motion.h1>
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="password"
-                  className="input input-bordered"
-                />
-                <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
-                </label>
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <LoadCanvasTemplate />
-                </label>
-                <input
-                  onBlur={handleValidateCaptcha}
-                  type="text"
-                  name="captcha"
-                  placeholder="type the captcha above"
-                  className="input input-bordered"
-                />
-              </div>
-              <div className="form-control mt-6">
-                {/* TODO: apply disabled for re captcha */}
-                <input
-                  disabled={false}
-                  className="btn btn-primary"
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-2"
+              >
+                {/* email */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Email</span>
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    placeholder="email"
+                    className="input input-bordered"
+                  />
+                </div>
+
+                {/* password */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Password</span>
+                  </label>
+                  <input
+                    required
+                    type="password"
+                    name="password"
+                    placeholder="password"
+                    className="input input-bordered"
+                  />
+                  <label className="label">
+                    <a href="#" className="label-text-alt link link-hover">
+                      Forgot password?
+                    </a>
+                  </label>
+                </div>
+              </motion.div>
+
+              {/* submit  */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="flex justify-center mt-8"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
-                  value="Login"
-                />
-              </div>
+                  className="inline-flex items-center px-8 py-3  text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 w-full justify-center"
+                >
+                  Login
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </motion.button>
+              </motion.div>
             </form>
-            <p className="px-6">
-              <small>
-                New Here? <Link to="/signup">Create an account</Link>{" "}
-              </small>
-            </p>
-            <SocialLogin></SocialLogin>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-2"
+            >
+              <SocialLogin></SocialLogin>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -123,109 +155,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// const Login = () => {
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-//       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 bg-white rounded-2xl shadow-xl overflow-hidden">
-//         {/* Left Side */}
-//         <div className="relative hidden md:block">
-//           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 to-indigo-600/90 z-10" />
-//           <img
-//             src="https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?auto=format&fit=crop&q=80"
-//             alt="Background"
-//             className="absolute inset-0 w-full h-full object-cover"
-//           />
-//           <div className="relative z-20 p-8 flex flex-col justify-between text-white">
-//             <div>
-//               <h2 className="text-3xl font-bold mb-6">Welcome Back!</h2>
-//               <p className="text-blue-100 text-lg mb-8">
-//                 Sign in to continue your journey with us and explore amazing
-//                 possibilities.
-//               </p>
-//             </div>
-//             <div className="space-y-6">
-//               <div className="flex items-center space-x-4">
-//                 <div className="flex-shrink-0">
-//                   <span className="h-6 w-6 text-blue-200">&#8250;</span>
-//                 </div>
-//                 <p className="text-blue-100">
-//                   Access your personalized dashboard
-//                 </p>
-//               </div>
-//               <div className="flex items-center space-x-4">
-//                 <div className="flex-shrink-0">
-//                   <span className="h-6 w-6 text-blue-200">&#8250;</span>
-//                 </div>
-//                 <p className="text-blue-100">
-//                   Track your progress in real-time
-//                 </p>
-//               </div>
-//               <div className="flex items-center space-x-4">
-//                 <div className="flex-shrink-0">
-//                   <span className="h-6 w-6 text-blue-200">&#8250;</span>
-//                 </div>
-//                 <p className="text-blue-100">
-//                   Connect with team members globally
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Side */}
-//         <div className="p-8 flex flex-col justify-center">
-//           <div className="max-w-md w-full mx-auto space-y-8">
-//             <div>
-//               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
-//                 Sign in to your account
-//               </h2>
-//             </div>
-
-//             <div className="mt-8 space-y-6">
-//               {/* Email Input */}
-//               <div className="relative">
-//                 <input
-//                   type="email"
-//                   placeholder="Email address"
-//                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg"
-//                 />
-//               </div>
-//               {/* Password Input */}
-//               <div className="relative">
-//                 <input
-//                   type="password"
-//                   placeholder="Password"
-//                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="flex items-center justify-between">
-//               <a href="#" className="text-sm font-medium text-blue-600">
-//                 Forgot your password?
-//               </a>
-//             </div>
-
-//             <div className="mt-6 flex justify-center">
-//               <button className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg">
-//                 Sign in
-//               </button>
-//             </div>
-
-//             <div className="mt-4 text-center">
-//               <p className="text-sm text-gray-600">
-//                 New Here?{" "}
-//                 <a href="#" className="font-medium text-blue-600">
-//                   Create an account
-//                 </a>
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Login;
