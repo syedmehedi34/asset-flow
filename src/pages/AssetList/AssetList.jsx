@@ -175,7 +175,7 @@ const AssetList = () => {
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.productName}
+                      {asset?.assetName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -183,12 +183,12 @@ const AssetList = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.productQuantity === 0 ? (
+                      {asset?.assetQuantity === 0 ? (
                         <p className="badge bg-red-600 border-none">
                           Out of Stock
                         </p>
                       ) : (
-                        <p>{asset.productQuantity}</p>
+                        <p>{asset.assetQuantity}</p>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex items-center  gap-3">
@@ -198,7 +198,7 @@ const AssetList = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.dateAdded}
+                      {asset?.assetPostDate}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <Link to="/asset/update">

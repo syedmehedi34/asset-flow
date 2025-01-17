@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import PageTitle from "../../components/PageTitle";
 import { Input, IconButton, Typography } from "@material-tailwind/react";
 import { useState } from "react";
@@ -5,11 +6,14 @@ import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import useRole from "../../hooks/useRole";
+import moment from "moment";
 
 const AddAsset = () => {
   const [quantity, setQuantity] = useState(0);
   const axiosSecure = useAxiosSecure();
   const [isRole] = useRole();
+  const companyName = isRole?.companyName;
+  // console.log(isRole);
 
   const {
     register,
@@ -20,12 +24,18 @@ const AddAsset = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const dateAdded = new Date().toLocaleDateString("en-GB");
+    const assetPostDate = moment().format("YYYY-MM-DD");
     const hr_email = isRole.email;
 
-    // const dateAdded =
-    data.productQuantity = quantity;
-    const assetData = { ...data, dateAdded, hr_email };
+    data.assetQuantity = quantity;
+    const productRequest = 0;
+    const assetData = {
+      ...data,
+      assetPostDate,
+      hr_email,
+      companyName,
+      productRequest,
+    };
     console.log(assetData);
 
     // post api
@@ -65,22 +75,22 @@ const AddAsset = () => {
             {/* Product Name */}
             <div>
               <label
-                htmlFor="productName"
+                htmlFor="assetName"
                 className="block text-sm font-medium text-gray-600"
               >
                 Product Name
               </label>
               <input
                 type="text"
-                id="productName"
-                {...register("productName", {
+                id="assetName"
+                {...register("assetName", {
                   required: "Product Name is required",
                 })}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               />
-              {errors.productName && (
+              {errors.assetName && (
                 <span className="text-red-500 text-sm">
-                  {errors.productName.message}
+                  {errors.assetName.message}
                 </span>
               )}
             </div>
@@ -118,20 +128,20 @@ const AddAsset = () => {
                 color="blue-gray"
                 className="mb-1 font-medium"
               >
-                Select Amount
+                Select Quantity
               </Typography>
               <div className="relative w-full">
                 <Input
                   type="number"
                   value={quantity}
-                  {...register("productQuantity", {
+                  {...register("assetQuantity", {
                     required: "Product Name is required",
                     min: 1,
                   })}
                   onChange={(e) => {
                     const newValue = Math.max(0, Number(e.target.value));
                     setQuantity(newValue);
-                    setValue("productQuantity", newValue); // Sync the value with react-hook-form
+                    setValue("assetQuantity", newValue); // Sync the value with react-hook-form
                   }}
                   className="!border-t-blue-gray-200 placeholder:text-blue-gray-300 placeholder:opacity-100 focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
@@ -169,9 +179,9 @@ const AddAsset = () => {
                   </IconButton>
                 </div>
               </div>
-              {errors.productQuantity && (
+              {errors.assetQuantity && (
                 <span className="text-red-500 text-sm">
-                  {errors.productQuantity.message}
+                  {errors.assetQuantity.message}
                 </span>
               )}
             </div>
@@ -185,16 +195,16 @@ const AddAsset = () => {
                 Product Description
               </label>
               <textarea
-                id="productDescription"
-                {...register("productDescription", {
+                id="assetDescription"
+                {...register("assetDescription", {
                   required: "Product Description is required",
                 })}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 rows="4"
               />
-              {errors.productDescription && (
+              {errors.assetDescription && (
                 <span className="text-red-500 text-sm">
-                  {errors.productDescription.message}
+                  {errors.assetDescription.message}
                 </span>
               )}
             </div>

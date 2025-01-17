@@ -24,6 +24,7 @@ const SocialLogin = () => {
         email: result.user?.email,
         role: "employee",
         hr_email: "unaffiliated@hostname.com",
+        photo: result.user?.photoURL,
       };
       axiosPublic.post("/users", userInfo).then((res) => {
         console.log(res.data);
