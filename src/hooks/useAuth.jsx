@@ -3,7 +3,7 @@ import { AuthContext } from "../providers/AuthProvider";
 
 const useAuth = () => {
   const auth = useContext(AuthContext);
-  //   console.log(auth);
+  // console.log(auth.user);
   return auth;
 };
 

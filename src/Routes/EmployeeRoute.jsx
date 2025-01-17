@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Navigate, useLocation } from "react-router";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 
 const EmployeeRoute = ({ children }) => {
-  const { loading } = useAuth();
+  const { loading, logOut } = useAuth();
   const [isRole, isRoleLoading] = useRole();
   const location = useLocation();
 
@@ -18,3 +19,12 @@ const EmployeeRoute = ({ children }) => {
 };
 
 export default EmployeeRoute;
+
+// logOut();
+// const isAdminRoute = location?.state?.from?.pathname?.includes("adminRoute")
+// || location.pathname.includes("adminRoute");
+// <Navigate
+// to={isAdminRoute ? "/" : "/login"}
+// state={{ from: location }}
+// replace
+// />
