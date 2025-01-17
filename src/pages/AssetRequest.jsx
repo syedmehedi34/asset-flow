@@ -4,6 +4,8 @@ import useAllAssets from "../hooks/useAllAssets";
 import useRole from "../hooks/useRole";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import React from "react";
+import moment from "moment";
+
 import {
   Button,
   Dialog,
@@ -23,7 +25,7 @@ const AssetRequest = () => {
   const [assets, loadingAssets, refetchAssets, setSearchText, setCategory] =
     useAllAssets();
   const axiosSecure = useAxiosSecure();
-  // console.log(assets, isRole);
+  // console.log(assets);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -44,46 +46,47 @@ const AssetRequest = () => {
   } = useForm();
 
   // Handle form submission
+
   const onSubmit = async (data) => {
-    const time = new Date().toLocaleDateString("en-GB");
     setOpen(false);
+    const date = moment().format("YYYY-MM-DD");
+    // console.log(date);
 
-    const requestData = {
-      assetData: selectedAsset,
-      requestData: data,
+    //
+    // console.log(data);
+    const assetRequestData = {
+      employeeName: isRole.name,
+      employeeEmail: isRole.email,
+      hr_email: isRole.hr_email,
+      assetRequestingDate: date,
+      assetRequestMessage: data.assetRequestMessage,
+
+      assetName: selectedAsset.assetName,
+      assetType: selectedAsset.assetType,
+      assetQuantity: selectedAsset.assetQuantity,
+      assetDescription: selectedAsset.assetDescription,
+      assetPostDate: selectedAsset.assetPostDate,
+      companyName: selectedAsset.companyName,
+      requestStatus: "Pending",
+      approvalDate: "Not approved yet",
     };
-    const assetUserData = [
-      {
-        assetUserName: isRole?.name,
-        assetUserEmail: isRole?.email,
-        assetRequestingTime: time,
-        assetRequestMessage: data.requestInfo,
-      },
-    ];
-    const _id = requestData.assetData._id;
+    console.log(assetRequestData);
 
-    // Send the data to backend
-    try {
-      const res = await axiosSecure.patch(`/assets`, {
-        _id,
-        assetUserData,
-      });
-      if (res.data.modifiedCount) {
-        refetchAssets();
-        reset();
-        Swal.fire({
-          icon: "success",
-          title: "Your request has been sent",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    } catch (error) {
+    // post api
+    const res = await axiosSecure.post("/asset_distribution", assetRequestData);
+    console.log(res);
+    if (res.data.insertedId) {
       Swal.fire({
-        icon: "error",
-        title: "There is a problem sending the request.",
+        icon: "success",
+        title: "New asset request has been sent",
         showConfirmButton: false,
         timer: 1500,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
       });
     }
   };
@@ -215,7 +218,7 @@ const AssetRequest = () => {
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.productName}
+                      {asset?.assetName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -223,7 +226,7 @@ const AssetRequest = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.productQuantity ? (
+                      {asset?.assetQuantity ? (
                         <p className="badge bg-green-600 border-none">
                           In Stock
                         </p>
@@ -234,27 +237,14 @@ const AssetRequest = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
-                      {!asset?.assetUser?.some(
-                        (request) => request.assetUserEmail === isRole.email
-                      ) && (
-                        <motion.button
-                          className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
-                          onClick={() => handleOpen(asset)}
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          Request
-                        </motion.button>
-                      )}
-
-                      {/* "Pending" Button */}
-                      {asset?.assetUser?.some(
-                        (request) => request.assetUserEmail === isRole.email
-                      ) && (
-                        <button className="btn btn-warning min-h-0 h-9 text-xs font-semibold">
-                          Pending
-                        </button>
-                      )}
+                      <motion.button
+                        className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                        onClick={() => handleOpen(asset)}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        Request
+                      </motion.button>
                     </td>
                   </motion.tr>
                 ))}
@@ -284,7 +274,7 @@ const AssetRequest = () => {
                   transition={{ delay: 0.2 }}
                   className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent"
                 >
-                  {selectedAsset.productName}
+                  {selectedAsset?.assetName}
                 </motion.h2>
               </div>
 
@@ -298,7 +288,7 @@ const AssetRequest = () => {
                   <Textarea
                     size="md"
                     label="Your request information"
-                    {...register("requestInfo", {
+                    {...register("assetRequestMessage", {
                       required: "This field is required",
                     })}
                   />
@@ -321,10 +311,10 @@ const AssetRequest = () => {
                   <p className="font-medium">Need more information?</p>
                   <span className="text-sm">Contact the HR Manager </span>
                   <a
-                    href={`mailto:${selectedAsset.hr_email}`}
+                    href={`mailto:${selectedAsset?.hr_email}`}
                     className="text-teal-600 hover:text-teal-800 font-semibold text-sm relative group"
                   >
-                    {selectedAsset.hr_email}
+                    {selectedAsset?.hr_email}
                     <FaSquareArrowUpRight className="w-3 h-3 inline-block text-teal-600 group-hover:text-teal-800 ml-1" />
                   </a>
                 </div>
