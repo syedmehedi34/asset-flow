@@ -4,6 +4,8 @@ import useAssetDistributionData from "../hooks/useAssetDistributionData";
 import { FaSquareArrowUpRight } from "react-icons/fa6";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const MyAssets = () => {
   const [
@@ -15,9 +17,89 @@ const MyAssets = () => {
     category,
     setCategory,
   ] = useAssetDistributionData();
+  const axiosSecure = useAxiosSecure();
   const assets = assetDistributionData;
 
-  console.log(assetDistributionData);
+  // console.log(assetDistributionData);
+
+  // cancel a request
+  const handleCancelButton = (_id) => {
+    const requestStatus = "Cancelled";
+    //
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Approve it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.patch("/asset_distribution", {
+          _id,
+          requestStatus,
+        });
+        // console.log(res.data.modifiedCount);
+        if (res.data.modifiedCount) {
+          refetchAssetDistributionData();
+          Swal.fire({
+            title: "Cancelled!",
+            text: "Asset request cancelled successfully.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      }
+    });
+  };
+
+  // return an asset
+  const handleReturnAsset = (asset) => {
+    const _id = asset._id;
+    const assetID = asset.assetID;
+    console.log(asset);
+
+    const requestStatus = "Returned";
+    //
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Return it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.patch("/asset_distribution", {
+          _id,
+          requestStatus,
+        });
+        // console.log(res.data.modifiedCount);
+        if (res.data.modifiedCount) {
+          refetchAssetDistributionData();
+
+          // update quantity from the assets collection
+          const assetCollectionRes = await axiosSecure.patch("/assets", {
+            assetID,
+          });
+          console.log(assetCollectionRes);
+          if (assetCollectionRes.data.modifiedCount) {
+            Swal.fire({
+              title: "Returned!",
+              text: "Asset returned successfully.",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        }
+      }
+    });
+  };
+  //
   return (
     <motion.div
       className="min-h-screen bg-gray-50 my-24"
@@ -109,15 +191,19 @@ const MyAssets = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Asset Type
                   </th>
+
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Quantity
+                    Requested Date
                   </th>
+
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Requested
+                    Approval Date
                   </th>
+
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date Added
+                    Request Status
                   </th>
+
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -143,37 +229,68 @@ const MyAssets = () => {
                         {asset?.assetType}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {asset?.assetQuantity === 0 ? (
-                        <p className="badge bg-red-600 border-none">
-                          Out of Stock
-                        </p>
-                      ) : (
-                        <p>{asset.assetQuantity}</p>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex items-center  gap-3">
-                      {asset?.productRequest || 0}
-                      <span className=" transition duration-300 ease-in-out transform hover:scale-105  active:scale-95">
-                        <FaSquareArrowUpRight size={18} />
-                      </span>
-                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {asset?.assetPostDate}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <Link to="/asset/update">
-                        <button className="px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                          Update
-                        </button>
-                      </Link>
 
-                      <button
-                        // onClick={() => handleDeleteAsset(asset._id)}
-                        className="px-4 py-2 rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
-                      >
-                        Delete
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {asset?.approvalDate}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {asset?.requestStatus}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {asset?.requestStatus === "Pending" ? (
+                        <>
+                          <button
+                            onClick={() => handleCancelButton(asset._id)}
+                            className="w-full btn min-h-0 h-10 border-none font-[600] btn-error"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : asset?.requestStatus === "Approved" &&
+                        asset?.assetType === "Returnable" ? (
+                        <div className="flex items-center justify-center gap-1">
+                          <button className="flex-1 btn min-h-0 h-10 font-[600] btn-accent">
+                            Print
+                          </button>
+                          <button
+                            onClick={() => handleReturnAsset(asset)}
+                            className="flex-1 btn btn-warning min-h-0 h-10 border-none font-[600]"
+                          >
+                            Return
+                          </button>
+                        </div>
+                      ) : asset?.requestStatus === "Approved" ? (
+                        <>
+                          <button className="w-full btn min-h-0 h-10 font-[600] btn-accent">
+                            Print
+                          </button>
+                        </>
+                      ) : asset?.requestStatus === "Cancelled" ? (
+                        <>
+                          <button
+                            disabled
+                            className="w-full btn min-h-0 h-10 font-[600] btn-accent"
+                          >
+                            Cancelled
+                          </button>
+                        </>
+                      ) : asset?.requestStatus === "Returned" ? (
+                        <>
+                          <button
+                            // onClick={() => handleReturnAsset(asset._id)}
+                            disabled
+                            className="w-full btn btn-warning min-h-0 h-10 border-none font-[600]"
+                          >
+                            Returned
+                          </button>
+                        </>
+                      ) : null}
                     </td>
                   </motion.tr>
                 ))}
