@@ -77,12 +77,10 @@ const EmployeeList = () => {
   return (
     <div className="container mx-auto px-4 py-6 my-24">
       <PageTitle
-        heading="Add a New Asset"
-        subHeading="Fill in the details below to add a new asset to your inventory."
+        heading="All Employees List "
+        subHeading="All the team members in a place with details."
       ></PageTitle>
-      <h1 className="text-2xl font-bold mb-4 text-center my-5">
-        Employee List
-      </h1>
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -129,12 +127,6 @@ const EmployeeList = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <Link to="/employee/update">
-                    <button className="px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                      Update
-                    </button>
-                  </Link>
-
                   <button
                     onClick={() => handleRemove(employee._id)}
                     className="px-4 py-2 rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
