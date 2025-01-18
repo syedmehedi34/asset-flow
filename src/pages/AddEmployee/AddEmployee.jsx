@@ -6,6 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
 import Swal from "sweetalert2";
 import useAllEmployees from "../../hooks/useAllEmployees";
+import { Link } from "react-router-dom";
 // import axios from "axios";
 
 function RadialProgress({ value, max }) {
@@ -48,19 +49,23 @@ function RadialProgress({ value, max }) {
 }
 
 const AddEmployee = () => {
-  // ?
+  //
   const axiosSecure = useAxiosSecure();
   const [unaffiliatedUsersList, , , unaffiliatedUsersRefetch] =
-    useUnaffiliatedUsers(); // get all unaffiliated employees
+    useUnaffiliatedUsers();
+  const [userSelection, setUserSelection] = useState([]);
+
   const [isRole] = useRole();
 
   const [employees, , refetchEmployees] = useAllEmployees();
-  // console.log(employees?.length);
+  console.log(employees);
+  console.log(unaffiliatedUsersList);
 
   //
   //
   // const [showPackages, setShowPackages] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
   const [stats, setStats] = useState({
     currentMembers: employees?.length,
     memberLimit:
@@ -123,7 +128,6 @@ const AddEmployee = () => {
     const _id = employee._id;
 
     //
-    // console.log(stats.memberLimit, stats.currentMembers);
     if (employees.length < stats.memberLimit) {
       Swal.fire({
         title: "Are you sure?",
@@ -176,32 +180,22 @@ const AddEmployee = () => {
     }
   };
 
-  // ?
-  //
-  //
-  //
-
-  // console.log(unaffiliatedUsersList);
-
   // text search option
   const filteredUsers = unaffiliatedUsersList?.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Pagination setup
+  // * Pagination setup
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
-
   const totalPages = Math.ceil(filteredUsers?.length / usersPerPage);
   const currentUsers = filteredUsers?.slice(
     (currentPage - 1) * usersPerPage,
     currentPage * usersPerPage
   );
-
   const changePage = (page) => {
     setCurrentPage(page);
   };
-
   const generatePageNumbers = () => {
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -210,9 +204,7 @@ const AddEmployee = () => {
     return pageNumbers;
   };
 
-  //?
-  const [userSelection, setUserSelection] = useState([]);
-
+  // * this section is for multiple employee insertion
   const toggleUserSelection = (_id) => {
     setUserSelection((prevSelection) => {
       if (prevSelection.includes(_id)) {
@@ -221,18 +213,12 @@ const AddEmployee = () => {
         return [...prevSelection, _id];
       }
     });
-
-    // const res = await axiosSecure
   };
-
   const addSelectedToTeam = async () => {
     const limit = stats.memberLimit - stats.currentMembers;
-    // console.log(limit);
     const hr_email = isRole?.email;
     const data = { hr_email };
     const ids = userSelection;
-    // console.log("Sending data:", data);
-    // console.log("Sending ids:", ids);
 
     if (ids.length && limit > 0 && limit >= ids.length) {
       const swalWithBootstrapButtons = Swal.mixin({
@@ -259,8 +245,10 @@ const AddEmployee = () => {
         .then(async (result) => {
           if (result.isConfirmed) {
             const res = await axiosSecure.patch("/user", { ids, data });
-            console.log(res);
+            // console.log(res);
             if (res.data.modifiedCount) {
+              unaffiliatedUsersRefetch();
+              refetchEmployees();
               swalWithBootstrapButtons.fire({
                 title: "Added!",
                 text: "Employee has been added to your team.",
@@ -284,13 +272,7 @@ const AddEmployee = () => {
         timer: 1500,
       });
     }
-
-    // try {
   };
-
-  // console.log(userSelection);
-
-  //?
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 my-24">
@@ -305,10 +287,12 @@ const AddEmployee = () => {
                   Package Details
                 </h2>
               </div>
-              <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <Plus className="h-4 w-4 mr-2" />
-                Increase Limit
-              </button>
+              <Link to="/packages">
+                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Increase Limit
+                </button>
+              </Link>
             </div>
             <p className="text-sm text-gray-500">
               Manage your team size and package limits
@@ -413,7 +397,7 @@ const AddEmployee = () => {
                   <div>
                     <input
                       type="checkbox"
-                      checked={user?.isSelected}
+                      // checked={user?.isSelected}
                       onChange={() => toggleUserSelection(user?._id)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />

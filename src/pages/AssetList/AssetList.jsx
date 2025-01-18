@@ -176,9 +176,9 @@ const AssetList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex items-center  gap-3">
                     {asset?.productRequest || 0}
-                    <span className=" transition duration-300 ease-in-out transform hover:scale-105  active:scale-95">
+                    {/* <span className=" transition duration-300 ease-in-out transform hover:scale-105  active:scale-95">
                       <FaSquareArrowUpRight size={18} />
-                    </span>
+                    </span> */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {asset?.assetPostDate}

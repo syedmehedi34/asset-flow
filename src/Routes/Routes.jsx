@@ -18,6 +18,7 @@ import MyAssets from "../pages/MyAssets";
 import MyTeam from "../pages/MyTeam";
 import AssetRequest from "../pages/AssetRequest";
 import MyProfile from "../pages/MyProfile";
+import PaymentPage from "../pages/PaymentPage";
 
 export const router = createBrowserRouter([
   {
@@ -97,6 +98,14 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <ManagerProfile></ManagerProfile>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "packages",
+        element: (
+          <ManagerRoute>
+            <PaymentPage></PaymentPage>
           </ManagerRoute>
         ),
       },
