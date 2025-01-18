@@ -8,7 +8,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const EmployeeList = () => {
   const [employees, loadingEmployees, refetchEmployees] = useAllEmployees();
-  console.log(employees);
+  // console.log(employees);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
