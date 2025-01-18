@@ -1,12 +1,17 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Camera, Building2, Mail, User, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
+import useAuth from "../hooks/useAuth";
+import Swal from "sweetalert2";
+import useRole from "../hooks/useRole";
 
 const MyProfile = () => {
-  const [profileImage, setProfileImage] = useState(
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=60"
-  );
+  const { user, updateUserProfile, setUser } = useAuth();
+  const [isRole] = useRole();
+  console.log(isRole);
+  const [profileImage, setProfileImage] = useState(user?.photoURL);
   const {
     register,
     handleSubmit,
@@ -19,19 +24,86 @@ const MyProfile = () => {
     logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&auto=format&fit=crop&q=60",
   };
 
+  // image upload to imgBB
+  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+  const [profileImageFile, setProfileImageFile] = useState(null);
+
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+      setProfileImageFile(file);
     }
   };
 
-  const onSubmit = (data) => {
-    console.log("Profile updated:", data);
+  const onSubmit = async (data) => {
+    // send  image
+    const formDataUserImage = new FormData();
+    formDataUserImage.append("image", profileImageFile);
+    const responseUserImage = await fetch(
+      `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
+      {
+        method: "POST",
+        body: formDataUserImage,
+      }
+    );
+    const resultUserImage = await responseUserImage.json();
+    console.log(resultUserImage);
+
+    // ?
+
+    const name = data.fullName;
+    const photo = resultUserImage.data.url;
+
+    // console.log(name, photo);
+
+    const updatedProfileData = {
+      name,
+      photo,
+    };
+
+    // // Update only the name if the photo URL is blank
+    if (name && !photo) {
+      updateUserProfile(name, user.photoURL).then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Name has been  updated",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      });
+    }
+
+    // Update only the photo URL if the name is blank
+    if (name === user.displayName && photo) {
+      updateUserProfile(user.displayName, photo).then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Photo has been  updated",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      });
+    }
+
+    // Update both if both fields are filled
+    if (name && photo) {
+      updateUserProfile(name, photo).then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Name and Photo has been  updated",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      });
+    }
+
+    // now update the data in the backend
+
+    //?
+
+    // const fullName = data.fullName;
   };
 
   return (
@@ -77,7 +149,7 @@ const MyProfile = () => {
           </div>
 
           {/* Company Info */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -96,7 +168,7 @@ const MyProfile = () => {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Profile Form */}
           <div className="px-8 py-6">
@@ -116,7 +188,7 @@ const MyProfile = () => {
                       required: "Full name is required",
                     })}
                     type="text"
-                    defaultValue="John Doe"
+                    defaultValue={user.displayName}
                     className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -140,7 +212,7 @@ const MyProfile = () => {
                   <input
                     {...register("email")}
                     type="email"
-                    defaultValue="john.doe@example.com"
+                    defaultValue={user?.email}
                     readOnly
                     className="pl-10 w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
                   />

@@ -8,7 +8,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const EmployeeList = () => {
   const [employees, loadingEmployees, refetchEmployees] = useAllEmployees();
-  // console.log(employees);
+  console.log(employees);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,14 +85,17 @@ const EmployeeList = () => {
         <table className="w-full">
           <thead>
             <tr className="border-b bg-gray-50">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[50px]">
                 S.No
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[40px]">
                 Photo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Role
@@ -108,10 +111,10 @@ const EmployeeList = () => {
                 key={employee._id}
                 className="border-b hover:bg-gray-50 transition-colors"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-[50px]">
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-[40px]">
                   <img
                     src={employee.photo}
                     alt={`${employee.name}'s photo`}
@@ -120,6 +123,9 @@ const EmployeeList = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {employee.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {employee.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">

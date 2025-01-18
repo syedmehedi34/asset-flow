@@ -33,7 +33,7 @@ const MyAssets = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Approve it!",
+      confirmButtonText: "Yes, Cancel it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await axiosSecure.patch("/asset_distribution", {
@@ -141,6 +141,7 @@ const MyAssets = () => {
                   Product Name
                 </label>
                 <input
+                  onChange={(e) => setSearchText(e.target.value)}
                   type="text"
                   placeholder="Search by name..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
