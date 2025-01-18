@@ -22,11 +22,18 @@ import Swal from "sweetalert2";
 
 const AssetRequest = () => {
   const [isRole] = useRole();
-  const [assets, loadingAssets, refetchAssets, setSearchText, setCategory] =
-    useAllAssets();
+  const [
+    assets,
+    loadingAssets,
+    refetchAssets,
+    searchText,
+    setSearchText,
+    category,
+    setCategory,
+  ] = useAllAssets();
   const axiosSecure = useAxiosSecure();
-  console.log(assets);
-  console.log(assets);
+  // console.log(assets);
+  // console.log(assets);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -52,7 +59,7 @@ const AssetRequest = () => {
     setOpen(false);
     const date = moment().format("YYYY-MM-DD");
     // console.log(date);
-
+    console.log(data);
     //
     // console.log(data);
     const assetRequestData = {
@@ -61,7 +68,7 @@ const AssetRequest = () => {
       employeeEmail: isRole.email,
       hr_email: isRole.hr_email,
       assetRequestingDate: date,
-      assetRequestMessage: data.assetRequestMessage,
+      assetRequestMessage: data.assetRequestMessage || "",
 
       assetName: selectedAsset.assetName,
       assetType: selectedAsset.assetType,
@@ -77,8 +84,10 @@ const AssetRequest = () => {
     // post api
     // todo : have to add a option for backend checking that,,,one employee can not add a single asset for multiple time at the asset request.
     const res = await axiosSecure.post("/asset_distribution", assetRequestData);
-    console.log(res);
+    // console.log(res);
     if (res.data.insertedId) {
+      // onSubmit();
+      reset();
       Swal.fire({
         icon: "success",
         title: "New asset request has been sent",
@@ -105,10 +114,10 @@ const AssetRequest = () => {
           className="mb-8"
         >
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Asset Management
+            Request for a new Asset
           </h1>
           <p className="text-gray-600">
-            Manage and track your company assets efficiently
+            Manage and request your company assets efficiently
           </p>
         </motion.div>
 

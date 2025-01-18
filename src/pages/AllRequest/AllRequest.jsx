@@ -442,17 +442,21 @@ const AllRequest = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleReject(modalData?._id);
+                  }}
+                  className="px-4 py-2 text-gray-600 hover:text-white hover:bg-red-600 font-medium bg-warning btn border-none"
                 >
-                  Close
+                  Reject
                 </motion.button>
                 <motion.button
+                  onClick={() => handleApproveRequest(modalData._id)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 border-none"
                 >
-                  Process Request
+                  Approve Request
                 </motion.button>
               </div>
             </motion.div>
