@@ -70,15 +70,45 @@ const AllRequest = () => {
 
   // modal functions
   const handleOpen = (item) => {
-    console.log(item);
+    // console.log(item);
     setModalData(item);
     setIsOpen(true);
   };
 
-  const handleReject = (productId) => {
-    console.log("reject product with id:", productId);
+  const handleReject = (_id) => {
+    // console.log("reject product with id:", _id);
+
+    const requestStatus = "Rejected";
 
     // send te data to
+    // patch
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Reject it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.patch("/asset_distribution", {
+          _id,
+          requestStatus,
+        });
+        // console.log(res.data.modifiedCount);
+        if (res.data.modifiedCount) {
+          refetchAssetDistributionData();
+          Swal.fire({
+            title: "Rejected!",
+            text: "Asset request rejected successfully.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      }
+    });
   };
 
   // Approve button works
