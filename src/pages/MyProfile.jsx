@@ -6,10 +6,12 @@ import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
 import Swal from "sweetalert2";
 import useRole from "../hooks/useRole";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const MyProfile = () => {
   const { user, updateUserProfile, setUser } = useAuth();
-  const [isRole] = useRole();
+  const [isRole, , , userRoleRefetch] = useRole();
+  const axiosSecure = useAxiosSecure();
   console.log(isRole);
   const [profileImage, setProfileImage] = useState(user?.photoURL);
   const {
@@ -89,7 +91,15 @@ const MyProfile = () => {
 
     // Update both if both fields are filled
     if (name && photo) {
-      updateUserProfile(name, photo).then(() => {
+      updateUserProfile(name, photo).then(async () => {
+        // now update the data in the backend
+        const res = await axiosSecure.patch("/users", {
+          _id: isRole._id,
+          name,
+          photo,
+        });
+        console.log(res);
+        userRoleRefetch();
         Swal.fire({
           icon: "success",
           title: "Name and Photo has been  updated",
@@ -99,11 +109,7 @@ const MyProfile = () => {
       });
     }
 
-    // now update the data in the backend
-
     //?
-
-    // const fullName = data.fullName;
   };
 
   return (
