@@ -11,8 +11,8 @@ const useAllAssets = () =>
     const axiosSecure = useAxiosSecure();
     const [isRole] = useRole();
 
-    const [searchText, setSearchText] = useState(null);
-    const [category, setCategory] = useState(null);
+    const [searchText, setSearchText] = useState("");
+    const [category, setCategory] = useState("");
     // console.log(searchText, category);
 
     let hr_email = "none@gmail.com";
