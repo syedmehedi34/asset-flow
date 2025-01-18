@@ -6,6 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
 import Swal from "sweetalert2";
 import useAllEmployees from "../../hooks/useAllEmployees";
+// import axios from "axios";
 
 function RadialProgress({ value, max }) {
   const percentage = (value / max) * 100;
@@ -52,7 +53,6 @@ const AddEmployee = () => {
   const [unaffiliatedUsersList, , , unaffiliatedUsersRefetch] =
     useUnaffiliatedUsers(); // get all unaffiliated employees
   const [isRole] = useRole();
-  // console.log(isRole);
 
   const [employees, , refetchEmployees] = useAllEmployees();
   // console.log(employees?.length);
@@ -72,6 +72,7 @@ const AddEmployee = () => {
         ? 15
         : 0,
   });
+
   useEffect(() => {
     if (employees?.length) {
       setStats({
@@ -182,10 +183,6 @@ const AddEmployee = () => {
 
   // console.log(unaffiliatedUsersList);
 
-  const addSelectedToTeam = () => {
-    console.log("Clicked to select");
-  };
-
   // text search option
   const filteredUsers = unaffiliatedUsersList?.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -213,6 +210,88 @@ const AddEmployee = () => {
     return pageNumbers;
   };
 
+  //?
+  const [userSelection, setUserSelection] = useState([]);
+
+  const toggleUserSelection = (_id) => {
+    setUserSelection((prevSelection) => {
+      if (prevSelection.includes(_id)) {
+        return prevSelection.filter((id) => id !== _id);
+      } else {
+        return [...prevSelection, _id];
+      }
+    });
+
+    // const res = await axiosSecure
+  };
+
+  const addSelectedToTeam = async () => {
+    const limit = stats.memberLimit - stats.currentMembers;
+    // console.log(limit);
+    const hr_email = isRole?.email;
+    const data = { hr_email };
+    const ids = userSelection;
+    // console.log("Sending data:", data);
+    // console.log("Sending ids:", ids);
+
+    if (ids.length && limit > 0 && limit >= ids.length) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, Add employee!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true,
+          customClass: {
+            confirmButton: "btn btn-success custom-confirm-btn ml-1",
+            cancelButton: "btn btn-danger custom-cancel-btn mr-1",
+          },
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const res = await axiosSecure.patch("/user", { ids, data });
+            console.log(res);
+            if (res.data.modifiedCount) {
+              swalWithBootstrapButtons.fire({
+                title: "Added!",
+                text: "Employee has been added to your team.",
+                icon: "success",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              icon: "warning",
+              title: "Member Joining cancelled.",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "You don't have enough limit",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+
+    // try {
+  };
+
+  // console.log(userSelection);
+
+  //?
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 my-24">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -226,10 +305,7 @@ const AddEmployee = () => {
                   Package Details
                 </h2>
               </div>
-              <button
-                // onClick={() => setShowPackages(true)}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <Plus className="h-4 w-4 mr-2" />
                 Increase Limit
               </button>
@@ -317,7 +393,7 @@ const AddEmployee = () => {
 
                 <button
                   onClick={addSelectedToTeam}
-                  // disabled={!unaffiliatedUsersList?.some((u) => u.isSelected)}
+                  disabled={stats.memberLimit - stats.currentMembers <= 0}
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
@@ -337,14 +413,14 @@ const AddEmployee = () => {
                   <div>
                     <input
                       type="checkbox"
-                      // checked={user?.isSelected}
-                      // onChange={() => toggleUserSelection(user?.id)}
+                      checked={user?.isSelected}
+                      onChange={() => toggleUserSelection(user?._id)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
                   </div>
                   <div>
                     <img
-                      src={user?.image || "https://i.ibb.co.com/F4YFTCb/1.jpg"}
+                      src={user?.photo || "https://i.ibb.co.com/F4YFTCb/1.jpg"}
                       alt={user?.name}
                       className="h-14 w-14 border border-blue-gray-500 rounded-full object-cover"
                     />
@@ -372,6 +448,7 @@ const AddEmployee = () => {
                     </button>
 
                     <button
+                      disabled={!(stats.memberLimit - stats.currentMembers)}
                       onClick={() => handleAddEmployeeToTeam(user)}
                       className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-black hover:text-white bg-white hover:bg-indigo-700 border-indigo-600"
                     >
