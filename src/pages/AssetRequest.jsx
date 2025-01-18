@@ -25,7 +25,7 @@ const AssetRequest = () => {
   const [assets, loadingAssets, refetchAssets, setSearchText, setCategory] =
     useAllAssets();
   const axiosSecure = useAxiosSecure();
-  // console.log(assets);
+  console.log(assets);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -55,6 +55,7 @@ const AssetRequest = () => {
     //
     // console.log(data);
     const assetRequestData = {
+      assetID: selectedAsset._id,
       employeeName: isRole.name,
       employeeEmail: isRole.email,
       hr_email: isRole.hr_email,
