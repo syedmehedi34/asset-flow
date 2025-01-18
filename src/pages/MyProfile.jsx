@@ -40,25 +40,25 @@ const MyProfile = () => {
   };
 
   const onSubmit = async (data) => {
-    // send  image
-    const formDataUserImage = new FormData();
-    formDataUserImage.append("image", profileImageFile);
-    const responseUserImage = await fetch(
-      `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
-      {
-        method: "POST",
-        body: formDataUserImage,
-      }
-    );
-    const resultUserImage = await responseUserImage.json();
-    console.log(resultUserImage);
-
-    // ?
-
     const name = data.fullName;
-    const photo = resultUserImage.data.url;
+    let photo = "";
 
-    // console.log(name, photo);
+    // check if the photo is changed or not
+    if (profileImageFile) {
+      // send  image
+      const formDataUserImage = new FormData();
+      formDataUserImage.append("image", profileImageFile);
+      const responseUserImage = await fetch(
+        `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
+        {
+          method: "POST",
+          body: formDataUserImage,
+        }
+      );
+      const resultUserImage = await responseUserImage.json();
+      console.log(resultUserImage);
+      photo = resultUserImage?.data.url;
+    }
 
     const updatedProfileData = {
       name,
@@ -67,25 +67,43 @@ const MyProfile = () => {
 
     // // Update only the name if the photo URL is blank
     if (name && !photo) {
-      updateUserProfile(name, user.photoURL).then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Name has been  updated",
-          showConfirmButton: false,
-          timer: 1500,
+      updateUserProfile(name, user.photoURL).then(async () => {
+        // now update the data in the backend
+        const res = await axiosSecure.patch("/users", {
+          _id: isRole._id,
+          name,
         });
+        console.log(res);
+        if (res.data.modifiedCount) {
+          userRoleRefetch();
+          Swal.fire({
+            icon: "success",
+            title: "Name has been  updated",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       });
     }
 
     // Update only the photo URL if the name is blank
     if (name === user.displayName && photo) {
-      updateUserProfile(user.displayName, photo).then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Photo has been  updated",
-          showConfirmButton: false,
-          timer: 1500,
+      updateUserProfile(user.displayName, photo).then(async () => {
+        // now update the data in the backend
+        const res = await axiosSecure.patch("/users", {
+          _id: isRole._id,
+          photo,
         });
+        console.log(res);
+        if (res.data.modifiedCount) {
+          userRoleRefetch();
+          Swal.fire({
+            icon: "success",
+            title: "Photo has been  updated",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       });
     }
 
@@ -99,17 +117,17 @@ const MyProfile = () => {
           photo,
         });
         console.log(res);
-        userRoleRefetch();
-        Swal.fire({
-          icon: "success",
-          title: "Name and Photo has been  updated",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        if (res.data.modifiedCount) {
+          userRoleRefetch();
+          Swal.fire({
+            icon: "success",
+            title: "Name and Photo has been  updated",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       });
     }
-
-    //?
   };
 
   return (
