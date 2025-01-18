@@ -26,6 +26,7 @@ const AssetRequest = () => {
     useAllAssets();
   const axiosSecure = useAxiosSecure();
   console.log(assets);
+  console.log(assets);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -239,14 +240,28 @@ const AssetRequest = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
-                      <motion.button
-                        className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
-                        onClick={() => handleOpen(asset)}
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        Request
-                      </motion.button>
+                      <div>
+                        {asset.assetQuantity ? (
+                          <motion.button
+                            className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                            onClick={() => handleOpen(asset)}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            Request
+                          </motion.button>
+                        ) : (
+                          <motion.button
+                            className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                            onClick={() => handleOpen(asset)}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.3 }}
+                            disabled
+                          >
+                            Request
+                          </motion.button>
+                        )}
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
