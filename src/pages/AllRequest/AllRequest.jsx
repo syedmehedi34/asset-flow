@@ -20,17 +20,11 @@ import {
 } from "@material-tailwind/react";
 import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 import { Filter, SlidersHorizontal } from "lucide-react";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const AllRequest = () => {
-  // const
-  // modal functions
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = (item) => {
-    console.log(item);
-    setOpen(!open);
-  };
-
-  //
+  const axiosSecure = useAxiosSecure();
   const [
     assetDistributionData,
     loadingAssetDistributionData,
@@ -40,17 +34,9 @@ const AllRequest = () => {
     category,
     setCategory,
   ] = useAssetDistributionData();
-  // console.log(assetDistributionData);
-  //
-
-  const handleReject = (productId) => {
-    console.log("reject product with id:", productId);
-
-    // send te data to
-  };
-
-  //
+  const [modalData, setModalData] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  //
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -80,6 +66,54 @@ const AllRequest = () => {
         duration: 0.3,
       },
     },
+  };
+
+  // modal functions
+  const handleOpen = (item) => {
+    console.log(item);
+    setModalData(item);
+    setIsOpen(true);
+  };
+
+  const handleReject = (productId) => {
+    console.log("reject product with id:", productId);
+
+    // send te data to
+  };
+
+  // Approve button works
+  const handleApproveRequest = (_id) => {
+    // console.log(_id);
+    const requestStatus = "Approved";
+
+    // patch
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Approve it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.patch("/asset_distribution", {
+          _id,
+          requestStatus,
+        });
+        // console.log(res.data.modifiedCount);
+        if (res.data.modifiedCount) {
+          refetchAssetDistributionData();
+          Swal.fire({
+            title: "Approved!",
+            text: "Asset request approved successfully.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -212,7 +246,10 @@ const AllRequest = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <button
                     // onClick={() => handleOpen(item)}
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {
+                      handleOpen(item);
+                      // setIsOpen(true);
+                    }}
                     className="btn btn-outline rounded-full  min-h-0 h-9 text-[12px] px-3 font-medium "
                   >
                     View Details
@@ -220,7 +257,10 @@ const AllRequest = () => {
                 </td>
 
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <button className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
+                  <button
+                    onClick={() => handleApproveRequest(item._id)}
+                    className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+                  >
                     Approve
                   </button>
                   <button
@@ -236,32 +276,6 @@ const AllRequest = () => {
         </table>
       </motion.div>
 
-      {/* <Dialog open={open} handler={setOpen}>
-        <DialogHeader>Its a simple modal.</DialogHeader>
-        <DialogBody>
-          The key to more success is to have a lot of pillows. Put it this way,
-          it took me twenty five years to get these plants, twenty five years of
-          blood sweat and tears, and I&apos;m never giving up, I&apos;m just
-          getting started. I&apos;m up to something. Fan luv.
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => setOpen(false)}
-            className="mr-1"
-          >
-            <span>Cancel</span>
-          </Button>
-          <Button
-            variant="gradient"
-            color="green"
-            onClick={() => setOpen(false)}
-          >
-            <span>Confirm</span>
-          </Button>
-        </DialogFooter>
-      </Dialog> */}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -275,7 +289,7 @@ const AllRequest = () => {
             />
 
             <motion.div
-              className="relative w-full max-w-lg mx-auto bg-white rounded-2xl shadow-2xl my-8 mx-4"
+              className="relative w-full max-w-lg  bg-white rounded-2xl shadow-2xl my-8 mx-4"
               variants={dialogVariants}
               initial="hidden"
               animate="visible"
@@ -314,7 +328,7 @@ const AllRequest = () => {
                       <p className="text-sm">Employee Name:</p>
                     </div>
                     <p className="font-medium text-sm text-gray-800">
-                      Syed Mehedi Hasan
+                      {modalData?.employeeName}
                     </p>
                   </motion.div>
 
@@ -329,7 +343,7 @@ const AllRequest = () => {
                       <p className="text-sm">Employee Email:</p>
                     </div>
                     <p className="font-medium text-sm text-gray-800">
-                      mehedi@gmail.com
+                      {modalData?.employeeEmail}
                     </p>
                   </motion.div>
 
@@ -344,7 +358,14 @@ const AllRequest = () => {
                       <p className="text-sm">Request Date:</p>
                     </div>
                     <p className="font-medium text-sm text-gray-800">
-                      Jan 18, 2025
+                      {modalData?.assetRequestingDate &&
+                        new Date(
+                          modalData.assetRequestingDate
+                        ).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
                     </p>
                   </motion.div>
 
@@ -359,7 +380,7 @@ const AllRequest = () => {
                       <p className="text-sm">Status:</p>
                     </div>
                     <span className="px-3 py-[3px] bg-yellow-100 text-yellow-800 rounded-full text-[12px] font-medium">
-                      Pending
+                      {modalData?.requestStatus}
                     </span>
                   </motion.div>
                 </div>
@@ -375,14 +396,13 @@ const AllRequest = () => {
                   </h3>
 
                   <h1 className="text-gray-600 text-sm mb-2">
-                    <span className="font-bold">Item : </span>Laptop
+                    <span className="font-bold">Item : </span>
+                    {modalData.assetName}
                   </h1>
 
                   <p className="text-gray-600 text-sm leading-relaxed">
                     <span className="font-bold">Description : </span>
-                    This versatile printer offers high-resolution printing,
-                    scanning, and copying capabilities. Designed for both home
-                    and office use, it ensures sharp, vibrant results.
+                    {modalData?.assetDescription}
                   </p>
                 </motion.div>
               </div>

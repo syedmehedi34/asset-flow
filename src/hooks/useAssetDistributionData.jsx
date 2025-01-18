@@ -17,6 +17,7 @@ const useAssetDistributionData = () =>
 
     let hr_email = "";
     let requestStatus = "";
+    let employeeEmail = "";
     const location = useLocation();
     const path = location?.pathname;
 
@@ -27,10 +28,16 @@ const useAssetDistributionData = () =>
       hr_email = isRole?.hr_email;
     }
 
+    // if (path === "/my_assets") {
+    //   requestStatus = "Approved";
+    //   employeeEmail = isRole.email;
+    // }
+
     // Define query params based on the conditions
     const queryParams = {
       hr_email,
       requestStatus,
+      employeeEmail,
       ...(searchText && { searchText }), // Add searchText if available
       ...(category && { category }), // Add category if available
     };
