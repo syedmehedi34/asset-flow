@@ -46,7 +46,15 @@ const useAllAssets = () =>
       enabled: Boolean(searchText || category || hr_email),
     });
 
-    return [assets, loadingAssets, refetchAssets, setSearchText, setCategory];
+    return [
+      assets,
+      loadingAssets,
+      refetchAssets,
+      searchText,
+      setSearchText,
+      category,
+      setCategory,
+    ];
   };
 
 export default useAllAssets;
