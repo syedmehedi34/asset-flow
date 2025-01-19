@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import usePaymentData from "../hooks/usePaymentData";
 
-const CheckoutForm = ({ handleSubmitPayment, selectedPackage }) => {
+const CheckoutForm = ({ selectedPackage, setOpen }) => {
   const [error, setError] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const [transactionId, setTransactionId] = useState("");
@@ -92,22 +92,22 @@ const CheckoutForm = ({ handleSubmitPayment, selectedPackage }) => {
         };
 
         const res = await axiosSecure.post("/payments", payment);
-        console.log("payment saved", res.data);
-        // refetch();
-        if (res.data.insertedId) {
+        console.log(res.data.paymentResult.insertedId);
+        console.log(res.data.updateResult.modifiedCount);
+        if (res.data.paymentResult.insertedId) {
+          setOpen(false);
           Swal.fire({
-            position: "top-end",
             icon: "success",
-            title: "Thank you for the taka paisa",
+            title: "Payment Successful.",
             showConfirmButton: false,
             timer: 1500,
           });
-          // navigate("/dashboard/paymentHistory");
+          navigate("/add_employee");
         }
       }
     }
   };
-
+  // console.log(transactionId);
   return (
     <form onSubmit={handleSubmit}>
       <CardElement
