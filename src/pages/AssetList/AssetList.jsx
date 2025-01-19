@@ -89,8 +89,10 @@ const AssetList = () => {
     }
   }, [modalData, reset]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setOpen(false);
+    const _id = data._id;
+    console.log(_id);
 
     const updatedData = {
       assetName: data.assetName,
@@ -98,9 +100,20 @@ const AssetList = () => {
       assetQuantity: data.assetQuantity,
       assetType: data.assetType,
     };
-    console.log(updatedData);
+    // console.log(updatedData);
 
     // now patch the data in the backend
+    const res = await axiosSecure.patch("/assets_update", { _id, updatedData });
+    console.log(res);
+    if (res.data.modifiedCount) {
+      refetchAssets();
+      Swal.fire({
+        title: "Updated!",
+        text: "Your Asset has been updated.",
+        icon: "success",
+        timer: 1500,
+      });
+    }
   };
 
   // ?
@@ -224,7 +237,7 @@ const AssetList = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {asset?.assetQuantity === 0 ? (
+                    {asset?.assetQuantity == 0 ? (
                       <p className="badge bg-red-600 border-none">
                         Out of Stock
                       </p>
