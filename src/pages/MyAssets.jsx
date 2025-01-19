@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import PdfPage from "../components/PdfPage";
+import usePaginationFunction from "../hooks/usePaginationFunction";
 
 const MyAssets = () => {
   const [
@@ -101,6 +102,8 @@ const MyAssets = () => {
     });
   };
 
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(assets, 10);
   //
   return (
     <motion.div
@@ -213,7 +216,7 @@ const MyAssets = () => {
                 </tr>
               </thead>
               <tbody>
-                {assets.map((asset, index) => (
+                {paginatedItem.map((asset, index) => (
                   <motion.tr
                     key={index}
                     className="border-b hover:bg-gray-50 transition-colors"
@@ -222,7 +225,7 @@ const MyAssets = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {index + 1}
+                      {(currentPage - 1) * itemsPerPage + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {asset?.assetName}
@@ -297,6 +300,7 @@ const MyAssets = () => {
             </table>
           </div>
         </motion.div>
+        {paginate}
       </div>
     </motion.div>
   );
