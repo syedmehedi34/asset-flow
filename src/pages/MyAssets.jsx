@@ -6,6 +6,7 @@ import { Filter, SlidersHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import PdfPage from "../components/PdfPage";
 
 const MyAssets = () => {
   const [
@@ -257,9 +258,7 @@ const MyAssets = () => {
                       ) : asset?.requestStatus === "Approved" &&
                         asset?.assetType === "Returnable" ? (
                         <div className="flex items-center justify-center gap-1">
-                          <button className="flex-1 btn min-h-0 h-10 font-[600] btn-accent">
-                            Print
-                          </button>
+                          <PdfPage></PdfPage>
                           <button
                             onClick={() => handleReturnAsset(asset)}
                             className="flex-1 btn btn-warning min-h-0 h-10 border-none font-[600]"
@@ -269,9 +268,7 @@ const MyAssets = () => {
                         </div>
                       ) : asset?.requestStatus === "Approved" ? (
                         <>
-                          <button className="w-full btn min-h-0 h-10 font-[600] btn-accent">
-                            Print
-                          </button>
+                          <PdfPage></PdfPage>
                         </>
                       ) : asset?.requestStatus === "Cancelled" ? (
                         <>

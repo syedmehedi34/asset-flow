@@ -85,7 +85,7 @@ const AssetList = () => {
 
   useEffect(() => {
     if (modalData) {
-      reset(modalData); // Update the form with modalData
+      reset(modalData);
     }
   }, [modalData, reset]);
 
