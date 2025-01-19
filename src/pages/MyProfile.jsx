@@ -12,7 +12,7 @@ const MyProfile = () => {
   const { user, updateUserProfile, setUser } = useAuth();
   const [isRole, , , userRoleRefetch] = useRole();
   const axiosSecure = useAxiosSecure();
-  console.log(isRole);
+  // console.log(isRole);
   const [profileImage, setProfileImage] = useState(user?.photoURL);
   const {
     register,
@@ -56,7 +56,7 @@ const MyProfile = () => {
         }
       );
       const resultUserImage = await responseUserImage.json();
-      console.log(resultUserImage);
+      // console.log(resultUserImage);
       photo = resultUserImage?.data.url;
     }
 
@@ -73,7 +73,7 @@ const MyProfile = () => {
           _id: isRole._id,
           name,
         });
-        console.log(res);
+        // console.log(res);
         if (res.data.modifiedCount) {
           userRoleRefetch();
           Swal.fire({
@@ -94,7 +94,7 @@ const MyProfile = () => {
           _id: isRole._id,
           photo,
         });
-        console.log(res);
+        // console.log(res);
         if (res.data.modifiedCount) {
           userRoleRefetch();
           Swal.fire({
@@ -116,7 +116,7 @@ const MyProfile = () => {
           name,
           photo,
         });
-        console.log(res);
+        // console.log(res);
         if (res.data.modifiedCount) {
           userRoleRefetch();
           Swal.fire({

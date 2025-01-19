@@ -11,7 +11,6 @@ import AddAsset from "../pages/AddAsset/AddAsset";
 import AllRequest from "../pages/AllRequest/AllRequest";
 import EmployeeList from "../pages/EmployeeList/EmployeeList";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
-import ManagerProfile from "../pages/ManagerProfile/ManagerProfile";
 import UpdateAssetData from "../pages/UpdateAssetData";
 import EmployeeRoute from "./EmployeeRoute";
 import MyAssets from "../pages/MyAssets";
@@ -97,7 +96,7 @@ export const router = createBrowserRouter([
         path: "hr_profile",
         element: (
           <ManagerRoute>
-            <ManagerProfile></ManagerProfile>
+            <MyProfile></MyProfile>
           </ManagerRoute>
         ),
       },
