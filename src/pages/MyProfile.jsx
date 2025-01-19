@@ -141,35 +141,36 @@ const MyProfile = () => {
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Company Banner */}
           <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600 ">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="absolute bottom-0 right-1/2 transform transition-transform translate-x-1/2"
-            >
-              <div className="relative group">
-                <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
-                  <img
-                    src={profileImage}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
+            <div className="h-fit absolute left-1/2 transform transition -translate-x-1/2 bottom-0">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="relative group">
+                  <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
+                    <img
+                      src={profileImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <label
+                    htmlFor="profile-upload"
+                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
+                    <Camera className="w-8 h-8 text-white" />
+                  </label>
+                  <input
+                    type="file"
+                    id="profile-upload"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
                   />
                 </div>
-                <label
-                  htmlFor="profile-upload"
-                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                >
-                  <Camera className="w-8 h-8 text-white" />
-                </label>
-                <input
-                  type="file"
-                  id="profile-upload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
 
           {/* Company Info */}
