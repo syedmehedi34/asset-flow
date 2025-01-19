@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
@@ -8,38 +9,30 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import useAllEmployees from "../hooks/useAllEmployees";
+import { useState } from "react";
 
 const MyTeam = () => {
-  // Sample data - in a real app, this would come from an API or database
-  const teamMembers = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@company.com",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=60",
-      isAdmin: true,
-      phone: "+1 (555) 123-4567",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@company.com",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=60",
-      isAdmin: false,
-      phone: "+1 (555) 234-5678",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      email: "mike.j@company.com",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=60",
-      isAdmin: false,
-      phone: "+1 (555) 345-6789",
-    },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [employees, loadingEmployees, refetchEmployees] = useAllEmployees();
+
+  // console.log(employees);
+
+  // ? searching by name
+  //
+  const filteredEmployees = employees.filter((employee) =>
+    employee.name.toLowerCase().includes(searchQuery)
+  );
+  // console.log(filteredEmployees);
+  // const handleSearch = (event) => {
+  //   const query = event.target.value.toLowerCase();
+  //   setSearchQuery(query);
+
+  //   const filtered = employees.filter((employee) =>
+  //     employee.name.toLowerCase().includes(query)
+  //   );
+  //   setFilteredEmployees(filtered);
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl my-24">
@@ -75,6 +68,8 @@ const MyTeam = () => {
             >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
+                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
                 type="text"
                 placeholder="Search team members..."
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all w-64"
@@ -119,9 +114,9 @@ const MyTeam = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               <AnimatePresence>
-                {teamMembers.map((member, index) => (
+                {filteredEmployees.map((member, index) => (
                   <motion.tr
-                    key={member.id}
+                    key={member._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
@@ -135,14 +130,14 @@ const MyTeam = () => {
                           className="h-12 w-12 rounded-full overflow-hidden border-2 border-blue-500"
                         >
                           <img
-                            src={member.image}
+                            src={member?.photo}
                             alt={member.name}
                             className="h-full w-full object-cover"
                           />
                         </motion.div>
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {member.name}
+                            {member?.name}
                           </div>
                         </div>
                       </div>
@@ -151,7 +146,7 @@ const MyTeam = () => {
                       <div className="flex items-center space-x-2">
                         <Mail className="h-4 w-4 text-gray-400" />
                         <span className="text-sm text-gray-500">
-                          {member.email}
+                          {member?.email}
                         </span>
                       </div>
                     </td>
@@ -159,17 +154,17 @@ const MyTeam = () => {
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          member.isAdmin
+                          member?.isAdmin
                             ? "bg-indigo-100 text-indigo-800"
                             : "bg-green-100 text-green-800"
                         }`}
                       >
-                        {member.isAdmin ? (
+                        {member?.isAdmin ? (
                           <Shield className="w-4 h-4" />
                         ) : (
                           <UserCircle className="w-4 h-4" />
                         )}
-                        <span>{member.isAdmin ? "Admin" : "Employee"}</span>
+                        <span>{member?.isAdmin ? "Admin" : "Employee"}</span>
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

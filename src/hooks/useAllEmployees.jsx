@@ -5,9 +5,15 @@ import useRole from "./useRole";
 const useAllEmployees = () => {
   const axiosSecure = useAxiosSecure();
   const [isRole] = useRole();
-  //   console.log(isRole.email);
 
-  const hr_email = isRole?.email;
+  let hr_email = "";
+  let role = isRole?.role;
+
+  if (role === "employee") {
+    hr_email = isRole?.hr_email;
+  } else if (role === "hr_manager") {
+    hr_email = isRole?.email;
+  }
 
   const {
     data: employees = [],
@@ -16,7 +22,9 @@ const useAllEmployees = () => {
   } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users", { params: { hr_email } });
+      const res = await axiosSecure.get("/users", {
+        params: { hr_email },
+      });
 
       return res.data;
     },
