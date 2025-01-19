@@ -7,6 +7,7 @@ import useRole from "../../hooks/useRole";
 import Swal from "sweetalert2";
 import useAllEmployees from "../../hooks/useAllEmployees";
 import { Link } from "react-router-dom";
+import usePaginationFunction from "../../hooks/usePaginationFunction";
 // import axios from "axios";
 
 function RadialProgress({ value, max }) {
@@ -58,8 +59,8 @@ const AddEmployee = () => {
   const [isRole] = useRole();
 
   const [employees, , refetchEmployees] = useAllEmployees();
-  console.log(employees);
-  console.log(unaffiliatedUsersList);
+  // console.log(employees);
+  // console.log(unaffiliatedUsersList);
 
   //
   //
@@ -185,24 +186,8 @@ const AddEmployee = () => {
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // * Pagination setup
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
-  const totalPages = Math.ceil(filteredUsers?.length / usersPerPage);
-  const currentUsers = filteredUsers?.slice(
-    (currentPage - 1) * usersPerPage,
-    currentPage * usersPerPage
-  );
-  const changePage = (page) => {
-    setCurrentPage(page);
-  };
-  const generatePageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
-    }
-    return pageNumbers;
-  };
+  const { paginate, paginatedItem } = usePaginationFunction(filteredUsers, 5);
+  // ?
 
   // * this section is for multiple employee insertion
   const toggleUserSelection = (_id) => {
@@ -389,7 +374,7 @@ const AddEmployee = () => {
 
           <div className="p-6">
             <div className="space-y-3">
-              {currentUsers?.map((user) => (
+              {paginatedItem?.map((user) => (
                 <div
                   key={user?._id}
                   className="border shadow-sm flex items-center space-x-6 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
@@ -443,8 +428,8 @@ const AddEmployee = () => {
               ))}
             </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center mt-4">
+            {/* //? Pagination */}
+            {/* <div className="flex justify-center mt-4">
               <button
                 onClick={() => changePage(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -477,7 +462,8 @@ const AddEmployee = () => {
               >
                 Next
               </button>
-            </div>
+            </div> */}
+            {paginate}
           </div>
         </div>
       </div>
