@@ -4,7 +4,7 @@ import { FileDown } from "lucide-react";
 import { AssetPdfDocument } from "./AssetPdfdocument";
 
 function PdfPage({ asset }) {
-  console.log(asset);
+  // console.log(asset);
   // const [showPdf, setShowPdf] = useState(false);
 
   return (

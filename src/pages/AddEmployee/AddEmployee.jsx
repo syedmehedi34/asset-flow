@@ -427,8 +427,6 @@ const AddEmployee = () => {
               ))}
             </div>
 
-            {/* //? Pagination */}
-
             {paginate}
           </div>
         </div>
