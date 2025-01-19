@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import useAllEmployees from "../hooks/useAllEmployees";
 import { useState } from "react";
+import usePaginationFunction from "../hooks/usePaginationFunction";
 
 const MyTeam = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,16 +24,9 @@ const MyTeam = () => {
   const filteredEmployees = employees.filter((employee) =>
     employee.name.toLowerCase().includes(searchQuery)
   );
-  // console.log(filteredEmployees);
-  // const handleSearch = (event) => {
-  //   const query = event.target.value.toLowerCase();
-  //   setSearchQuery(query);
 
-  //   const filtered = employees.filter((employee) =>
-  //     employee.name.toLowerCase().includes(query)
-  //   );
-  //   setFilteredEmployees(filtered);
-  // };
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(filteredEmployees, 5);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl my-24">
@@ -114,7 +108,7 @@ const MyTeam = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               <AnimatePresence>
-                {filteredEmployees.map((member, index) => (
+                {paginatedItem.map((member, index) => (
                   <motion.tr
                     key={member._id}
                     initial={{ opacity: 0, y: 20 }}
@@ -183,6 +177,7 @@ const MyTeam = () => {
             </tbody>
           </table>
         </motion.div>
+        {paginate}
       </motion.div>
     </div>
   );
