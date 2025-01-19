@@ -110,22 +110,35 @@ const CheckoutForm = ({ selectedPackage, setOpen }) => {
   // console.log(transactionId);
   return (
     <form onSubmit={handleSubmit}>
-      <CardElement
-        options={{
-          style: {
-            base: {
-              fontSize: "16px",
-              color: "#424770",
-              "::placeholder": {
-                color: "#aab7c4",
+      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Enter Your Payment Details
+        </h2>
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+          <CardElement
+            options={{
+              style: {
+                base: {
+                  fontSize: "16px",
+                  fontFamily: "'Lato', sans-serif",
+                  color: "#4A5568",
+                  "::placeholder": {
+                    color: "#CBD5E0", // Subtle placeholder
+                  },
+                },
+                complete: {
+                  color: "#48BB78", // Green when complete
+                },
+                invalid: {
+                  color: "#E53E3E", // Red when invalid
+                  iconColor: "#E53E3E",
+                },
               },
-            },
-            invalid: {
-              color: "#9e2146",
-            },
-          },
-        }}
-      />
+            }}
+          />
+        </div>
+      </div>
+
       <button
         className="btn btn-sm btn-primary my-4"
         type="submit"

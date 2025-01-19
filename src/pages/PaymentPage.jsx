@@ -123,53 +123,46 @@ function PaymentPage() {
 
         {/* modal portion will be here  */}
         <Dialog open={open} handler={handleOpen}>
-          {/* <DialogHeader>Its a simple modal.</DialogHeader> */}
-          <DialogBody>
-            <AnimatePresence>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="max-w-2xl mx-auto"
-              >
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      Payment Details
-                    </h2>
-                    <div className="flex items-center">
-                      <CreditCard className="h-6 w-6 text-indigo-600 mr-2" />
-                      <span className="text-gray-600">Secure Payment</span>
-                    </div>
-                  </div>
-
-                  {selectedPackage && (
-                    <div className="bg-gray-50 rounded-lg p-4 mb-8">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {selectedPackage.title}
-                      </h3>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">
-                          Monthly subscription
-                        </span>
-                        <span className="text-2xl font-bold text-gray-900">
-                          ${selectedPackage.price}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* form  */}
-                  <Elements stripe={stripePromise}>
-                    <CheckoutForm
-                      selectedPackage={selectedPackage}
-                      setOpen={setOpen}
-                    ></CheckoutForm>
-                  </Elements>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Payment Details
+                </h2>
+                <div className="flex items-center">
+                  <CreditCard className="h-6 w-6 text-indigo-600 mr-2" />
+                  <span className="text-gray-600">Secure Payment</span>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </DialogBody>
+              </div>
+
+              {selectedPackage && (
+                <div className="bg-gray-50 rounded-lg p-4 mb-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {selectedPackage.title}
+                  </h3>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Monthly subscription</span>
+                    <span className="text-2xl font-bold text-gray-900">
+                      ${selectedPackage.price}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* form  */}
+              <Elements stripe={stripePromise}>
+                <CheckoutForm
+                  selectedPackage={selectedPackage}
+                  setOpen={setOpen}
+                ></CheckoutForm>
+              </Elements>
+            </div>
+          </motion.div>
         </Dialog>
       </div>
     </div>
