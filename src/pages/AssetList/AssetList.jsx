@@ -1,5 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { SlidersHorizontal, Filter } from "lucide-react";
+import {
+  SlidersHorizontal,
+  Filter,
+  Plus,
+  X,
+  FileText,
+  DollarSign,
+  ArrowLeftRight,
+  Package,
+} from "lucide-react";
 import useAllAssets from "../../hooks/useAllAssets";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
@@ -7,8 +16,28 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import { FaSquareArrowUpRight } from "react-icons/fa6";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
 
 const AssetList = () => {
+  const [modalData, setModalData] = useState({});
+  const [open, setOpen] = useState(false);
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({ defaultValues: modalData });
   const [
     assets,
     loadingAssets,
@@ -46,6 +75,35 @@ const AssetList = () => {
       }
     });
   };
+
+  //?
+
+  const handleOpen = (data) => {
+    setModalData(data);
+    setOpen(!open);
+  };
+
+  useEffect(() => {
+    if (modalData) {
+      reset(modalData); // Update the form with modalData
+    }
+  }, [modalData, reset]);
+
+  const onSubmit = (data) => {
+    setOpen(false);
+
+    const updatedData = {
+      assetName: data.assetName,
+      assetDescription: data.assetDescription,
+      assetQuantity: data.assetQuantity,
+      assetType: data.assetType,
+    };
+    console.log(updatedData);
+
+    // now patch the data in the backend
+  };
+
+  // ?
 
   return (
     <div className="p-6 my-24">
@@ -184,11 +242,12 @@ const AssetList = () => {
                     {asset?.assetPostDate}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <Link to="/asset/update">
-                      <button className="px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500">
-                        Update
-                      </button>
-                    </Link>
+                    <button
+                      onClick={() => handleOpen(asset)}
+                      className="px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+                    >
+                      Update
+                    </button>
 
                     <button
                       onClick={() => handleDeleteAsset(asset._id)}
@@ -203,10 +262,148 @@ const AssetList = () => {
           </table>
         </div>
       </motion.div>
+
+      {/* dialogue modal */}
+      <>
+        <Dialog open={open} handler={handleOpen}>
+          <DialogBody>
+            {/* Heading */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+                  <Package className="text-indigo-600" size={24} />
+                  Add New Asset
+                </h2>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={24} />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+              {/* Product Name */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <Package size={18} className="text-indigo-500" />
+                  Product Name
+                </label>
+                <input
+                  {...register("assetName", {
+                    required: "Product name is required",
+                  })}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  placeholder="Enter product name"
+                />
+                {errors.assetName && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 bg-red-500 rounded-full"></span>
+                    {errors.assetName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-5">
+                {/* Asset Type */}
+                <div className="space-y-2 flex-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <ArrowLeftRight size={18} className="text-indigo-500" />
+                    Asset Type
+                  </label>
+                  <select
+                    {...register("assetType", {
+                      required: "Asset type is required",
+                    })}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all appearance-none bg-white"
+                  >
+                    <option value="">Select type</option>
+                    <option value="Returnable">Returnable</option>
+                    <option value="Non-returnable">Non-returnable</option>
+                  </select>
+                  {errors.assetType && (
+                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 bg-red-500 rounded-full"></span>
+                      {errors.assetType.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Quantity */}
+                <div className="space-y-2 flex-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <DollarSign size={18} className="text-indigo-500" />
+                    Amount
+                  </label>
+                  <input
+                    type="number"
+                    {...register("assetQuantity", {
+                      required: "Amount is required",
+                    })}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                    placeholder="Enter amount"
+                  />
+                  {errors.assetQuantity && (
+                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 bg-red-500 rounded-full"></span>
+                      {errors.assetQuantity.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Product Description */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <FileText size={18} className="text-indigo-500" />
+                  Product Description
+                </label>
+                <textarea
+                  {...register("assetDescription", {
+                    required: "Description is required",
+                  })}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all h-15 resize-none"
+                  placeholder="Enter product description"
+                />
+                {errors.assetDescription && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 bg-red-500 rounded-full"></span>
+                    {errors.assetDescription.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end items-center gap-3 pt-4">
+                <motion.button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-[5px] border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <X size={18} />
+                  Cancel
+                </motion.button>
+                <motion.button
+                  type="submit"
+                  className="px-4 py-[5px] bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-lg shadow-indigo-200"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Plus size={18} />
+                  Submit
+                </motion.button>
+              </div>
+            </form>
+          </DialogBody>
+        </Dialog>
+      </>
     </div>
   );
 };
 
 export default AssetList;
-
-//?
