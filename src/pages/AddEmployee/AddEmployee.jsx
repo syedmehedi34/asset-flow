@@ -75,7 +75,7 @@ const AddEmployee = () => {
         : isRole?.package === "basic"
         ? 10
         : isRole?.package === "pro"
-        ? 15
+        ? 20
         : 0,
   });
 
@@ -89,7 +89,7 @@ const AddEmployee = () => {
             : isRole?.package === "basic"
             ? 10
             : isRole?.package === "pro"
-            ? 15
+            ? 20
             : 0,
       });
     }
