@@ -1,22 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  CreditCard,
-  Users,
-  CheckCircle,
-  ArrowLeft,
-  Package,
-  Shield,
-  Zap,
-} from "lucide-react";
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-} from "@material-tailwind/react";
+import { CreditCard, Users, Package, Shield, Zap } from "lucide-react";
+import { Dialog, DialogBody } from "@material-tailwind/react";
 import CheckoutForm from "../components/CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -49,8 +35,8 @@ const packageOptions = [
 ];
 
 function PaymentPage() {
-  const [selectedPackage, setSelectedPackage] = useState(null);
-  // const [selectedPackage, setSelectedPackage] = usePaymentData();
+  // const [selectedPackage, setSelectedPackage] = useState(null);
+  const [selectedPackage, setSelectedPackage] = usePaymentData();
   // const [cardNumber, setCardNumber] = useState("");
   // const [expiryDate, setExpiryDate] = useState("");
   // const [cvv, setCvv] = useState("");
@@ -61,15 +47,10 @@ function PaymentPage() {
   // const formatCardNumber = () => {
   //   console.log("card clicked");
   // };
-  const handleSubmitPayment = (e) => {
-    e.preventDefault();
-    console.log(e.target.cardNumber.value);
-  };
 
   // ? modal portion
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
-
   //?
   // console.log(selectedPackage);
 
@@ -181,8 +162,8 @@ function PaymentPage() {
                   {/* form  */}
                   <Elements stripe={stripePromise}>
                     <CheckoutForm
-                      handleSubmitPayment={handleSubmitPayment}
                       selectedPackage={selectedPackage}
+                      setOpen={setOpen}
                     ></CheckoutForm>
                   </Elements>
                 </div>
