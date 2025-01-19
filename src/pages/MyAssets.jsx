@@ -261,7 +261,7 @@ const MyAssets = () => {
                       ) : asset?.requestStatus === "Approved" &&
                         asset?.assetType === "Returnable" ? (
                         <div className="flex items-center justify-center gap-1">
-                          <PdfPage></PdfPage>
+                          <PdfPage asset={asset}></PdfPage>
                           <button
                             onClick={() => handleReturnAsset(asset)}
                             className="flex-1 btn btn-warning min-h-0 h-10 border-none font-[600]"
@@ -271,7 +271,7 @@ const MyAssets = () => {
                         </div>
                       ) : asset?.requestStatus === "Approved" ? (
                         <>
-                          <PdfPage></PdfPage>
+                          <PdfPage asset={asset}></PdfPage>
                         </>
                       ) : asset?.requestStatus === "Cancelled" ? (
                         <>

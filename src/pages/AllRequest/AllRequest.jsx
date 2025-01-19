@@ -23,6 +23,7 @@ import { Filter, SlidersHorizontal } from "lucide-react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import usePaginationFunction from "../../hooks/usePaginationFunction";
+import moment from "moment";
 
 const AllRequest = () => {
   const axiosSecure = useAxiosSecure();
@@ -116,6 +117,7 @@ const AllRequest = () => {
   const handleApproveRequest = (_id) => {
     // console.log(_id);
     const requestStatus = "Approved";
+    const date = moment().format("YYYY-MM-DD");
 
     // patch
     Swal.fire({
@@ -131,6 +133,7 @@ const AllRequest = () => {
         const res = await axiosSecure.patch("/asset_distribution", {
           _id,
           requestStatus,
+          approvalDate: date,
         });
         // console.log(res.data.modifiedCount);
         if (res.data.modifiedCount) {
