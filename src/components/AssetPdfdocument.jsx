@@ -85,50 +85,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export const AssetPdfDocument = () => {
+export const AssetPdfDocument = ({ asset }) => {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
-  const assets = [
-    {
-      name: "Dell XPS 15 Laptop",
-      quantity: 2,
-      receivingDate: "2024-03-01",
-      returnDate: "2025-03-01",
-    },
-    {
-      name: "iPhone 14 Pro",
-      quantity: 3,
-      receivingDate: "2024-02-15",
-      returnDate: "2025-02-15",
-    },
-    {
-      name: 'Dell 27" Monitor',
-      quantity: 4,
-      receivingDate: "2024-01-20",
-      returnDate: "2025-01-20",
-    },
-    {
-      name: "Herman Miller Chair",
-      quantity: 2,
-      receivingDate: "2024-03-10",
-      returnDate: "2025-03-10",
-    },
-  ];
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Company Information */}
         <View style={styles.companyHeader}>
-          <Text style={styles.companyName}>TechCorp Solutions</Text>
+          <Text style={styles.companyName}>{asset?.companyName}</Text>
           <Text style={styles.companyInfo}>123 Technology Park, Suite 500</Text>
           <Text style={styles.companyInfo}>San Francisco, CA 94105</Text>
           <Text style={styles.companyInfo}>Phone: (555) 123-4567</Text>
-          <Text style={styles.companyInfo}>Email: assets@techcorp.com</Text>
+          <Text style={styles.companyInfo}>Email: {asset?.hr_email}</Text>
         </View>
 
         <Text style={styles.title}>Asset Management Report</Text>
@@ -139,39 +112,31 @@ export const AssetPdfDocument = () => {
             <Text style={[styles.columnHeader, styles.col1]}>Asset Name</Text>
             <Text style={[styles.columnHeader, styles.col2]}>Quantity</Text>
             <Text style={[styles.columnHeader, styles.col3]}>
+              Requesting Date
+            </Text>
+            <Text style={[styles.columnHeader, styles.col4]}>
               Receiving Date
             </Text>
-            <Text style={[styles.columnHeader, styles.col4]}>Return Date</Text>
           </View>
 
-          {assets.map((asset, index) => (
-            <View key={index} style={styles.tableRow}>
-              <Text style={[styles.cell, styles.col1]}>{asset.name}</Text>
-              <Text style={[styles.cell, styles.col2]}>{asset.quantity}</Text>
-              <Text style={[styles.cell, styles.col3]}>
-                {asset.receivingDate}
-              </Text>
-              <Text style={[styles.cell, styles.col4]}>{asset.returnDate}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Summary Section */}
-        <View style={styles.summary}>
-          <Text style={styles.summaryText}>
-            Total Number of Assets: {assets.length}
-          </Text>
-          <Text style={styles.summaryText}>
-            Total Quantity:{" "}
-            {assets.reduce((sum, asset) => sum + asset.quantity, 0)}
-          </Text>
+          {/* {assets.map((asset, index) => ( */}
+          <View style={styles.tableRow}>
+            <Text style={[styles.cell, styles.col1]}>{asset?.assetName}</Text>
+            <Text style={[styles.cell, styles.col2]}>1</Text>
+            <Text style={[styles.cell, styles.col3]}>
+              {asset?.assetRequestingDate}
+            </Text>
+            <Text style={[styles.cell, styles.col4]}>
+              {asset?.approvalDate}
+            </Text>
+          </View>
+          {/* ))} */}
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Document generated on {currentDate} • TechCorp Solutions Asset
-            Management System
+            Document generated on {currentDate} • {asset?.companyName}
           </Text>
         </View>
       </Page>
