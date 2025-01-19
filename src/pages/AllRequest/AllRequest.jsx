@@ -149,7 +149,7 @@ const AllRequest = () => {
 
   // pagination
   const { paginate, paginatedItem, currentPage, itemsPerPage } =
-    usePaginationFunction(assetDistributionData, 5);
+    usePaginationFunction(assetDistributionData, 15);
 
   return (
     <div className="p-6 my-24">

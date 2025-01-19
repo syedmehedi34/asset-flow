@@ -19,6 +19,7 @@ import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import usePaginationFunction from "../hooks/usePaginationFunction";
 
 const AssetRequest = () => {
   const [isRole] = useRole();
@@ -102,6 +103,10 @@ const AssetRequest = () => {
       });
     }
   };
+
+  // pagination
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(assets, 10);
 
   return (
     <div className="min-h-screen bg-gray-50 my-24">
@@ -218,7 +223,7 @@ const AssetRequest = () => {
                 </tr>
               </thead>
               <tbody>
-                {assets.map((asset, index) => (
+                {paginatedItem.map((asset, index) => (
                   <motion.tr
                     key={index}
                     className="border-b hover:bg-gray-50 transition-colors"
@@ -227,7 +232,7 @@ const AssetRequest = () => {
                     transition={{ delay: 0.4 + index * 0.1 }}
                   >
                     <td className="w-[40px] px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {index + 1}
+                      {(currentPage - 1) * itemsPerPage + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {asset?.assetName}
@@ -279,6 +284,7 @@ const AssetRequest = () => {
           </div>
         </motion.div>
       </div>
+      {paginate}
 
       {/* Modal */}
       <Dialog open={open} handler={setOpen}>
