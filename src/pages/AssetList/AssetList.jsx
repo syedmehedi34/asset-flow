@@ -26,6 +26,7 @@ import {
   DialogHeader,
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
+import usePaginationFunction from "../../hooks/usePaginationFunction";
 
 const AssetList = () => {
   const [modalData, setModalData] = useState({});
@@ -92,14 +93,15 @@ const AssetList = () => {
   const onSubmit = async (data) => {
     setOpen(false);
     const _id = data._id;
-    console.log(_id);
+    // console.log(_id);
 
     const updatedData = {
       assetName: data.assetName,
-      assetDescription: data.assetDescription,
-      assetQuantity: data.assetQuantity,
+      assetDescription: data.assetDescription, // Ensures it's a number
+      assetQuantity: Number(data.assetQuantity),
       assetType: data.assetType,
     };
+
     // console.log(updatedData);
 
     // now patch the data in the backend
@@ -117,6 +119,9 @@ const AssetList = () => {
   };
 
   // ?
+
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(assets, 10);
 
   return (
     <div className="p-6 my-24">
@@ -217,7 +222,7 @@ const AssetList = () => {
               </tr>
             </thead>
             <tbody>
-              {assets.map((asset, index) => (
+              {paginatedItem.map((asset, index) => (
                 <motion.tr
                   key={index}
                   className="border-b hover:bg-gray-50 transition-colors"
@@ -237,7 +242,7 @@ const AssetList = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {asset?.assetQuantity == 0 ? (
+                    {!asset?.assetQuantity ? (
                       <p className="badge bg-red-600 border-none">
                         Out of Stock
                       </p>
@@ -275,6 +280,7 @@ const AssetList = () => {
           </table>
         </div>
       </motion.div>
+      {paginate}
 
       {/* dialogue modal */}
       <>
@@ -299,7 +305,12 @@ const AssetList = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="p-6 space-y-4"
+              // id="root"
+              // aria-hidden="true"
+            >
               {/* Product Name */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -350,7 +361,7 @@ const AssetList = () => {
                 <div className="space-y-2 flex-1">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <DollarSign size={18} className="text-indigo-500" />
-                    Amount
+                    Quantity
                   </label>
                   <input
                     type="number"

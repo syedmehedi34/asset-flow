@@ -58,8 +58,8 @@ const EmployeeList = () => {
   };
 
   // pagination
-  const { paginate, paginatedItem, currentPage, itemPerPage } =
-    usePaginationFunction(employees, 2);
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(employees, 5);
 
   return (
     <div className="container mx-auto px-4 py-6 my-24">
@@ -99,7 +99,7 @@ const EmployeeList = () => {
                 className="border-b hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-[50px]">
-                  {(currentPage - 1) * itemPerPage + index + 1}
+                  {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-[40px]">
                   <img
