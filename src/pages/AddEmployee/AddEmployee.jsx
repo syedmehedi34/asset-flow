@@ -186,9 +186,6 @@ const AddEmployee = () => {
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const { paginate, paginatedItem } = usePaginationFunction(filteredUsers, 5);
-  // ?
-
   // * this section is for multiple employee insertion
   const toggleUserSelection = (_id) => {
     setUserSelection((prevSelection) => {
@@ -258,6 +255,8 @@ const AddEmployee = () => {
       });
     }
   };
+
+  const { paginate, paginatedItem } = usePaginationFunction(filteredUsers, 5);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 my-24">

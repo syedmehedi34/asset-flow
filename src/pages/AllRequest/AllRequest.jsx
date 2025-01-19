@@ -22,6 +22,7 @@ import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import usePaginationFunction from "../../hooks/usePaginationFunction";
 
 const AllRequest = () => {
   const axiosSecure = useAxiosSecure();
@@ -146,6 +147,10 @@ const AllRequest = () => {
     });
   };
 
+  // pagination
+  const { paginate, paginatedItem, currentPage, itemsPerPage } =
+    usePaginationFunction(assetDistributionData, 5);
+
   return (
     <div className="p-6 my-24">
       <h1 className="text-3xl font-semibold mb-6">
@@ -244,7 +249,7 @@ const AllRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {assetDistributionData.map((item, i) => (
+            {paginatedItem.map((item, i) => (
               <motion.tr
                 key={item._id}
                 className="border-b hover:bg-gray-50 transition-colors"
@@ -253,7 +258,7 @@ const AllRequest = () => {
                 transition={{ duration: 0.3 }}
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {i + 1}
+                  {(currentPage - 1) * itemsPerPage + i + 1}
                 </td>
 
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -305,7 +310,9 @@ const AllRequest = () => {
           </tbody>
         </table>
       </motion.div>
+      {paginate}
 
+      {/* modal  */}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
