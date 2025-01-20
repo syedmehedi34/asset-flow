@@ -64,6 +64,7 @@ const pendingRequests = [
 ];
 
 const PendingRequests = ({ assetDistributionData }) => {
+  const data = assetDistributionData.slice(0, 5);
   return (
     <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,7 +85,7 @@ const PendingRequests = ({ assetDistributionData }) => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {assetDistributionData.map((request, index) => (
+          {data.map((request, index) => (
             <motion.div
               key={request._id}
               initial={{ opacity: 0, y: 20 }}
