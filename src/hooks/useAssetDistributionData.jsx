@@ -21,7 +21,7 @@ const useAssetDistributionData = () =>
     const location = useLocation();
     const path = location?.pathname;
 
-    if (path === "/all_requests") {
+    if (path === "/all_requests" || path === "/") {
       hr_email = isRole?.email;
       requestStatus = "Pending";
     } else {

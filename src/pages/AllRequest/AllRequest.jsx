@@ -10,14 +10,6 @@ import {
   Clock,
   User,
 } from "lucide-react";
-import useAllAssets from "../../hooks/useAllAssets";
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-} from "@material-tailwind/react";
 import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -69,7 +61,7 @@ const AllRequest = () => {
       },
     },
   };
-
+  // console.log(assetDistributionData);
   // modal functions
   const handleOpen = (item) => {
     // console.log(item);
