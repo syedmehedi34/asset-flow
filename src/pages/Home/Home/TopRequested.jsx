@@ -4,21 +4,22 @@ import { Calendar, Users, Archive, TrendingUp, ArrowRight } from "lucide-react";
 import useAssetDistributionData from "../../../hooks/useAssetDistributionData";
 const TopRequested = () => {
   const [assetDistributionData] = useAssetDistributionData();
-  console.log(assetDistributionData);
-  // Step 1: Count occurrences of each assetID
-  const assetCounts = assetDistributionData.reduce((counts, item) => {
-    counts[item.assetID] = (counts[item.assetID] || 0) + 1;
-    return counts;
+  // console.log(assetDistributionData);
+
+  const countAssetIDs = assetDistributionData.reduce((acc, item) => {
+    acc[item.assetID] = (acc[item.assetID] || 0) + 1;
+    return acc;
   }, {});
 
-  // Step 2: Convert the counts object into an array and sort by count in descending order
-  const sortedAssetCounts = Object.entries(assetCounts)
-    .map(([assetID, count]) => ({ assetID, count }))
-    .sort((a, b) => b.count - a.count);
+  const sortedData = assetDistributionData
+    .map((item) => ({
+      ...item,
+      assetID_count: countAssetIDs[item.assetID],
+    }))
+    .sort((a, b) => countAssetIDs[b.assetID] - countAssetIDs[a.assetID]);
 
-  console.log(sortedAssetCounts); // desire counting is here
-  //   todo  need to find from the assets list now
-
+  // Log the result
+  console.log(sortedData);
   //
   const topRequestedItems = [
     {
@@ -84,9 +85,9 @@ const TopRequested = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {topRequestedItems.map((item, index) => (
+          {sortedData.map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -99,29 +100,31 @@ const TopRequested = () => {
                 </div>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    item.category === "Returnable"
+                    item.assetType === "Returnable"
                       ? "bg-purple-100 text-purple-700"
                       : "bg-orange-100 text-orange-700"
                   }`}
                 >
-                  {item.category}
+                  {item.assetType}
                 </span>
               </div>
 
-              <h3 className="font-semibold text-gray-900 mb-3">{item.name}</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">
+                {item.assetName}
+              </h3>
 
               <div className="space-y-2 text-sm">
                 <div className="flex items-center text-gray-600">
                   <Calendar className="w-4 h-4 mr-2" />
-                  <span>{new Date(item.addedDate).toLocaleDateString()}</span>
+                  <span>{item.assetPostDate}</span>
                 </div>
                 <div className="flex items-center text-gray-600">
                   <Archive className="w-4 h-4 mr-2" />
-                  <span>{item.quantity} available</span>
+                  <span>{item.assetQuantity} available</span>
                 </div>
                 <div className="flex items-center text-gray-600">
                   <Users className="w-4 h-4 mr-2" />
-                  <span>{item.usersCount} users</span>
+                  <span>{item.assetID_count} users</span>
                 </div>
               </div>
             </motion.div>

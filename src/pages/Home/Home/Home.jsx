@@ -6,6 +6,7 @@ import Banner from "../Banner";
 import LimitedStock from "../LimitedStock";
 import Packages from "../Packages";
 import PendingRequests from "../PendingRequest";
+import PieChartSection from "../PieChartSection";
 import TopRequested from "./TopRequested";
 
 const Home = () => {
@@ -23,7 +24,7 @@ const Home = () => {
   ] = useAssetDistributionData();
   // pending requests
   // const pendingRequests = assetDistributionData
-  console.log(assetDistributionData);
+  // console.log(assetDistributionData);
 
   if (loading || isRoleLoading) {
     return <h1 className="mt-32">Loading</h1>;
@@ -44,6 +45,7 @@ const Home = () => {
 
           <TopRequested></TopRequested>
           <LimitedStock></LimitedStock>
+          <PieChartSection></PieChartSection>
         </>
       ) : (
         <About />

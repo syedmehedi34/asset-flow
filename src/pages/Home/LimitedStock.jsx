@@ -44,8 +44,8 @@ const LimitedStock = () => {
   const [assets] = useAllAssets();
 
   const filteredAssets = assets.filter((asset) => asset.assetQuantity < 10);
-  console.log(filteredAssets);
-  console.log(assets);
+  // console.log(filteredAssets);
+  // console.log(assets);
   const { paginate, paginatedItem, currentPage, itemsPerPage } =
     usePaginationFunction(filteredAssets, 6);
 
