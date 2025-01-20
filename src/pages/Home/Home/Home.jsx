@@ -3,9 +3,10 @@ import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
 import About from "../About";
 import Banner from "../Banner";
-import MostRequested from "../MostRequested";
+import LimitedStock from "../LimitedStock";
 import Packages from "../Packages";
 import PendingRequests from "../PendingRequest";
+import TopRequested from "./TopRequested";
 
 const Home = () => {
   // const [isRole] = useRole();
@@ -40,7 +41,9 @@ const Home = () => {
           <PendingRequests
             assetDistributionData={assetDistributionData}
           ></PendingRequests>
-          <MostRequested></MostRequested>
+
+          <TopRequested></TopRequested>
+          <LimitedStock></LimitedStock>
         </>
       ) : (
         <About />
