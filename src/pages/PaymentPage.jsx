@@ -7,7 +7,6 @@ import CheckoutForm from "../components/CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import usePaymentData from "../hooks/usePaymentData";
-const stripePromise = loadStripe(import.meta.env.VITE_Payment_Gateway_PK);
 
 const packageOptions = [
   {
@@ -35,22 +34,21 @@ const packageOptions = [
 ];
 
 function PaymentPage() {
-  // const [selectedPackage, setSelectedPackage] = useState(null);
-  const [selectedPackage, setSelectedPackage] = usePaymentData();
-  // const [cardNumber, setCardNumber] = useState("");
-  // const [expiryDate, setExpiryDate] = useState("");
-  // const [cvv, setCvv] = useState("");
+  const [
+    selectedPackage,
+    setSelectedPackage,
+    stripePromise,
+    open,
+    setOpen,
+    handleOpen,
+  ] = usePaymentData();
   const handlePackageSelect = (pkg) => {
     setSelectedPackage(pkg);
   };
 
-  // const formatCardNumber = () => {
-  //   console.log("card clicked");
-  // };
-
   // ? modal portion
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(!open);
+  // const [open, setOpen] = React.useState(false);
+  // const handleOpen = () => setOpen(!open);
   //?
   // console.log(selectedPackage);
 
