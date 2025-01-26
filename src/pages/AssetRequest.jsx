@@ -60,7 +60,7 @@ const AssetRequest = () => {
     setOpen(false);
     const date = moment().format("YYYY-MM-DD");
     // console.log(date);
-    console.log(data);
+    // console.log(data);
     //
     // console.log(data);
     const assetRequestData = {
@@ -80,7 +80,7 @@ const AssetRequest = () => {
       requestStatus: "Pending",
       approvalDate: "Not approved yet",
     };
-    console.log(assetRequestData);
+    // console.log(assetRequestData);
 
     // post api
     // todo : have to add a option for backend checking that,,,one employee can not add a single asset for multiple time at the asset request.

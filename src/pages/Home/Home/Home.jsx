@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import useAssetDistributionData from "../../../hooks/useAssetDistributionData";
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
@@ -33,30 +34,36 @@ const Home = () => {
     return <h1 className="mt-32">Loading</h1>;
   }
   return (
-    <div>
-      {!user ? (
-        <>
-          <Banner />
-          <About />
-          <Packages />
-        </>
-      ) : isRole?.role === "hr_manager" ? (
-        <>
-          <PendingRequests
-            assetDistributionData={assetDistributionData}
-          ></PendingRequests>
+    <>
+      <Helmet>
+        <title>AssetFlow | Home</title>
+      </Helmet>
+      ;
+      <div>
+        {!user ? (
+          <>
+            <Banner />
+            <About />
+            <Packages />
+          </>
+        ) : isRole?.role === "hr_manager" ? (
+          <>
+            <PendingRequests
+              assetDistributionData={assetDistributionData}
+            ></PendingRequests>
 
-          <TopRequested></TopRequested>
-          <LimitedStock></LimitedStock>
-          <PieChartSection></PieChartSection>
-          <RecentAssigned></RecentAssigned>
+            <TopRequested></TopRequested>
+            <LimitedStock></LimitedStock>
+            <PieChartSection></PieChartSection>
+            <RecentAssigned></RecentAssigned>
 
-          <ContactDeveloper></ContactDeveloper>
-        </>
-      ) : (
-        <MyPending></MyPending>
-      )}
-    </div>
+            <ContactDeveloper></ContactDeveloper>
+          </>
+        ) : (
+          <MyPending></MyPending>
+        )}
+      </div>
+    </>
   );
 };
 
