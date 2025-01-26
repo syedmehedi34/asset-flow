@@ -136,7 +136,8 @@ export const AssetPdfDocument = ({ asset }) => {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Document generated on {currentDate} • {asset?.companyName}
+            Document generated on {currentDate} •{" "}
+            {asset?.companyName || "Company Name"}
           </Text>
         </View>
       </Page>
