@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { CreditCard, Users, Package, Shield, Zap } from "lucide-react";
-import { Dialog, DialogBody } from "@material-tailwind/react";
+import { Dialog } from "@material-tailwind/react";
 import CheckoutForm from "../components/CheckoutForm";
-import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import usePaymentData from "../hooks/usePaymentData";
 

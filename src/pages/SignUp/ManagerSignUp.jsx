@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Controller, useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -18,6 +18,9 @@ import {
   Upload,
   User,
 } from "lucide-react";
+import usePaymentData from "../../hooks/usePaymentData";
+import { Elements } from "@stripe/react-stripe-js";
+import RegisterCheckout from "../../components/RegisterCheckout";
 
 const ManagerSignUp = () => {
   const [, , , userRoleRefetch] = useRole();
@@ -35,6 +38,27 @@ const ManagerSignUp = () => {
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [companyImageFile, setCompanyImageFile] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  // const [packageName, setPackageName] = useState(null);
+  const [paymentComplete, setPaymentComplete] = useState(false);
+  const [transactionId, setTransactionId] = useState("");
+  console.log(transactionId);
+  const [
+    selectedPackage,
+    setSelectedPackage,
+    stripePromise,
+    open,
+    setOpen,
+    handleOpen,
+    isPayment,
+    setIsPayment,
+  ] = usePaymentData();
+  useEffect(() => {
+    if (isPayment) {
+      setPaymentComplete(true);
+    }
+  }, [selectedPackage, setIsPayment]);
+  console.log(isPayment);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -43,6 +67,7 @@ const ManagerSignUp = () => {
       setProfileImageFile(file);
     }
   };
+  // console.log(packageName);
 
   //api key for imgBB
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -214,6 +239,7 @@ const ManagerSignUp = () => {
               </p>
             </motion.div>
 
+            {/* information section  */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -421,6 +447,7 @@ const ManagerSignUp = () => {
                       })}
                       value={pkg.packageId}
                       className="absolute opacity-0 peer"
+                      onChange={(e) => setSelectedPackage(pkg)}
                     />
                     <div
                       className={`cursor-pointer h-full p-6 rounded-xl border-2 transition-all duration-200 bg-white peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white border-gray-200 hover:border-blue-500`}
@@ -493,18 +520,83 @@ const ManagerSignUp = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="inline-flex items-center px-8 py-3  text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+                disabled={!transactionId}
+                className={`inline-flex items-center px-8 py-3  text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 
+                  ${!transactionId ? "bg-gray-300 cursor-not-allowed" : ""}`}
               >
-                Create Account
+                {/* Create Account */}
+                {!transactionId ? "Please Pay First" : "Create Account"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </motion.button>
             </motion.div>
           </form>
-          {/* <p className="px-6">
-            <small>
-              Already have an account <Link to="/login">Login</Link>
-            </small>
-          </p> */}
+          {/* // ? payment portion  */}
+          {selectedPackage && (
+            <div>
+              <div className="text-center mt-8">
+                <h2 className="text-2xl font-semibold text-gray-700">
+                  Payment Information
+                </h2>
+                <p className="text-gray-600">
+                  Please complete the payment to register, and{" "}
+                  <span className="font-bold underline">don't refresh</span> the
+                  page.
+                </p>
+              </div>
+              <div className="flex justify-center mt-8">
+                <div className="w-3/4">
+                  <div className="bg-white shadow-md rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <User className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-700 uppercase">
+                            {selectedPackage?.packageId}
+                          </h3>
+                          <p className="text-gray-600">HR Manager Package</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-semibold text-gray-700">
+                          {selectedPackage?.packagePrice || 0}
+                          /month
+                        </p>
+                      </div>
+                    </div>
+                    <hr className="my-4 border-gray-200" />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-700">
+                          Total
+                        </h3>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-semibold text-gray-700">
+                          {selectedPackage?.packagePrice || 0}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* //todo */}
+                    <div className="mt-8">
+                      <Elements stripe={stripePromise}>
+                        <RegisterCheckout
+                          selectedPackage={selectedPackage}
+                          setOpen={setOpen}
+                          transactionId={transactionId}
+                          setTransactionId={setTransactionId}
+                        ></RegisterCheckout>
+                      </Elements>
+                    </div>
+                    {/* //todo */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* // ? payment portion  */}
         </div>
       </div>
     </>
