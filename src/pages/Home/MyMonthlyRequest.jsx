@@ -57,7 +57,7 @@ const MyMonthlyRequest = () => {
 
           <div>
             <h3 className="text-xl font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5">
-              Total Pending : {recentRequests?.length}
+              Total Monthly : {recentRequests?.length}
             </h3>
           </div>
         </motion.div>

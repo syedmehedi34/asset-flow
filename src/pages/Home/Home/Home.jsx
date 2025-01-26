@@ -19,15 +19,7 @@ const Home = () => {
   // const [isRole] = useRole();
   const { user, loading } = useAuth();
   const [isRole, isRoleLoading] = useRole();
-  const [
-    assetDistributionData,
-    loadingAssetDistributionData,
-    refetchAssetDistributionData,
-    searchText,
-    setSearchText,
-    category,
-    setCategory,
-  ] = useAssetDistributionData();
+
   // pending requests
   // const pendingRequests = assetDistributionData
   // console.log(assetDistributionData);
@@ -50,15 +42,12 @@ const Home = () => {
           </>
         ) : isRole?.role === "hr_manager" ? (
           <>
-            <PendingRequests
-              assetDistributionData={assetDistributionData}
-            ></PendingRequests>
-
+            <PendingRequests></PendingRequests>
             <TopRequested></TopRequested>
             <LimitedStock></LimitedStock>
+
             <PieChartSection></PieChartSection>
             <RecentAssigned></RecentAssigned>
-
             <ContactDeveloper></ContactDeveloper>
           </>
         ) : (
