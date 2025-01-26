@@ -18,22 +18,29 @@ const MyPendingRequest = () => {
     .slice(0, 6); // Take only the first 6 items
 
   return (
-    <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section className="mt-20 py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-left mb-16 flex items-center justify-between"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            My Pending Requests
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            View the list of all your asset requests that are still pending
-            approval.
-          </p>
+          <div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              My Pending Requests
+            </h2>
+            <p className="text-xl text-gray-600 ">
+              View the list of all your asset requests that are still pending
+              approval.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5">
+              Total Pending : {pendingRequests?.length}
+            </h3>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">

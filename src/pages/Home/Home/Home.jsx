@@ -63,6 +63,7 @@ const Home = () => {
           </>
         ) : (
           <>
+            {/* employee section for home  */}
             <MyPending></MyPending>
             <MyMonthlyRequest></MyMonthlyRequest>
             <Notice></Notice>
