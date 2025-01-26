@@ -20,7 +20,7 @@ const CheckoutForm = ({ selectedPackage, setOpen }) => {
   const navigate = useNavigate();
   // const [selectedPackage] = usePaymentData();
 
-  const totalPrice = selectedPackage?.price || 0;
+  const totalPrice = selectedPackage?.packagePrice || 0;
   console.log(selectedPackage);
 
   useEffect(() => {
@@ -83,11 +83,11 @@ const CheckoutForm = ({ selectedPackage, setOpen }) => {
         // now save the payment in the database
         const payment = {
           email: user.email,
-          price: totalPrice,
+          packagePrice: totalPrice,
           transactionId: paymentIntent.id,
           date: new Date(), // utc date convert. use moment js to
-          package: selectedPackage.packageId,
-          memberLimit: selectedPackage.members,
+          packageId: selectedPackage.packageId,
+          packageMemberLimit: selectedPackage.packageMemberLimit,
           status: "pending",
         };
 

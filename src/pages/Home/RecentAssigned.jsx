@@ -7,6 +7,7 @@ import {
   ArrowUpRight,
   ArrowRight,
 } from "lucide-react";
+import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 
 // Sample data - in a real app, this would come from your backend
 const recentAssignments = [
@@ -45,6 +46,17 @@ const recentAssignments = [
 ];
 
 const RecentAssigned = () => {
+  const [
+    assetDistributionData,
+    loadingAssetDistributionData,
+    refetchAssetDistributionData,
+    searchText,
+    setSearchText,
+    category,
+    setCategory,
+  ] = useAssetDistributionData();
+  console.log("hello");
+
   return (
     <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

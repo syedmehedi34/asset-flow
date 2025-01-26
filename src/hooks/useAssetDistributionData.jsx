@@ -21,17 +21,13 @@ const useAssetDistributionData = () =>
     const location = useLocation();
     const path = location?.pathname;
 
-    if (path === "/all_requests" || path === "/") {
-      hr_email = isRole?.email;
+    // if (path === "/all_requests" || path === "/") {
+    if (isRole?.role === "hr_manager") {
+      hr_email = isRole?.email; // only for hr manager assets managements
       requestStatus = "Pending";
     } else {
-      hr_email = isRole?.hr_email;
+      hr_email = isRole?.hr_email; // only for employee assets managements
     }
-
-    // if (path === "/my_assets") {
-    //   requestStatus = "Approved";
-    //   employeeEmail = isRole.email;
-    // }
 
     // Define query params based on the conditions
     const queryParams = {

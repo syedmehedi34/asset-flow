@@ -10,23 +10,23 @@ import usePaymentData from "../hooks/usePaymentData";
 const packageOptions = [
   {
     packageId: "starter",
-    members: 5,
-    price: 5,
-    title: "Starter Package - 5 Members",
+    packageMemberLimit: 5,
+    packagePrice: 5,
+    packageName: "Starter Package - 5 Members",
     description: "Perfect for small teams. Manage up to 5 members for just $5",
   },
   {
     packageId: "basic",
-    members: 10,
-    price: 8,
-    title: "Growth Package - 10 Members",
+    packageMemberLimit: 10,
+    packagePrice: 8,
+    packageName: "Growth Package - 10 Members",
     description: "Scale up with ease. Manage up to 10 members for only $8",
   },
   {
     packageId: "pro",
-    members: 20,
-    price: 15,
-    title: "Pro Package - 20 Members",
+    packageMemberLimit: 20,
+    packagePrice: 15,
+    packageName: "Pro Package - 20 Members",
     description:
       "Ideal for larger teams. Manage up to 20 members for just $15.",
   },
@@ -89,17 +89,17 @@ function PaymentPage() {
                     )}
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    {pkg.title}
+                    {pkg.packageName}
                   </h3>
                   <p className="text-gray-600 mb-6">{pkg.description}</p>
                   <div className="flex items-center mb-6">
                     <Users className="h-5 w-5 text-indigo-600 mr-2" />
                     <span className="text-gray-600">
-                      Up to {pkg.members} members
+                      Up to {pkg.packageMemberLimit} members
                     </span>
                   </div>
                   <div className="text-3xl font-bold text-gray-900 mb-8">
-                    ${pkg.price}
+                    ${pkg.packagePrice}
                     <span className="text-lg text-gray-500">/month</span>
                   </div>
                   <button
@@ -140,12 +140,12 @@ function PaymentPage() {
               {selectedPackage && (
                 <div className="bg-gray-50 rounded-lg p-4 mb-8">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {selectedPackage.title}
+                    {selectedPackage.packageName}
                   </h3>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Monthly subscription</span>
                     <span className="text-2xl font-bold text-gray-900">
-                      ${selectedPackage.price}
+                      ${selectedPackage.packagePrice}
                     </span>
                   </div>
                 </div>
