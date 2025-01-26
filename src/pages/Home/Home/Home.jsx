@@ -3,10 +3,13 @@ import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
 import About from "../About";
 import Banner from "../Banner";
+import ContactDeveloper from "../ContactDeveloper";
 import LimitedStock from "../LimitedStock";
+import MyPending from "../MyPending";
 import Packages from "../Packages";
 import PendingRequests from "../PendingRequest";
 import PieChartSection from "../PieChartSection";
+import RecentAssigned from "../RecentAssigned";
 import TopRequested from "./TopRequested";
 
 const Home = () => {
@@ -46,9 +49,12 @@ const Home = () => {
           <TopRequested></TopRequested>
           <LimitedStock></LimitedStock>
           <PieChartSection></PieChartSection>
+          <RecentAssigned></RecentAssigned>
+
+          <ContactDeveloper></ContactDeveloper>
         </>
       ) : (
-        <About />
+        <MyPending></MyPending>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import useRole from "./useRole";
 const useAllEmployees = () => {
   const axiosSecure = useAxiosSecure();
   const [isRole] = useRole();
+  console.log(isRole.hr_email);
 
   let hr_email = "";
   let role = isRole?.role;
