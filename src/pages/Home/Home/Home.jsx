@@ -38,7 +38,7 @@ const Home = () => {
       <Helmet>
         <title>AssetFlow | Home</title>
       </Helmet>
-      ;
+
       <div>
         {!user ? (
           <>
@@ -61,6 +61,7 @@ const Home = () => {
           </>
         ) : (
           <MyPending></MyPending>
+          // <h1>hello</h1>
         )}
       </div>
     </>
