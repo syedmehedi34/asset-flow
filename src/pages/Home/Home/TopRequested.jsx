@@ -14,7 +14,10 @@ const TopRequested = () => {
       ...item,
       assetID_count: countAssetIDs[item.assetID],
     }))
-    .sort((a, b) => countAssetIDs[b.assetID] - countAssetIDs[a.assetID]);
+    .sort((a, b) => countAssetIDs[b.assetID] - countAssetIDs[a.assetID])
+    .slice(0, 4);
+
+  // console.log(sortedData);
 
   // console.log(sortedData);
 

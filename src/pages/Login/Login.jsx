@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import LoginLottie from "../../assets/lottieFiles/login_page_lottie.json";
 import Lottie from "lottie-react";
 import { Helmet } from "react-helmet-async";
@@ -13,10 +13,10 @@ import { Helmet } from "react-helmet-async";
 const Login = () => {
   const { user, signIn } = useContext(AuthContext);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const from = location.state?.from?.pathname || "/";
   const from = "/";
 
   const handleLogin = async (event) => {
@@ -92,17 +92,24 @@ const Login = () => {
                   />
                 </div>
 
-                <div className="form-control">
+                <div className="form-control relative">
                   <label className="label">
                     <span className="label-text">Password</span>
                   </label>
                   <input
                     required
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="password"
                     className="input input-bordered"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-12 right-3 text-gray-600"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
                   <label className="label">
                     <a href="#" className="label-text-alt link link-hover">
                       Forgot password?

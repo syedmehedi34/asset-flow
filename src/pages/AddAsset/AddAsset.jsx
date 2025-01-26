@@ -24,7 +24,8 @@ const AddAsset = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const assetPostDate = moment().format("YYYY-MM-DD");
+    // const assetPostDate = moment().format("YYYY-MM-DD");
+    const assetPostDate = moment().format("DD/MM/YYYY");
     const hr_email = isRole.email;
 
     data.assetQuantity = quantity;
