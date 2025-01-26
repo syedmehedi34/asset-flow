@@ -72,7 +72,23 @@ const Notice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="my-12 p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-left mb-16 "
+      >
+        <div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Calender and Notices
+          </h2>
+          <p className="text-xl text-gray-600 ">
+            View the list of all your notice and holidays in the company.
+          </p>
+        </div>
+      </motion.div>
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Calendar Section */}
         <motion.div
