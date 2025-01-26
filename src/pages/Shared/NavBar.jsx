@@ -47,17 +47,23 @@ const NavBar = () => {
   const navOptions = (
     <>
       <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink className="hover:bg-inherit" to="/">
+          Home
+        </NavLink>
       </li>
 
       {/* user routes  */}
       {!user && (
         <>
           <li>
-            <NavLink to="/employee_signup">Join as Employee</NavLink>
+            <NavLink className="hover:bg-inherit" to="/employee_signup">
+              Join as Employee
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/hr_signup">Join as HR Manager</NavLink>
+            <NavLink className="hover:bg-inherit" to="/hr_signup">
+              Join as HR Manager
+            </NavLink>
           </li>
         </>
       )}
@@ -66,16 +72,24 @@ const NavBar = () => {
       {role === "employee" && user && (
         <>
           <li>
-            <NavLink to="/my_assets">My Assets</NavLink>
+            <NavLink className="hover:bg-inherit" to="/my_assets">
+              My Assets
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/my_team">My Team</NavLink>
+            <NavLink className="hover:bg-inherit" to="/my_team">
+              My Team
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/request_assets">Request for an Asset</NavLink>
+            <NavLink className="hover:bg-inherit" to="/request_assets">
+              Request for an Asset
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/employee_profile">Profile</NavLink>
+            <NavLink className="hover:bg-inherit" to="/employee_profile">
+              Profile
+            </NavLink>
           </li>
         </>
       )}
@@ -84,22 +98,34 @@ const NavBar = () => {
       {role === "hr_manager" && user && (
         <>
           <li>
-            <NavLink to="/assets_list">Asset List</NavLink>
+            <NavLink className="hover:bg-inherit" to="/assets_list">
+              Asset List
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/add_asset">Add an Asset</NavLink>
+            <NavLink className="hover:bg-inherit" to="/add_asset">
+              Add an Asset
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/all_requests">All Requests</NavLink>
+            <NavLink className="hover:bg-inherit" to="/all_requests">
+              All Requests
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/employee_list">My Employee List</NavLink>
+            <NavLink className="hover:bg-inherit" to="/employee_list">
+              My Employee List
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/add_employee">Add an Employee</NavLink>
+            <NavLink className="hover:bg-inherit" to="/add_employee">
+              Add an Employee
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/hr_profile">Profile</NavLink>
+            <NavLink className="hover:bg-inherit" to="/hr_profile">
+              Profile
+            </NavLink>
           </li>
         </>
       )}
@@ -148,16 +174,20 @@ const NavBar = () => {
           <div className="navbar-end">
             {user ? (
               <div className="relative">
-                <div
-                  onClick={toggleModal}
-                  className="w-12 h-12 bg-blue-gray-900 rounded-full cursor-pointer flex items-center justify-center"
-                >
-                  <img
-                    className="w-11 h-11 rounded-full object-cover"
-                    src={user?.photoURL}
-                    alt=""
-                  />
+                <div className="flex items-center flex-col">
+                  <div
+                    onClick={toggleModal}
+                    className="w-12 h-12 bg-blue-gray-900 rounded-full cursor-pointer flex items-center justify-center"
+                  >
+                    <img
+                      className="w-11 h-11 rounded-full object-cover"
+                      src={user?.photoURL}
+                      alt=""
+                    />
+                  </div>
+                  <p className="text-gray-700 font-bold">{isRole?.name}</p>
                 </div>
+
                 {isModalOpen && (
                   <div
                     ref={modalRef} // Attach the modal ref here

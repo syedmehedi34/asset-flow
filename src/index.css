@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.active {
+  background: inherit !important;
+  color: #1e3c72 !important;
+  text-decoration: underline;
+  font-weight: 800 !important;
+}
