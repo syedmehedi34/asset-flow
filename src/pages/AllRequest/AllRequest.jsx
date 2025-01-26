@@ -107,7 +107,9 @@ const AllRequest = () => {
   };
 
   // Approve button works
-  const handleApproveRequest = (_id) => {
+  const handleApproveRequest = (item) => {
+    const _id = item?._id;
+    console.log(item);
     // console.log(_id);
     const requestStatus = "Approved";
     const date = moment().format("DD/MM/YYYY");
@@ -127,6 +129,8 @@ const AllRequest = () => {
           _id,
           requestStatus,
           approvalDate: date,
+          assetID: item?.assetID,
+          n: -1,
         });
         // console.log(res.data.modifiedCount);
         if (res.data.modifiedCount) {
@@ -294,7 +298,7 @@ const AllRequest = () => {
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <button
-                      onClick={() => handleApproveRequest(item._id)}
+                      onClick={() => handleApproveRequest(item)}
                       className="btn min-h-0 h-9 border-none text-[12px] px-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
                     >
                       Approve
@@ -459,7 +463,7 @@ const AllRequest = () => {
                     Reject
                   </motion.button>
                   <motion.button
-                    onClick={() => handleApproveRequest(modalData._id)}
+                    onClick={() => handleApproveRequest(modalData)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 border-none"

@@ -61,6 +61,7 @@ const MyAssets = () => {
   // return an asset
   const handleReturnAsset = (asset) => {
     const _id = asset._id;
+    // const
     const assetID = asset.assetID;
     console.log(asset);
 
@@ -85,6 +86,7 @@ const MyAssets = () => {
           refetchAssetDistributionData();
 
           // update quantity from the assets collection
+          // todo : i will update this method in the backend later
           const assetCollectionRes = await axiosSecure.patch("/assets", {
             assetID,
           });
