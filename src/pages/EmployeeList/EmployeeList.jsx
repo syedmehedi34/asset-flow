@@ -14,6 +14,7 @@ const EmployeeList = () => {
 
   const handleRemove = (_id) => {
     const hr_email = "unaffiliated@hostname.com";
+    const companyLogo = "https://i.ibb.co.com/St0Nj3L/assetflow.png";
     // console.log(_id);
 
     // removing function
@@ -28,7 +29,11 @@ const EmployeeList = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axiosSecure.patch("/users", { _id, hr_email });
+          const res = await axiosSecure.patch("/users", {
+            _id,
+            hr_email,
+            companyLogo,
+          });
           // console.log(res);
           if (res.data.modifiedCount) {
             Swal.fire({

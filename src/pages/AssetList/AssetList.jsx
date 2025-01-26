@@ -13,18 +13,10 @@ import useAllAssets from "../../hooks/useAllAssets";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { Link } from "react-router-dom";
-import { FaSquareArrowUpRight } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-} from "@material-tailwind/react";
+import { Dialog, DialogBody } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import usePaginationFunction from "../../hooks/usePaginationFunction";
 
@@ -50,6 +42,7 @@ const AssetList = () => {
   ] = useAllAssets();
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
+  // console.log(assets);
 
   const handleDeleteAsset = (productId) => {
     Swal.fire({
@@ -231,7 +224,7 @@ const AssetList = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {index + 1}
+                    {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {asset?.assetName}

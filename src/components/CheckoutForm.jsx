@@ -92,8 +92,8 @@ const CheckoutForm = ({ selectedPackage, setOpen }) => {
         };
 
         const res = await axiosSecure.post("/payments", payment);
-        console.log(res.data.paymentResult.insertedId);
-        console.log(res.data.updateResult.modifiedCount);
+        // console.log(res.data.paymentResult.insertedId);
+        // console.log(res.data.updateResult.modifiedCount);
         if (res.data.paymentResult.insertedId) {
           setOpen(false);
           Swal.fire({

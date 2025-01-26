@@ -95,37 +95,11 @@ const AddEmployee = () => {
     }
   }, [employees, isRole]); // for updating the UI
 
-  const packageOptions = [
-    {
-      packageId: "starter",
-      members: 5,
-      price: 5,
-      title: "Starter Package - 5 Members",
-      description:
-        "Perfect for small teams. Manage up to 5 members for just $5",
-    },
-    {
-      packageId: "basic",
-      members: 10,
-      price: 8,
-      title: "Growth Package - 10 Members",
-      description: "Scale up with ease. Manage up to 10 members for only $8",
-    },
-    {
-      packageId: "pro",
-      members: 20,
-      price: 15,
-      title: "Pro Package - 20 Members",
-      description:
-        "deal for larger teams. Manage up to 20 members for just $15.",
-    },
-  ];
-  //
-  //
-
   // * add employee function
+  // console.log(isRole?.companyLogo);
   const handleAddEmployeeToTeam = async (employee) => {
     const hr_email = isRole?.email;
+    const companyLogo = isRole?.companyLogo;
     const _id = employee._id;
 
     //
@@ -141,7 +115,11 @@ const AddEmployee = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const res = await axiosSecure.patch("/users", { _id, hr_email });
+            const res = await axiosSecure.patch("/users", {
+              _id,
+              hr_email,
+              companyLogo,
+            });
             // console.log(res);
             if (res.data.modifiedCount) {
               Swal.fire({

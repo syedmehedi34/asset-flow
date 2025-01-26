@@ -109,7 +109,7 @@ const AllRequest = () => {
   const handleApproveRequest = (_id) => {
     // console.log(_id);
     const requestStatus = "Approved";
-    const date = moment().format("YYYY-MM-DD");
+    const date = moment().format("DD/MM/YYYY");
 
     // patch
     Swal.fire({

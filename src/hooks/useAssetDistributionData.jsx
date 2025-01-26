@@ -27,6 +27,7 @@ const useAssetDistributionData = () =>
       requestStatus = "Pending";
     } else {
       hr_email = isRole?.hr_email; // only for employee assets managements
+      employeeEmail = isRole?.email;
     }
 
     // Define query params based on the conditions
