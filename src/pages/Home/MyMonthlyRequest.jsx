@@ -9,13 +9,31 @@ import {
 import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 import { Link } from "react-router-dom";
 
-const MyPendingRequest = () => {
+const MyMonthlyRequest = () => {
   const [assetDistributionData] = useAssetDistributionData();
 
-  // Filter data for only pending requests
-  const pendingRequests = assetDistributionData
-    .filter((asset) => asset.requestStatus.toLowerCase() === "pending")
-    .slice(0, 6); // Take only the first 6 items
+  //   Get the current date and date from 1 month ago
+  const currentDate = new Date();
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(currentDate.getMonth() - 1);
+
+  // Function to parse 'DD/MM/YYYY' format into a valid Date object
+  function parseDate(dateStr) {
+    const [day, month, year] = dateStr.split("/");
+    return new Date(`${year}-${month}-${day}`);
+  }
+
+  // Filter and sort the data
+  const recentRequests = assetDistributionData
+    .filter((asset) => {
+      const requestDate = parseDate(asset.assetRequestingDate);
+      return requestDate >= oneMonthAgo && requestDate <= currentDate;
+    })
+    .sort(
+      (a, b) =>
+        parseDate(b.assetRequestingDate) - parseDate(a.assetRequestingDate)
+    ) // Sort from recent to oldest
+    .slice(0, 6); // Get the first 6 items
 
   return (
     <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
@@ -28,16 +46,16 @@ const MyPendingRequest = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            My Pending Requests
+            My Monthly Requests
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            View the list of all your asset requests that are still pending
-            approval.
+            View the asset requests made over the past month in reverse
+            chronological order.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {pendingRequests.map((request, index) => (
+          {recentRequests.map((request, index) => (
             <motion.div
               key={request._id}
               initial={{ opacity: 0, y: 20 }}
@@ -118,4 +136,4 @@ const MyPendingRequest = () => {
   );
 };
 
-export default MyPendingRequest;
+export default MyMonthlyRequest;

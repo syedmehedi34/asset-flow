@@ -12,6 +12,8 @@ import PendingRequests from "../PendingRequest";
 import PieChartSection from "../PieChartSection";
 import RecentAssigned from "../RecentAssigned";
 import TopRequested from "./TopRequested";
+import MyMonthlyRequest from "../MyMonthlyRequest";
+import Notice from "../Notice";
 
 const Home = () => {
   // const [isRole] = useRole();
@@ -60,8 +62,11 @@ const Home = () => {
             <ContactDeveloper></ContactDeveloper>
           </>
         ) : (
-          <MyPending></MyPending>
-          // <h1>hello</h1>
+          <>
+            <MyPending></MyPending>
+            <MyMonthlyRequest></MyMonthlyRequest>
+            <Notice></Notice>
+          </>
         )}
       </div>
     </>
