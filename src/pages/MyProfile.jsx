@@ -7,6 +7,7 @@ import useAuth from "../hooks/useAuth";
 import Swal from "sweetalert2";
 import useRole from "../hooks/useRole";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { Helmet } from "react-helmet-async";
 
 const MyProfile = () => {
   const { user, updateUserProfile, setUser } = useAuth();
@@ -131,50 +132,55 @@ const MyProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-24">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="container mx-auto px-4 max-w-4xl"
-      >
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Company Banner */}
-          <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600 ">
-            <div className="h-fit absolute left-1/2 transform transition -translate-x-1/2 bottom-0">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="relative group">
-                  <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
+    <>
+      <Helmet>
+        <title>AssetFlow | Profile</title>
+      </Helmet>
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="container mx-auto px-4 max-w-4xl"
+        >
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            {/* Company Banner */}
+            <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600 ">
+              <div className="h-fit absolute left-1/2 transform transition -translate-x-1/2 bottom-0">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <div className="relative group">
+                    <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
+                      <img
+                        src={profileImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <label
+                      htmlFor="profile-upload"
+                      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    >
+                      <Camera className="w-8 h-8 text-white" />
+                    </label>
+                    <input
+                      type="file"
+                      id="profile-upload"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
                     />
                   </div>
-                  <label
-                    htmlFor="profile-upload"
-                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                  >
-                    <Camera className="w-8 h-8 text-white" />
-                  </label>
-                  <input
-                    type="file"
-                    id="profile-upload"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
-          </div>
 
-          {/* Company Info */}
-          {/* <motion.div
+            {/* Company Info */}
+            {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -195,76 +201,77 @@ const MyProfile = () => {
             </div>
           </motion.div> */}
 
-          {/* Profile Form */}
-          <div className="px-8 py-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <input
-                    {...register("fullName", {
-                      required: "Full name is required",
-                    })}
-                    type="text"
-                    defaultValue={user.displayName}
-                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                {errors.fullName && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.fullName.message}
-                  </p>
-                )}
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <input
-                    {...register("email")}
-                    type="email"
-                    defaultValue={user?.email}
-                    readOnly
-                    className="pl-10 w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                className="flex justify-end"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg"
+            {/* Profile Form */}
+            <div className="px-8 py-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
                 >
-                  <Pencil className="w-5 h-5 mr-2" />
-                  Update Profile
-                </motion.button>
-              </motion.div>
-            </form>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                    <input
+                      {...register("fullName", {
+                        required: "Full name is required",
+                      })}
+                      type="text"
+                      defaultValue={user.displayName}
+                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.fullName && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.fullName.message}
+                    </p>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                    <input
+                      {...register("email")}
+                      type="email"
+                      defaultValue={user?.email}
+                      readOnly
+                      className="pl-10 w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
+                    />
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex justify-end"
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg"
+                  >
+                    <Pencil className="w-5 h-5 mr-2" />
+                    Update Profile
+                  </motion.button>
+                </motion.div>
+              </form>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </>
   );
 };
 

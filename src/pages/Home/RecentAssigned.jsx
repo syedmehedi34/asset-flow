@@ -46,10 +46,10 @@ const recentAssignments = [
 ];
 
 const RecentAssigned = () => {
-  // todo : need to fetch the data here and make the data dynamic
-  useEffect(() => {
-    console.log("fetch data");
-  }, []);
+  // // todo : need to fetch the data here and make the data dynamic
+  // useEffect(() => {
+  //   // console.log("fetch data");
+  // }, []);
 
   //?
   // const [assetDistributionData] = useAssetDistributionData();
