@@ -52,7 +52,7 @@ export default function ContactDeveloper() {
                   <div>
                     <p className="text-sm text-gray-600">Email Us</p>
                     <p className="font-medium text-gray-900">
-                      support@assetmanager.com
+                      syedmehedi34@gmail.com
                     </p>
                   </div>
                 </motion.div>
@@ -64,9 +64,7 @@ export default function ContactDeveloper() {
                   <Phone className="w-5 h-5 text-purple-600 mr-4" />
                   <div>
                     <p className="text-sm text-gray-600">Call Us</p>
-                    <p className="font-medium text-gray-900">
-                      +1 (555) 123-4567
-                    </p>
+                    <p className="font-medium text-gray-900">+8801712345678</p>
                   </div>
                 </motion.div>
 
@@ -106,7 +104,7 @@ export default function ContactDeveloper() {
                   type="text"
                   id="name"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  placeholder="John Doe"
+                  placeholder="Mr. Tom"
                 />
               </div>
 
@@ -121,7 +119,7 @@ export default function ContactDeveloper() {
                   type="email"
                   id="email"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  placeholder="john@company.com"
+                  placeholder="tom@company.com"
                 />
               </div>
 

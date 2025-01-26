@@ -10,6 +10,7 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
+import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 
 // Sample data - in a real app, this would come from my backend
 const pendingRequests = [
@@ -63,25 +64,34 @@ const pendingRequests = [
   },
 ];
 
-const PendingRequests = ({ assetDistributionData }) => {
+const PendingRequests = () => {
+  const [assetDistributionData] = useAssetDistributionData();
   const data = assetDistributionData.slice(0, 5);
+
   return (
-    <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+    <section className="pt-32 pb-20 bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-left mb-16 flex items-center justify-between"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Pending Asset Requests
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Track and manage incoming asset requests from your team members in
-            real-time
-          </p>
+          <div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Pending Asset Requests
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Track and manage incoming asset requests from your team members in
+              real-time
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5">
+              Total Pending : {assetDistributionData?.length}
+            </h3>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -146,6 +156,7 @@ const PendingRequests = ({ assetDistributionData }) => {
                 </div>
               </div>
 
+              {/* // todo need to add functions to this button  */}
               <div className="mt-6 flex justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}

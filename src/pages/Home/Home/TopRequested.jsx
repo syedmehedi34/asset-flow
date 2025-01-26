@@ -4,8 +4,6 @@ import { Calendar, Users, Archive, TrendingUp, ArrowRight } from "lucide-react";
 import useAssetDistributionData from "../../../hooks/useAssetDistributionData";
 const TopRequested = () => {
   const [assetDistributionData] = useAssetDistributionData();
-  // console.log(assetDistributionData);
-
   const countAssetIDs = assetDistributionData.reduce((acc, item) => {
     acc[item.assetID] = (acc[item.assetID] || 0) + 1;
     return acc;
@@ -18,43 +16,8 @@ const TopRequested = () => {
     }))
     .sort((a, b) => countAssetIDs[b.assetID] - countAssetIDs[a.assetID]);
 
-  // Log the result
-  console.log(sortedData);
-  //
-  const topRequestedItems = [
-    {
-      id: 1,
-      name: "MacBook Pro M2",
-      addedDate: "2024-01-15",
-      category: "Returnable",
-      quantity: 25,
-      usersCount: 18,
-    },
-    {
-      id: 2,
-      name: "Ergonomic Chair",
-      addedDate: "2024-01-20",
-      category: "Returnable",
-      quantity: 30,
-      usersCount: 22,
-    },
-    {
-      id: 3,
-      name: "Wireless Keyboard",
-      addedDate: "2024-01-25",
-      category: "Returnable",
-      quantity: 40,
-      usersCount: 35,
-    },
-    {
-      id: 4,
-      name: "Premium Notebooks",
-      addedDate: "2024-02-01",
-      category: "Non-returnable",
-      quantity: 150,
-      usersCount: 45,
-    },
-  ];
+  // console.log(sortedData);
+
   return (
     <div className="mt-10">
       <motion.div
@@ -73,15 +36,14 @@ const TopRequested = () => {
               Most frequently requested assets across the organization
             </p>
           </div>
-          <motion.a
-            href="/inventory"
+          <motion.p
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
           >
             View All
             <ArrowRight className="ml-1 w-4 h-4" />
-          </motion.a>
+          </motion.p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -92,7 +54,7 @@ const TopRequested = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-5"
+              className="bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow p-5"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">

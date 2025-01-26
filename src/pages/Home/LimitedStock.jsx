@@ -50,7 +50,7 @@ const LimitedStock = () => {
     usePaginationFunction(filteredAssets, 6);
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Limited Stock Items */}
         <motion.div
@@ -68,15 +68,14 @@ const LimitedStock = () => {
                 Assets that require immediate attention due to low inventory
               </p>
             </div>
-            <motion.a
-              href="/inventory"
+            <motion.p
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
             >
               View All
               <ArrowRight className="ml-1 w-4 h-4" />
-            </motion.a>
+            </motion.p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

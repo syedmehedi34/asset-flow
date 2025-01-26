@@ -7,7 +7,7 @@ import {
   ArrowUpRight,
   ArrowRight,
 } from "lucide-react";
-import useAssetDistributionData from "../../hooks/useAssetDistributionData";
+import { useEffect } from "react";
 
 // Sample data - in a real app, this would come from your backend
 const recentAssignments = [
@@ -46,17 +46,25 @@ const recentAssignments = [
 ];
 
 const RecentAssigned = () => {
-  const [
-    assetDistributionData,
-    loadingAssetDistributionData,
-    refetchAssetDistributionData,
-    searchText,
-    setSearchText,
-    category,
-    setCategory,
-  ] = useAssetDistributionData();
-  console.log("hello");
+  // todo : need to fetch the data here and make the data dynamic
+  useEffect(() => {
+    console.log("fetch data");
+  }, []);
 
+  //?
+  // const [assetDistributionData] = useAssetDistributionData();
+  // console.log(assetDistributionData);
+
+  // const oneMonthAgo = new Date();
+  // oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1); // Get the date one month ago
+
+  // const recentRequests = assetDistributionData.filter((asset) => {
+  //   const approvalDate = new Date(asset.approvalDate);
+  //   return approvalDate > oneMonthAgo && approvalDate <= new Date();
+  // });
+  // console.log(recentRequests);
+  ///?
+  //
   return (
     <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
