@@ -47,7 +47,8 @@ const Home = () => {
             <LimitedStock></LimitedStock>
 
             <PieChartSection></PieChartSection>
-            <RecentAssigned></RecentAssigned>
+            {/* <RecentAssigned></RecentAssigned> */}
+            <Notice></Notice>
             <ContactDeveloper></ContactDeveloper>
           </>
         ) : (
