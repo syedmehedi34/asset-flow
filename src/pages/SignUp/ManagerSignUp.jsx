@@ -182,7 +182,7 @@ const ManagerSignUp = () => {
       </Helmet>
 
       <div className="">
-        <div className="w-3/4 mx-auto  bg-base-200 mt-24">
+        <div className="md:w-3/4 w-full mx-auto  bg-base-200 mt-24">
           {/* Header */}
           <div className="text-center mb-1 pt-10">
             <motion.h1
