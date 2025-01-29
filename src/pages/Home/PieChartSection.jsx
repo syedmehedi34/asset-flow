@@ -38,10 +38,10 @@ const PieChartSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4">
             Asset Distribution Overview
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
             Understanding the balance between returnable and non-returnable
             assets in your inventory
           </p>
@@ -62,7 +62,7 @@ const PieChartSection = () => {
                   <Package2 className="w-6 h-6 text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className="md:text-2xl font-bold text-gray-900">
                     Asset Insights
                   </h3>
                   <p className="text-gray-600">
