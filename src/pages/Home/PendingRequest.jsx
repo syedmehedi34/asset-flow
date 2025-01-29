@@ -76,19 +76,19 @@ const PendingRequests = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-left mb-16 flex items-center justify-between"
+          className="text-left mb-16 flex flex-col lg:flex-row lg:items-center justify-between"
         >
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4">
               Pending Asset Requests
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
               Track and manage incoming asset requests from your team members in
               real-time
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5">
+            <h3 className="lg:text-xl mt-5 lg:mt-0 font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5 w-fit">
               Total Pending : {assetDistributionData?.length}
             </h3>
           </div>
@@ -115,12 +115,14 @@ const PendingRequests = () => {
                     </h3>
                     <div className="flex items-center text-gray-500">
                       <Mail className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{request?.employeeEmail}</span>
+                      <span className="text-[12px] md:text-sm">
+                        {request?.employeeEmail}
+                      </span>
                     </div>
                   </div>
                 </div>
                 <span
-                  className={`px-4 py-1 rounded-full text-sm font-medium ${
+                  className={`px-4 py-1 rounded-full text-sm font-medium hidden md:block ${
                     request.assetType === "Returnable"
                       ? "bg-purple-100 text-purple-700"
                       : "bg-orange-100 text-orange-700"
