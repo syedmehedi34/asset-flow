@@ -72,7 +72,7 @@ const Notice = () => {
   };
 
   return (
-    <div className="my-12 p-6 max-w-7xl mx-auto">
+    <div className="my-12 p-2 md:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -81,10 +81,10 @@ const Notice = () => {
         className="text-left mb-16 "
       >
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4">
             Calender and Notices
           </h2>
-          <p className="text-xl text-gray-600 ">
+          <p className="text-lg lg:text-xl text-gray-600 ">
             View the list of all your notice and holidays in the company.
           </p>
         </div>
