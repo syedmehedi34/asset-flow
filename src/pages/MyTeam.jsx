@@ -43,7 +43,7 @@ const MyTeam = () => {
           className="bg-white rounded-2xl shadow-xl p-8"
         >
           {/* Header Section */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col lg:flex-row gap-5 justify-between items-center mb-8">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -53,7 +53,7 @@ const MyTeam = () => {
               <div>
                 <Users className="w-8 h-8 text-blue-600" />
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+              <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
                 Team Management
               </h1>
             </motion.div>
@@ -64,15 +64,15 @@ const MyTeam = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="relative"
+                className="relative flex items-center"
               >
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
                   onChange={(e) => setSearchQuery(e.target.value)}
                   value={searchQuery}
                   type="text"
-                  placeholder="Search team members..."
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all w-64"
+                  placeholder="Search.."
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all max-w-40 lg:max-w-60"
                 />
               </motion.div>
 
@@ -80,7 +80,7 @@ const MyTeam = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm lg:text-base"
               >
                 <Plus className="w-5 h-5" />
                 <span>Add Member</span>
