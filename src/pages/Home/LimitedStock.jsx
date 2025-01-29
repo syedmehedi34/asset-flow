@@ -59,19 +59,19 @@ const LimitedStock = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-2">
                 Limited Stock Items
               </h2>
-              <p className="text-gray-600">
+              <p className="text-lg lg:text-xl text-gray-600">
                 Assets that require immediate attention due to low inventory
               </p>
             </div>
             <motion.p
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
+              className="flex items-center text-blue-600 hover:text-blue-700 font-medium mt-4 lg:mt-0"
             >
               View All
               <ArrowRight className="ml-1 w-4 h-4" />
