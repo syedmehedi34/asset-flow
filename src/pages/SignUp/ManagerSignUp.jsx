@@ -530,6 +530,7 @@ const ManagerSignUp = () => {
               </motion.button>
             </motion.div>
           </form>
+
           {/* // ? payment portion  */}
           {selectedPackage && (
             <div>
@@ -539,14 +540,16 @@ const ManagerSignUp = () => {
                 </h2>
                 <p className="text-gray-600">
                   Please complete the payment to register, and{" "}
-                  <span className="font-bold underline">don't refresh</span> the
-                  page.
+                  <span className="font-bold underline text-purple-500">
+                    don't refresh
+                  </span>{" "}
+                  the page.
                 </p>
               </div>
               <div className="flex justify-center mt-8">
                 <div className="w-3/4">
                   <div className="bg-white shadow-md rounded-lg p-6">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between  mb-4 gap-4">
                       <div className="flex items-center space-x-4">
                         <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
                           <User className="h-8 w-8 text-gray-400" />

@@ -129,7 +129,7 @@ const AddAsset = () => {
               </div>
 
               {/* Product Quantity */}
-              <div className="w-80">
+              <div className="w-35 md:w-80">
                 <Typography
                   variant="small"
                   color="blue-gray"
