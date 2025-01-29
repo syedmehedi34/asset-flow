@@ -25,19 +25,19 @@ const MyPendingRequest = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-left mb-16 flex items-center justify-between"
+          className="text-left mb-16 flex flex-col lg:flex-row lg:items-center justify-between"
         >
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4">
               My Pending Requests
             </h2>
-            <p className="text-xl text-gray-600 ">
+            <p className="text-lg lg:text-xl text-gray-600 ">
               View the list of all your asset requests that are still pending
               approval.
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5">
+            <h3 className="lg:text-xl mt-5 lg:mt-0 font-bold text-blue-gray-800 p-2 bg-blue-100 rounded-full px-5 w-fit">
               Total Pending : {pendingRequests?.length}
             </h3>
           </div>
