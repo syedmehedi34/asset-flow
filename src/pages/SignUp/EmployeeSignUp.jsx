@@ -111,7 +111,7 @@ const EmployeeSignUp = () => {
       </Helmet>
 
       <div className="mt-16 bg-base-200">
-        <div className="w-3/4 mx-auto  bg-white shadow-2xl mt-10">
+        <div className="w-full md:w-3/4 mx-auto  bg-white shadow-2xl mt-10">
           {/* header  */}
           <div className="text-center mb-1 pt-10">
             <motion.h1
