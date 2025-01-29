@@ -360,7 +360,7 @@ const AddEmployee = () => {
                 {paginatedItem?.map((user) => (
                   <div
                     key={user?._id}
-                    className="border shadow-sm flex items-center space-x-6 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
+                    className="border shadow-sm flex flex-col md:flex-row md:items-center space-x-6 p-4 hover:bg-gray-50 rounded-lg transition-colors duration-150"
                   >
                     <div>
                       <input
@@ -379,7 +379,7 @@ const AddEmployee = () => {
                         className="h-14 w-14 border border-blue-gray-500 rounded-full object-cover"
                       />
                     </div>
-                    <div className="flex-1 space-y-1">
+                    <div className="flex-1 space-y-1 mt-3 md:mt-0">
                       <p className="font-medium text-gray-800">
                         <span className="font-semibold text-gray-700">
                           Employee Name :
@@ -396,7 +396,8 @@ const AddEmployee = () => {
                       </p>
                     </div>
 
-                    <div className="space-x-1">
+                    <div className="space-x-1 mt-5 md:mt-0">
+                      {/* // todo : need to work for this button (not required for assignment)  */}
                       <button className="btn normal-case font-normal min-w-0 min-h-0 h-10 text-white hover:text-white bg- btn-active hover:bg-indigo-700 border-indigo-600">
                         Details
                       </button>
