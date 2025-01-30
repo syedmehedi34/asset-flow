@@ -60,7 +60,7 @@ const EmployeeSignUp = () => {
     createUser(data.email, data.password).then((result) => {
       const loggedUser = result.user;
       console.log(loggedUser);
-      updateUserProfile(data.name)
+      updateUserProfile(data.name, resultUserImage.data.url)
         .then(() => {
           // create user entry in the database
           const userInfo = {
