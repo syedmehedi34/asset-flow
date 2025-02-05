@@ -1,3 +1,6 @@
+<img src="https://i.ibb.co.com/Mxkn3vRm/Screenshot-2025-02-05-at-10-16-27.png" alt="Screenshot" width="100%">
+
+
 # Project Name : _AssetFlow - A Asset Management website_
 
 ## Project Requirements : https://docs.google.com/document/d/1lEOV-lqLKOEfGFN6QTJBAUCHxU5kpSw6TMDuDYiz9uc/edit?tab=t.0
@@ -219,5 +222,5 @@ Here’s the complete list of **NPM packages** used in your project, categorized
 
 ## Contributor
 
-- **Name** - Syed Meehdi Hasan
+- **Name** - Syed Mehedi Hasan
 - **Email** - syedmehedi34@gmail.com
