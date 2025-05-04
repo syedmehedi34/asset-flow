@@ -8,7 +8,6 @@ import useRole from "../../hooks/useRole";
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open for large devices
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024); // Detect mobile
-  // const [userRole, setUserRole] = useState(null);
   const { user, loading, logOut } = useAuth();
   const navigate = useNavigate();
 
@@ -20,23 +19,22 @@ const Dashboard = () => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      setIsSidebarOpen(!mobile); // Open by default on large, closed (icons only) on mobile
+      setIsSidebarOpen(!mobile); // Open by default on large, closed on mobile
     };
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Wait for Firebase auth state and set dummy role
+  // Wait for Firebase auth state and set role
   useEffect(() => {
     if (loading || isRoleLoading) return; // Wait until auth state is resolved
     if (user === null) {
       navigate("/");
       return;
     }
-    // setUserRole("hr_manager");
     userRole = isRole?.role;
-  }, [user, navigate, loading]);
+  }, [user, navigate, loading, isRoleLoading, isRole]);
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -54,18 +52,18 @@ const Dashboard = () => {
 
   // Main dashboard layout
   return (
-    <div className="flex min-h-screen relative">
-      {/* Sidebar: Drawer on mobile, fixed on large devices */}
+    <div className="min-h-screen relative">
+      {/* Sidebar: Fixed on desktop, drawer on mobile */}
       <div
         className={`${
           isMobile
-            ? `${
+            ? `absolute top-0 left-0 h-full z-20 ${
                 isSidebarOpen ? "w-64" : "w-16"
-              } absolute top-0 left-0 h-full z-20`
-            : `${
+              }`
+            : `fixed top-0 left-0 h-full z-10 ${
                 isSidebarOpen ? "w-64" : "w-16"
-              } fixed top-0 left-0 h-full z-10`
-        } bg-gray-800 text-white transitionall duration300 flex flex-col overflow-hidden`}
+              }`
+        } bg-gray-800 text-white transition-all duration-300 flex flex-col overflow-hidden`}
       >
         <Sidebar
           isSidebarOpen={isSidebarOpen}
@@ -74,11 +72,12 @@ const Dashboard = () => {
           isMobile={isMobile}
         />
       </div>
-      {/* Main content: Adjusts opacity on mobile when sidebar is open */}
+
+      {/* Main content */}
       <div
-        className={`flex-1 transition-all duration-300 ${
-          isMobile ? "ml-0" : isSidebarOpen ? "ml-64" : "ml-16"
-        } ${isMobile && isSidebarOpen ? "opacity-50" : "opacity-100"}`}
+        className={`min-h-screen transition-all duration-300 ${
+          isMobile ? "ml-16" : isSidebarOpen ? "ml-64" : "ml-16"
+        }`}
       >
         <Topbar
           isSidebarOpen={isSidebarOpen}
@@ -86,7 +85,7 @@ const Dashboard = () => {
           user={user}
           logOut={logOut}
         />
-        <div className="overflow-y-auto h-[calc(100vh-100px)] dark:bg-[#0B0716]">
+        <div className="overflow-y-auto h-[calc(100vh-64px)] dark:bg-[#0B0716]">
           <Outlet />
           {/* Show overview when on /dashboard */}
           {!window.location.pathname.includes("/dashboard/") && (
@@ -102,7 +101,7 @@ const Dashboard = () => {
                   <p className="text-2xl">45</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow">
-                  <h2 className="text-xl font-semibold"> Assets</h2>
+                  <h2 className="text-xl font-semibold">Assets</h2>
                   <p className="text-2xl">12</p>
                 </div>
               </div>
@@ -110,6 +109,7 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
       {/* Overlay for mobile when sidebar is open */}
       {isMobile && isSidebarOpen && (
         <div
