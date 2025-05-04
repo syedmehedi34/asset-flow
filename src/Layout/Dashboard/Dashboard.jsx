@@ -5,30 +5,35 @@ import Sidebar from "./Sidebar";
 import useAuth from "../../hooks/useAuth";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open for large devices
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Detect mobile
   const [userRole, setUserRole] = useState(null);
   const { user, loading, logOut } = useAuth();
   const navigate = useNavigate();
-  console.log(user);
+
+  // Handle window resize to detect mobile/large device
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      setIsSidebarOpen(!mobile); // Open by default on large, closed (icons only) on mobile
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Wait for Firebase auth state and set dummy role
   useEffect(() => {
-    // If user is loading
-    if (loading) {
-      return; // Wait until auth state is resolved
-    }
-
-    // Auth state is resolved, check if user is logged in
+    if (loading) return; // Wait until auth state is resolved
     if (user === null) {
       navigate("/");
       return;
     }
-
-    // User is logged in, set dummy role
     setUserRole("hr_manager"); // Customize here: "employee", "hr_manager", or "admin"
   }, [user, navigate, loading]);
 
-  // Toggle sidebar visibility (for mobile)
+  // Toggle sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
@@ -48,23 +53,23 @@ const Dashboard = () => {
       {/* Sidebar: Full height, fixed width, starts from top */}
       <div
         className={`${
-          isSidebarOpen ? "w-64" : "w-0 md:w-64"
+          isSidebarOpen ? "w-64" : "w-16"
         } bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 h-full overflow-hidden z-10`}
       >
         <Sidebar
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
           userRole={userRole}
+          isMobile={isMobile}
         />
       </div>
       {/* Main content: Takes remaining space, adjusts for sidebar width */}
       <div
         className={`flex-1 transition-all duration-300 ${
-          isSidebarOpen ? "md:ml-64" : "md:ml-64"
+          isSidebarOpen ? "ml-64" : "ml-16"
         }`}
       >
         <Topbar
-          toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
           userRole={userRole}
           user={user}
@@ -72,7 +77,7 @@ const Dashboard = () => {
         />
         <div className="overflow-y-auto h-[calc(100vh-100px)] dark:bg-[#0B0716]">
           <Outlet />
-          {/* Show overview when on /dashboard (customize cards below) */}
+          {/* Show overview when on /dashboard */}
           {!window.location.pathname.includes("/dashboard/") && (
             <div className="p-6">
               <h1 className="text-3xl font-bold mb-4">Dashboard Overview</h1>

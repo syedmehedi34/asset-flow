@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  FaBars,
-  FaSun,
-  FaMoon,
-  FaBell,
-  FaSearch,
-  FaTimes,
-} from "react-icons/fa";
+import { FaSun, FaMoon, FaBell, FaSearch } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const Topbar = ({ toggleSidebar, isSidebarOpen, userRole, user, logOut }) => {
+const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
   const [darkMode, setDarkMode] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -52,29 +45,6 @@ const Topbar = ({ toggleSidebar, isSidebarOpen, userRole, user, logOut }) => {
             className="h-14 md:h-14 object-contain"
           />
         </motion.div>
-        <motion.button
-          onClick={toggleSidebar}
-          className={`text-white focus:outline-none md:hidden p-2 rounded-full transition-all duration-300 ${
-            isSidebarOpen ? "bg-red-500" : ""
-          }`}
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.8, rotate: 180 }}
-          aria-label="Toggle Sidebar"
-        >
-          <motion.div
-            key={isSidebarOpen ? "close" : "menu"}
-            initial={{ rotate: 0, opacity: 0 }}
-            animate={{ rotate: 360, opacity: 1 }}
-            exit={{ rotate: -360, opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-          >
-            {isSidebarOpen ? (
-              <FaTimes className="text-3xl" />
-            ) : (
-              <FaBars className="text-3xl" />
-            )}
-          </motion.div>
-        </motion.button>
       </div>
 
       <div className="hidden md:flex flex-1 mx-6">

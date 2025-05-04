@@ -6,9 +6,15 @@ import {
   FaUsers,
   FaBox,
   FaFileAlt,
+  FaBars,
 } from "react-icons/fa";
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole = "employee" }) => {
+const Sidebar = ({
+  isSidebarOpen,
+  toggleSidebar,
+  userRole = "employee",
+  isMobile,
+}) => {
   const allNavItems = [
     {
       path: "/dashboard",
@@ -69,27 +75,27 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole = "employee" }) => {
   return (
     <div
       className={`${
-        isSidebarOpen ? "w-64" : "w-0 md:w-64"
-      } bg-gray-800 text-white transition-all duration-300 flex flex-col justify-between h-[calc(100vh-100px)] overflow-hidden`}
+        isSidebarOpen ? "w-64" : "w-16"
+      } bg-gray-800 text-white transition-all duration-300 flex flex-col h-full overflow-hidden`}
     >
-      <div className="pl-4 mt-4">
+      <div className="pl-4 mt-4 flex-1">
         <div className="p-4 flex items-center justify-between">
           <h1
             className={`${
-              isSidebarOpen ? "block" : "hidden md:block"
+              isSidebarOpen ? "block" : "hidden"
             } text-2xl font-bold`}
           >
             Dashboard
           </h1>
-          <button className="md:hidden text-white" onClick={toggleSidebar}>
-            {isSidebarOpen ? "✕" : "☰"}
+          <button className="text-white" onClick={toggleSidebar}>
+            <FaBars className="text-2xl" />
           </button>
         </div>
         <ul className="space-y-2">
           {navItems.map((item, index) => (
             <li key={index}>
               <NavLink
-                onClick={toggleSidebar}
+                onClick={() => isMobile && !isSidebarOpen && toggleSidebar()}
                 to={item.path}
                 end
                 className={({ isActive }) =>
@@ -101,9 +107,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole = "employee" }) => {
                 }
               >
                 <span className="text-xl">{item.icon}</span>
-                <span
-                  className={`${isSidebarOpen ? "block" : "hidden md:block"}`}
-                >
+                <span className={`${isSidebarOpen ? "block" : "hidden"}`}>
                   {item.label}
                 </span>
               </NavLink>
