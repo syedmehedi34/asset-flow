@@ -1,11 +1,17 @@
 import { NavLink } from "react-router-dom";
 import {
+  FaBars,
   FaTachometerAlt,
   FaUser,
+  FaBoxOpen,
   FaUsers,
-  FaBox,
-  FaFileAlt,
-  FaBars,
+  FaClipboardList,
+  FaListAlt,
+  FaPlusSquare,
+  FaFileSignature,
+  FaAddressBook,
+  FaUserPlus,
+  FaUsersCog,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -27,7 +33,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
     {
       path: "/dashboard/my_assets",
       label: "My Assets",
-      icon: <FaBox />,
+      icon: <FaBoxOpen />,
       roles: ["employee"],
     },
     {
@@ -39,51 +45,51 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
     {
       path: "/dashboard/request_assets",
       label: "Request Assets",
-      icon: <FaFileAlt />,
+      icon: <FaClipboardList />,
       roles: ["employee"],
     },
     //* hr_manager routes
     {
       path: "/dashboard/assets_list",
       label: "Asset List",
-      icon: <FaFileAlt />,
+      icon: <FaListAlt />,
       roles: ["hr_manager"],
     },
     {
       path: "/dashboard/add_asset",
       label: "Add an Asset",
-      icon: <FaFileAlt />,
+      icon: <FaPlusSquare />,
       roles: ["hr_manager"],
     },
     {
       path: "/dashboard/all_requests",
       label: "All Requests",
-      icon: <FaFileAlt />,
+      icon: <FaFileSignature />,
       roles: ["hr_manager"],
     },
     {
       path: "/dashboard/employee_list",
       label: "Employee List",
-      icon: <FaFileAlt />,
+      icon: <FaAddressBook />,
       roles: ["hr_manager"],
     },
     {
       path: "/dashboard/add_employee",
       label: "Add Employee",
-      icon: <FaFileAlt />,
+      icon: <FaUserPlus />,
       roles: ["hr_manager"],
     },
     //* admin routes
     {
       path: "all-users",
       label: "All Users",
-      icon: <FaUsers />,
+      icon: <FaUsersCog />,
       roles: ["admin"],
     },
     {
       path: "all-assets",
       label: "All Assets",
-      icon: <FaBox />,
+      icon: <FaBoxOpen />,
       roles: ["admin"],
     },
   ];
@@ -101,19 +107,19 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       } bg-gradient-to-b from-teal-900 to-teal-950 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-lg`}
     >
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 flex items-center justify-between border-b border-blue-700">
+        <div className="p-4 flex items-center justify-between border-b border-teal-700">
           <h1
             className={`${
               isSidebarOpen ? "block" : "hidden"
-            } text-xl font-bold text-blue-200`}
+            } text-xl font-bold text-teal-100`}
           >
-            AssetSync
+            AssetFlow
           </h1>
           <button
             className="p-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
             onClick={toggleSidebar}
           >
-            <FaBars className="text-lg text-blue-300" />
+            <FaBars className="text-lg text-teal-100" />
           </button>
         </div>
         <ul className="mt-4 space-y-1 px-2">
@@ -148,12 +154,12 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
           ))}
         </ul>
       </div>
-      <div className="p-4 border-t border-blue-700">
+      <div className="p-4 border-t border-teal-700">
         <button
           className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-200 w-full ${
             isSidebarOpen
-              ? "text-blue-200 hover:bg-blue-700 hover:text-white"
-              : "justify-center text-blue-200 hover:bg-blue-700 hover:text-white"
+              ? "text-teal-100 hover:bg-teal-500 hover:text-white"
+              : "justify-center text-teal-200 hover:bg-teal-500 hover:text-white"
           }`}
         >
           <FaSignOutAlt className="text-lg" />
@@ -168,9 +174,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
         <div
           className={`${
             isSidebarOpen ? "block" : "hidden"
-          } mt-2 text-center text-xs text-blue-300`}
+          } mt-2 text-center text-xs text-teal-100`}
         >
-          © 2025 AssetSync Solutions
+          © 2025 AssetFlow Solutions
         </div>
       </div>
     </div>
