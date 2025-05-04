@@ -26,23 +26,6 @@ const Dashboard = () => {
 
     // User is logged in, set dummy role
     setUserRole("hr_manager"); // Customize here: "employee", "hr_manager", or "admin"
-
-    // Original API call (commented out, uncomment to fetch real data)
-    /*
-    import useAxiosPublic from "../../hooks/useAxiosPublic";
-    const axiosPublic = useAxiosPublic();
-    const fetchUserRole = async () => {
-      try {
-        const response = await axiosPublic.get(`/users/getUser/${user.email}`);
-        setUserRole(response.data.role || "employee");
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
-        setIsLoading(false);
-      }
-    };
-    fetchUserRole();
-    */
   }, [user, navigate, loading]);
 
   // Toggle sidebar visibility (for mobile)
@@ -61,27 +44,33 @@ const Dashboard = () => {
 
   // Main dashboard layout
   return (
-    <div>
-      <Topbar
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-        userRole={userRole}
-        user={user}
-        logOut={logOut}
-      />
-      <div style={{ height: "calc(100vh - 100px)" }} className="flex">
-        <div
-          className={`${
-            isSidebarOpen ? "w-64" : "w-0 md:w-64"
-          } bg-gray-800 text-white transition-all duration-300 flex flex-col overflow-hidden`}
-        >
-          <Sidebar
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={toggleSidebar}
-            userRole={userRole}
-          />
-        </div>
-        <div className="flex-1 overflow-y-auto h-full dark:bg-[#0B0716]">
+    <div className="flex min-h-screen">
+      {/* Sidebar: Full height, fixed width, starts from top */}
+      <div
+        className={`${
+          isSidebarOpen ? "w-64" : "w-0 md:w-64"
+        } bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 h-full overflow-hidden z-10`}
+      >
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          userRole={userRole}
+        />
+      </div>
+      {/* Main content: Takes remaining space, adjusts for sidebar width */}
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarOpen ? "md:ml-64" : "md:ml-64"
+        }`}
+      >
+        <Topbar
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+          userRole={userRole}
+          user={user}
+          logOut={logOut}
+        />
+        <div className="overflow-y-auto h-[calc(100vh-100px)] dark:bg-[#0B0716]">
           <Outlet />
           {/* Show overview when on /dashboard (customize cards below) */}
           {!window.location.pathname.includes("/dashboard/") && (
