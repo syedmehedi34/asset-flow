@@ -151,7 +151,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "my-profile",
-        element: <div>Hello</div>,
+        element: <MyProfile></MyProfile>,
+      },
+      {
+        path: "my_assets",
+        element: <MyAssets></MyAssets>,
+      },
+      {
+        path: "my_team",
+        element: <MyTeam></MyTeam>,
+      },
+      {
+        path: "request_assets",
+        element: <AssetRequest></AssetRequest>,
       },
     ],
   },
