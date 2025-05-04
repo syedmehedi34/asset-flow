@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaSun, FaMoon, FaBell, FaSearch } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -9,6 +9,9 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [currentNews, setCurrentNews] = useState(0);
   const [imageError, setImageError] = useState(false);
+
+  const notificationRef = useRef(null);
+  const profileRef = useRef(null);
 
   const newsItems = [
     "📊 New Asset Reports Available!",
@@ -27,6 +30,23 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
     return () => clearInterval(interval);
   }, [newsItems.length]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target) &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const getInitial = (name) => {
     return name ? name.charAt(0).toUpperCase() : "U";
   };
@@ -35,26 +55,22 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
     setImageError(true);
   };
 
-  return (
-    <div className="h-auto w-full flex items-center justify-between px-6 py-4 shadow-md bg-[#1B4D3E] backdrop-blur-md">
-      <div className="flex items-center space-x-4">
-        <motion.div className="flex items-center space-x-2">
-          <img
-            src="https://img.icons8.com/?size=100&id=fJ7hcfUGpKG7&format=png&color=000000"
-            alt="Logo"
-            className="h-14 md:h-14 object-contain"
-          />
-        </motion.div>
-      </div>
+  const modalVariants = {
+    hidden: { opacity: 0, y: -20, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -20, scale: 0.95 },
+  };
 
+  return (
+    <div className="h-auto w-full flex items-center justify-between px-6 py-4 shadow-md bg-teal-900 backdrop-blur-md">
       <div className="hidden md:flex flex-1 mx-6">
         <div className="relative w-full max-w-md">
           <input
             type="text"
             placeholder="Search assets, employees..."
-            className="w-full px-4 py-2 rounded-full bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="w-full px-4 py-2 rounded-full bg-teal-800 text-teal-100 placeholder-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
           />
-          <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70" />
+          <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-300" />
         </div>
       </div>
 
@@ -66,7 +82,7 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="text-sm sm:text-base font-medium text-white text-center w-full"
+            className="text-sm sm:text-base font-medium text-teal-100 text-center w-full"
           >
             {newsItems[currentNews]}
           </motion.div>
@@ -76,21 +92,28 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
       <div className="flex items-center space-x-4">
         <motion.button
           onClick={() => setDarkMode(!darkMode)}
-          className="text-white text-xl focus:outline-none"
+          className="text-teal-100 text-xl focus:outline-none hover:bg-teal-800 p-2 rounded-full transition-colors duration-300"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9, rotate: 180 }}
         >
           {darkMode ? <FaSun /> : <FaMoon />}
         </motion.button>
 
-        <motion.div className="relative" whileHover={{ scale: 1.05 }}>
+        <motion.div
+          ref={profileRef}
+          className="relative"
+          whileHover={{ scale: 1.05 }}
+        >
           <button
-            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            onClick={() => {
+              setShowProfileMenu(!showProfileMenu);
+              setShowNotifications(false);
+            }}
             className="flex items-center space-x-2 focus:outline-none"
           >
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 border-white">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 border-teal-300 transition-all duration-300 hover:border-teal-400">
               {imageError || !user?.photoURL ? (
-                <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white text-xl md:text-2xl font-bold">
+                <div className="w-full h-full bg-teal-600 flex items-center justify-center text-teal-100 text-xl md:text-2xl font-bold">
                   {getInitial(user?.displayName)}
                 </div>
               ) : (
@@ -106,7 +129,7 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
               )}
             </div>
             <div className="hidden md:flex">
-              <div className="text-white text-center md:text-left">
+              <div className="text-teal-100 text-center md:text-left">
                 <p className="text-sm md:text-lg font-medium">
                   {user?.displayName || "Guest User"}
                 </p>
@@ -119,28 +142,30 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
           <AnimatePresence>
             {showProfileMenu && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50"
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="absolute right-0 mt-2 w-48 bg-teal-800 rounded-lg shadow-xl z-50 border border-teal-700"
               >
                 <div className="p-4">
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-teal-100">
                     {user?.displayName || "Guest User"}
                   </p>
-                  <p className="text-xs text-gray-600">
-                    {userRole || "Employee"}
+                  <p className="text-xs text-teal-300">
+                    {userRole?.role || "Employee"}
                   </p>
-                  <div className="mt-2 space-y-2">
+                  <div className="mt-2 space-y-1">
                     <Link
                       to="/dashboard/my-profile"
-                      className="block text-sm text-gray-600 hover:bg-gray-100 p-2 rounded-lg"
+                      className="block text-sm text-teal-100 hover:bg-teal-700 p-2 rounded-lg transition-colors duration-200"
                     >
                       Profile
                     </Link>
                     <button
                       onClick={logOut}
-                      className="w-full text-left text-sm text-gray-600 hover:bg-gray-100 p-2 rounded-lg"
+                      className="w-full text-left text-sm text-teal-100 hover:bg-teal-700 p-2 rounded-lg transition-colors duration-200"
                     >
                       Logout
                     </button>
@@ -152,13 +177,17 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
         </motion.div>
 
         <motion.div
+          ref={notificationRef}
           className="relative"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
           <button
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="text-white text-xl focus:outline-none relative"
+            onClick={() => {
+              setShowNotifications(!showNotifications);
+              setShowProfileMenu(false);
+            }}
+            className="text-teal-100 text-xl focus:outline-none relative hover:bg-teal-800 p-2 rounded-full transition-colors duration-300"
           >
             <FaBell />
             <span className="absolute top-0 right-0 z-10 bg-red-500 text-white text-xs rounded-full px-1">
@@ -168,28 +197,30 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
           <AnimatePresence>
             {showNotifications && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50"
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="absolute right-0 mt-2 w-64 bg-teal-800 rounded-lg shadow-xl z-50 border border-teal-700"
               >
                 <div className="p-4">
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-teal-100">
                     Notifications
                   </p>
                   <div className="mt-2 space-y-2">
-                    <div className="p-2 bg-gray-100 rounded-lg">
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 bg-teal-700 rounded-lg hover:bg-teal-600 transition-colors duration-200">
+                      <p className="text-xs text-teal-100">
                         New asset request pending.
                       </p>
                     </div>
-                    <div className="p-2 bg-gray-100 rounded-lg">
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 emer bg-teal-700 rounded-lg hover:bg-teal-600 transition-colors duration-200">
+                      <p className="text-xs text-teal-100">
                         Employee profile updated.
                       </p>
                     </div>
-                    <div className="p-2 bg-gray-100 rounded-lg">
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 bg-teal-700 rounded-lg hover:bg-teal-600 transition-colors duration-200">
+                      <p className="text-xs text-teal-100">
                         System maintenance scheduled.
                       </p>
                     </div>
