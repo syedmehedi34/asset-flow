@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Main from "../Layout/Main";
 import Home from "../pages/Home/Home/Home";
 import Login from "../pages/Login/Login";
 import EmployeeSignUp from "../pages/SignUp/EmployeeSignUp";
@@ -18,11 +17,13 @@ import MyTeam from "../pages/MyTeam";
 import AssetRequest from "../pages/AssetRequest";
 import MyProfile from "../pages/MyProfile";
 import PaymentPage from "../pages/PaymentPage";
+import MainLayout from "../Layout/MainLayout";
 
 export const router = createBrowserRouter([
+  // main layout route
   {
     path: "/",
-    element: <Main></Main>,
+    element: <MainLayout></MainLayout>,
     errorElement: <Error></Error>,
     children: [
       {
@@ -144,4 +145,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  // dashboard route
 ]);
