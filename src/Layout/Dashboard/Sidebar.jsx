@@ -17,19 +17,12 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaTachometerAlt />,
       roles: ["employee", "hr_manager", "admin"],
     },
-    // {
-    //   path: "/",
-    //   label: "Home",
-    //   icon: <FaHome />,
-    //   roles: ["employee", "hr_manager", "admin"],
-    // },
     {
       path: "my-profile",
       label: "My Profile",
       icon: <FaUser />,
       roles: ["employee", "hr_manager", "admin"],
     },
-
     //* employee routes
     {
       path: "/dashboard/my_assets",
@@ -49,7 +42,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaFileAlt />,
       roles: ["employee"],
     },
-
     //* hr_manager routes
     {
       path: "/dashboard/assets_list",
@@ -81,7 +73,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaFileAlt />,
       roles: ["hr_manager"],
     },
-
     //* admin routes
     {
       path: "all-users",
@@ -106,23 +97,28 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
   return (
     <div
       className={`${
-        isSidebarOpen ? "w-64" : "w-16"
-      } bg-gray-800 text-white transition-all duration-300 flex flex-col h-full overflow-hidden`}
+        isSidebarOpen ? "w-72" : "w-20"
+      } bg-gradient-to-b from-slate-800 to-slate-700 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-2xl`}
     >
-      <div className="pl-4 mt-4 flex-1">
-        <div className="p-4 flex items-center justify-between">
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6 flex items-center justify-between border-b border-slate-600">
           <h1
             className={`${
               isSidebarOpen ? "block" : "hidden"
-            } text-2xl font-bold`}
+            } text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-200 to-teal-400 drop-shadow-md`}
           >
-            Dashboard
+            AssetSync
           </h1>
-          <button className="text-white" onClick={toggleSidebar}>
-            <FaBars className="text-2xl" />
+          <button
+            className={`rounded-full hover:bg-slate-600 transition-colors duration-200 ${
+              isSidebarOpen ? "pr-8" : "p-0"
+            }`}
+            onClick={toggleSidebar}
+          >
+            <FaBars className="text-xl text-slate-300" />
           </button>
         </div>
-        <ul className="space-y-2">
+        <ul className="mt-4 space-y-1 px-4">
           {navItems.map((item, index) => (
             <li key={index}>
               <NavLink
@@ -130,21 +126,36 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
                 to={item.path}
                 end
                 className={({ isActive }) =>
-                  `flex items-center space-x-3 p-3 text-lg transition-all duration-200 ${
-                    isActive
-                      ? "text-white border-white border-l-4 border-t-4 border-b-4 shimmer-border bg-emerald-500 rounded-l-4xl font-bold custom-outward-curve"
-                      : "text-white font-bold hover:bg-white rounded-l-4xl hover:text-emerald-500"
+                  `flex items-center space-x-4 p-3 rounded-lg transition-all duration-300 ease-in-out ${
+                    isSidebarOpen
+                      ? isActive
+                        ? "bg-teal-500 text-white font-semibold shadow-md"
+                        : "text-slate-200 hover:bg-slate-600 hover:text-teal-300"
+                      : isActive
+                      ? "bg-teal-500 text-white font-semibold shadow-md justify-center"
+                      : "text-slate-200 hover:bg-slate-600 hover:text-teal-300 justify-center"
                   }`
                 }
               >
                 <span className="text-xl">{item.icon}</span>
-                <span className={`${isSidebarOpen ? "block" : "hidden"}`}>
+                <span
+                  className={`${
+                    isSidebarOpen ? "block" : "hidden"
+                  } text-sm font-medium tracking-wide`}
+                >
                   {item.label}
                 </span>
               </NavLink>
             </li>
           ))}
         </ul>
+      </div>
+      <div
+        className={`${
+          isSidebarOpen ? "block" : "hidden"
+        } p-6 border-t border-slate-600 text-center text-xs text-slate-400`}
+      >
+        © 2025 AssetSync Solutions
       </div>
     </div>
   );
