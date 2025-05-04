@@ -1,42 +1,40 @@
-import TopBar from "./Topbar";
-import Sidebar from "./Sidebar";
 import { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
-import { RiLogoutCircleFill } from "react-icons/ri";
+import { Outlet, useNavigate } from "react-router-dom";
+import Topbar from "./Topbar";
+import Sidebar from "./Sidebar";
+// import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { user, logOut } = useAuth();
   const [userRole, setUserRole] = useState(null);
   const [error, setError] = useState(null);
+  const { user, logOut } = useAuth();
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isMounted = true; // Prevent state updates on unmounted component
+    let isMounted = true;
 
     const checkAuthAndFetchData = async () => {
-      // Delay to give Firebase time to initialize auth state
+      // Delay to ensure Firebase auth initialization
       const authTimer = setTimeout(async () => {
         if (!isMounted) return;
 
-        // If no user, navigate to home
         if (!user?.email) {
           setIsLoading(false);
-          // navigate("/");
+          navigate("/");
           return;
         }
 
-        // If user exists, fetch user data
         try {
           const response = await axiosPublic.get(
             `/users/getUser/${user.email}`
           );
           if (isMounted) {
-            setUserRole(response.data.role || "consumer");
+            setUserRole(response.data.role || "employee");
             setIsLoading(false);
           }
         } catch (err) {
@@ -46,7 +44,7 @@ const Dashboard = () => {
             setIsLoading(false);
           }
         }
-      }, 500); // 500ms delay to ensure Firebase auth is ready
+      }, 500);
 
       return () => clearTimeout(authTimer);
     };
@@ -54,7 +52,7 @@ const Dashboard = () => {
     checkAuthAndFetchData();
 
     return () => {
-      isMounted = false; // Cleanup to prevent memory leaks
+      isMounted = false;
     };
   }, [user, axiosPublic, navigate]);
 
@@ -62,7 +60,6 @@ const Dashboard = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  // Show loading spinner while checking
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -71,38 +68,50 @@ const Dashboard = () => {
     );
   }
 
-  // Main dashboard render (only reached if not redirected)
-  return (
-    <div className="">
-      <TopBar
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-        userRole={userRole}
-      />
-      <div style={{ height: "calc(100vh - 100px)" }} className="flex">
-        <div
-          className={`${
-            isSidebarOpen ? "w-64" : "w-0 md:w-64"
-          } bg-gray-800 text-white transition-all duration-300 flex flex-col justify-between overflow-hidden`}
-        >
-          <Sidebar
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={toggleSidebar}
-            userRole={userRole}
-          />
-          <div className="p-4">
-            <button
-              onClick={logOut}
-              className="bg-red-500 w-full p-3 rounded text-center flex justify-center items-center hover:bg-purple-500 cursor-pointer"
-            >
-              <RiLogoutCircleFill className="mr-2 font-bold text-xl" />
-              Logout
-            </button>
-          </div>
-        </div>
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
 
-        <div className="flex-1 overflow-y-auto h-full dark:bg-[#0B0716]">
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        userRole={userRole}
+        logOut={logOut}
+      />
+      <div className="flex-1 flex flex-col">
+        <Topbar
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+          userRole={userRole}
+          user={user}
+        />
+        <div className="flex-1 p-6 mt-16 overflow-y-auto">
           <Outlet />
+          {!window.location.pathname.includes("/dashboard/") && (
+            <div>
+              <h1 className="text-3xl font-bold mb-4">Dashboard Overview</h1>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h2 className="text-xl font-semibold">Total Assets</h2>
+                  <p className="text-2xl">150</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h2 className="text-xl font-semibold">Employees</h2>
+                  <p className="text-2xl">45</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h2 className="text-xl font-semibold">Pending Requests</h2>
+                  <p className="text-2xl">12</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
