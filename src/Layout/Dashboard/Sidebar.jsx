@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   FaBars,
   FaTachometerAlt,
@@ -107,14 +107,16 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       } bg-gradient-to-b from-teal-900 to-teal-950 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-lg`}
     >
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 flex items-center justify-between border-b border-teal-700">
-          <h1
-            className={`${
-              isSidebarOpen ? "block" : "hidden"
-            } text-xl font-bold text-teal-100`}
-          >
-            AssetFlow
-          </h1>
+        <div className="px-4 py-[22.6px] flex items-center justify-between border-b border-teal-700">
+          <Link to="/">
+            <h1
+              className={`${
+                isSidebarOpen ? "block" : "hidden"
+              } text-xl font-bold text-teal-100`}
+            >
+              AssetFlow
+            </h1>
+          </Link>
           <button
             className="p-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
             onClick={toggleSidebar}
