@@ -157,7 +157,7 @@ export const router = createBrowserRouter([
       //* employee routes
       {
         path: "my_assets",
-        element: <MyAssets></MyAssets>,
+        element: <MyAssets isDashboard={true}></MyAssets>,
       },
       {
         path: "my_team",

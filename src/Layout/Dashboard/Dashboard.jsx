@@ -7,7 +7,7 @@ import useRole from "../../hooks/useRole";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open for large devices
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Detect mobile
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024); // Detect mobile
   // const [userRole, setUserRole] = useState(null);
   const { user, loading, logOut } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Dashboard = () => {
   // Handle window resize to detect mobile/large device
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
       setIsSidebarOpen(!mobile); // Open by default on large, closed (icons only) on mobile
     };

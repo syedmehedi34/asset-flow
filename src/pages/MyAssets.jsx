@@ -10,7 +10,7 @@ import PdfPage from "../components/PdfPage";
 import usePaginationFunction from "../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
 
-const MyAssets = () => {
+const MyAssets = ({ isDashboard = false }) => {
   const [
     assetDistributionData,
     loadingAssetDistributionData,
@@ -115,7 +115,7 @@ const MyAssets = () => {
       </Helmet>
 
       <motion.div
-        className="min-h-screen bg-gray-50 my-24"
+        className={`min-h-screen bg-gray-50 my-24`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -146,7 +146,7 @@ const MyAssets = () => {
             </div>
 
             <div className="p-6 grid gap-6">
-              <div className="flex items-center gap-4">
+              <div className={`flex items-center gap-4 flex-col`}>
                 {/* Name Search */}
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -159,7 +159,6 @@ const MyAssets = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-
                 {/* Type Filter */}
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
