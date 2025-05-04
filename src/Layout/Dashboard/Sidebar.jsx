@@ -104,24 +104,24 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
     <div
       className={`${
         isSidebarOpen ? "w-64" : "w-16"
-      } bg-gradient-to-b from-teal-900 to-teal-950 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-lg`}
+      } bg-gradient-to-b from-teal-800 to-teal-600 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-xl`}
     >
       <div className="flex-1 overflow-y-auto">
-        <div className="px-4 py-[22.6px] flex items-center justify-between border-b border-teal-700">
+        <div className="px-4 py-[22.6px] flex items-center justify-between border-b border-teal-500">
           <Link to="/">
             <h1
               className={`${
                 isSidebarOpen ? "block" : "hidden"
-              } text-xl font-bold text-teal-100`}
+              } text-xl font-semibold text-white`}
             >
               AssetFlow
             </h1>
           </Link>
           <button
-            className="p-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+            className="p-2 rounded-md hover:bg-teal-500 transition-colors duration-200"
             onClick={toggleSidebar}
           >
-            <FaBars className="text-lg text-teal-100" />
+            <FaBars className="text-lg text-white" />
           </button>
         </div>
         <ul className="mt-4 space-y-1 px-2">
@@ -135,11 +135,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
                   `flex items-center space-x-3 p-2 rounded-md transition-all duration-200 ${
                     isSidebarOpen
                       ? isActive
-                        ? "bg-teal-500 text-white font-medium"
-                        : "text-teal-50 hover:bg-teal-500 hover:text-white"
+                        ? "bg-teal-400 text-white font-medium"
+                        : "text-teal-100 hover:bg-teal-500 hover:text-white"
                       : isActive
-                      ? "bg-teal-600 text-white font-medium justify-center"
-                      : "text-teal-200 hover:bg-teal-700 hover:text-white justify-center"
+                      ? "bg-teal-400 text-white font-medium justify-center"
+                      : "text-teal-200 hover:bg-teal-500 hover:text-white justify-center"
                   }`
                 }
               >
@@ -156,7 +156,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
           ))}
         </ul>
       </div>
-      <div className="p-4 border-t border-teal-700">
+      <div className="p-4 border-t border-teal-500">
         <button
           className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-200 w-full ${
             isSidebarOpen
