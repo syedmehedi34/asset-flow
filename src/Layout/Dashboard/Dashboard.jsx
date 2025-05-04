@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Topbar from "./Topbar";
 import Sidebar from "./Sidebar";
-// import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 
@@ -29,6 +28,14 @@ const Dashboard = () => {
           return;
         }
 
+        // Dummy data for userRole
+        if (isMounted) {
+          setUserRole("manager"); // Simulating a manager role; can be "employee" for testing
+          setIsLoading(false);
+        }
+
+        // Original API call (commented out)
+        /*
         try {
           const response = await axiosPublic.get(
             `/users/getUser/${user.email}`
@@ -44,6 +51,7 @@ const Dashboard = () => {
             setIsLoading(false);
           }
         }
+        */
       }, 500);
 
       return () => clearTimeout(authTimer);

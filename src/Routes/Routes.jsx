@@ -151,12 +151,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "assets",
-        element: (
-          <ManagerRoute>
-            {/* <AssetList /> */}
-            <div>Hello</div>
-          </ManagerRoute>
-        ),
+        element: <div>Hello</div>,
       },
     ],
   },
