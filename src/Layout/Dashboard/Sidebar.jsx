@@ -1,53 +1,78 @@
 import { NavLink } from "react-router-dom";
 import {
-  RiHome2Line,
-  RiBox3Line,
-  RiGroupLine,
-  RiFileList3Line,
-  RiUser3Line,
-  RiLogoutCircleFill,
-} from "react-icons/ri";
+  FaTachometerAlt,
+  FaHome,
+  FaUser,
+  FaUsers,
+  FaBox,
+  FaFileAlt,
+} from "react-icons/fa";
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, logOut }) => {
-  const navLinks = [
+const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole = "employee" }) => {
+  const allNavItems = [
     {
       path: "/dashboard",
-      label: "Overview",
-      icon: <RiHome2Line className="text-xl" />,
+      label: "Dashboard",
+      icon: <FaTachometerAlt />,
+      roles: ["employee", "hr_manager", "admin"],
     },
-    ...(userRole === "manager"
-      ? [
-          {
-            path: "/dashboard/assets",
-            label: "Assets",
-            icon: <RiBox3Line className="text-xl" />,
-          },
-          {
-            path: "/dashboard/employees",
-            label: "Employees",
-            icon: <RiGroupLine className="text-xl" />,
-          },
-          {
-            path: "/dashboard/requests",
-            label: "Requests",
-            icon: <RiFileList3Line className="text-xl" />,
-          },
-        ]
-      : []),
     {
-      path: "/dashboard/profile",
-      label: "Profile",
-      icon: <RiUser3Line className="text-xl" />,
+      path: "/",
+      label: "Home",
+      icon: <FaHome />,
+      roles: ["employee", "hr_manager", "admin"],
+    },
+    {
+      path: "my-profile",
+      label: "My Profile",
+      icon: <FaUser />,
+      roles: ["employee", "hr_manager", "admin"],
+    },
+    {
+      path: "/dashboard/assets",
+      label: "Assets",
+      icon: <FaBox />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "/dashboard/employees",
+      label: "Employees",
+      icon: <FaUsers />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "/dashboard/requests",
+      label: "Requests",
+      icon: <FaFileAlt />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "all-users",
+      label: "All Users",
+      icon: <FaUsers />,
+      roles: ["admin"],
+    },
+    {
+      path: "all-assets",
+      label: "All Assets",
+      icon: <FaBox />,
+      roles: ["admin"],
     },
   ];
+
+  const navItems = allNavItems.filter((item) =>
+    item.roles.some(
+      (role) => role.toLowerCase() === (userRole || "employee").toLowerCase()
+    )
+  );
 
   return (
     <div
       className={`${
         isSidebarOpen ? "w-64" : "w-0 md:w-64"
-      } bg-gray-800 text-white fixed top-0 left-0 h-full transition-all duration-300 flex flex-col justify-between overflow-hidden z-20`}
+      } bg-gray-800 text-white transition-all duration-300 flex flex-col justify-between h-[calc(100vh-100px)] overflow-hidden`}
     >
-      <div>
+      <div className="pl-4 mt-4">
         <div className="p-4 flex items-center justify-between">
           <h1
             className={`${
@@ -60,34 +85,31 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, logOut }) => {
             {isSidebarOpen ? "✕" : "☰"}
           </button>
         </div>
-        <nav className="mt-4">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              className={({ isActive }) =>
-                `flex items-center p-4 hover:bg-gray-700 transition-colors ${
-                  isActive ? "bg-gray-700" : ""
-                } ${isSidebarOpen ? "block" : "hidden md:block"}`
-              }
-              onClick={() => isSidebarOpen && toggleSidebar()}
-            >
-              <span className="mr-2">{link.icon}</span>
-              <span>{link.label}</span>
-            </NavLink>
+        <ul className="space-y-2">
+          {navItems.map((item, index) => (
+            <li key={index}>
+              <NavLink
+                onClick={toggleSidebar}
+                to={item.path}
+                end
+                className={({ isActive }) =>
+                  `flex items-center space-x-3 p-3 text-lg transition-all duration-200 ${
+                    isActive
+                      ? "text-white border-white border-l-4 border-t-4 border-b-4 shimmer-border bg-emerald-500 rounded-l-4xl font-bold custom-outward-curve"
+                      : "text-white font-bold hover:bg-white rounded-l-4xl hover:text-emerald-500"
+                  }`
+                }
+              >
+                <span className="text-xl">{item.icon}</span>
+                <span
+                  className={`${isSidebarOpen ? "block" : "hidden md:block"}`}
+                >
+                  {item.label}
+                </span>
+              </NavLink>
+            </li>
           ))}
-        </nav>
-      </div>
-      <div className="p-4">
-        <button
-          onClick={logOut}
-          className={`w-full p-3 rounded text-center flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors ${
-            isSidebarOpen ? "block" : "hidden md:block"
-          }`}
-        >
-          <RiLogoutCircleFill className="mr-2 text-xl" />
-          Logout
-        </button>
+        </ul>
       </div>
     </div>
   );

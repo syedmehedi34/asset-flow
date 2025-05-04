@@ -3,72 +3,55 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Topbar from "./Topbar";
 import Sidebar from "./Sidebar";
 import useAuth from "../../hooks/useAuth";
-import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
-  const [error, setError] = useState(null);
-  const { user, logOut } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const { user, loading, logOut } = useAuth();
   const navigate = useNavigate();
+  console.log(user);
 
+  // Wait for Firebase auth state and set dummy role
   useEffect(() => {
-    let isMounted = true;
+    // If user is loading
+    if (loading) {
+      return; // Wait until auth state is resolved
+    }
 
-    const checkAuthAndFetchData = async () => {
-      // Delay to ensure Firebase auth initialization
-      const authTimer = setTimeout(async () => {
-        if (!isMounted) return;
+    // Auth state is resolved, check if user is logged in
+    if (user === null) {
+      navigate("/");
+      return;
+    }
 
-        if (!user?.email) {
-          setIsLoading(false);
-          navigate("/");
-          return;
-        }
+    // User is logged in, set dummy role
+    setUserRole("hr_manager"); // Customize here: "employee", "hr_manager", or "admin"
 
-        // Dummy data for userRole
-        if (isMounted) {
-          setUserRole("manager"); // Simulating a manager role; can be "employee" for testing
-          setIsLoading(false);
-        }
-
-        // Original API call (commented out)
-        /*
-        try {
-          const response = await axiosPublic.get(
-            `/users/getUser/${user.email}`
-          );
-          if (isMounted) {
-            setUserRole(response.data.role || "employee");
-            setIsLoading(false);
-          }
-        } catch (err) {
-          if (isMounted) {
-            setError(err.message);
-            console.error("Failed to fetch user data:", err);
-            setIsLoading(false);
-          }
-        }
-        */
-      }, 500);
-
-      return () => clearTimeout(authTimer);
+    // Original API call (commented out, uncomment to fetch real data)
+    /*
+    import useAxiosPublic from "../../hooks/useAxiosPublic";
+    const axiosPublic = useAxiosPublic();
+    const fetchUserRole = async () => {
+      try {
+        const response = await axiosPublic.get(`/users/getUser/${user.email}`);
+        setUserRole(response.data.role || "employee");
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+        setIsLoading(false);
+      }
     };
+    fetchUserRole();
+    */
+  }, [user, navigate, loading]);
 
-    checkAuthAndFetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user, axiosPublic, navigate]);
-
+  // Toggle sidebar visibility (for mobile)
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  if (isLoading) {
+  // Show loading spinner while checking auth
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -76,33 +59,33 @@ const Dashboard = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500">Error: {error}</p>
-      </div>
-    );
-  }
-
+  // Main dashboard layout
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
+    <div>
+      <Topbar
         toggleSidebar={toggleSidebar}
+        isSidebarOpen={isSidebarOpen}
         userRole={userRole}
+        user={user}
         logOut={logOut}
       />
-      <div className="flex-1 flex flex-col">
-        <Topbar
-          toggleSidebar={toggleSidebar}
-          isSidebarOpen={isSidebarOpen}
-          userRole={userRole}
-          user={user}
-        />
-        <div className="flex-1 p-6 mt-16 overflow-y-auto">
+      <div style={{ height: "calc(100vh - 100px)" }} className="flex">
+        <div
+          className={`${
+            isSidebarOpen ? "w-64" : "w-0 md:w-64"
+          } bg-gray-800 text-white transition-all duration-300 flex flex-col overflow-hidden`}
+        >
+          <Sidebar
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+            userRole={userRole}
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto h-full dark:bg-[#0B0716]">
           <Outlet />
+          {/* Show overview when on /dashboard (customize cards below) */}
           {!window.location.pathname.includes("/dashboard/") && (
-            <div>
+            <div className="p-6">
               <h1 className="text-3xl font-bold mb-4">Dashboard Overview</h1>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white p-4 rounded-lg shadow">
