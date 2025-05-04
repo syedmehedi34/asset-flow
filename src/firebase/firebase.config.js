@@ -12,6 +12,11 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_messagingSenderId,
   appId: import.meta.env.VITE_appId,
 };
+// Validate configuration
+const isConfigValid = Object.values(firebaseConfig).every((value) => value);
+if (!isConfigValid) {
+  console.error("Firebase configuration is incomplete. Check your .env file.");
+}
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
