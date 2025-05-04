@@ -41,7 +41,7 @@ const ManagerSignUp = () => {
   // const [packageName, setPackageName] = useState(null);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [transactionId, setTransactionId] = useState("");
-  console.log(transactionId);
+  // console.log(transactionId);
   const [
     selectedPackage,
     setSelectedPackage,
@@ -57,7 +57,7 @@ const ManagerSignUp = () => {
       setPaymentComplete(true);
     }
   }, [selectedPackage, setIsPayment]);
-  console.log(isPayment);
+  // console.log(isPayment);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -107,7 +107,7 @@ const ManagerSignUp = () => {
       alert("Please select an image.");
       return;
     }
-    console.log(data);
+    // console.log(data);
 
     // send first image
     const formDataUserImage = new FormData();
@@ -139,7 +139,7 @@ const ManagerSignUp = () => {
     if (resultUserImage.success && resultCompanyImage.success) {
       createUser(data.email, data.password).then((result) => {
         const loggedUser = result.user;
-        console.log(loggedUser);
+        // console.log(loggedUser);
         // updateUserProfile(data?.name, data?.photoURL)
         updateUserProfile(data?.name, resultUserImage.data.url)
           .then(() => {
