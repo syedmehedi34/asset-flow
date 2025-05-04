@@ -63,7 +63,7 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
 
   return (
     <div className="h-auto w-full flex items-center justify-between px-6 py-4 shadow-md bg-teal-900 backdrop-blur-md">
-      <div className="hidden md:flex flex-1 mx-6">
+      <div className="hidden lg:flex flex-1 mx-6">
         <div className="relative w-full max-w-md">
           <input
             type="text"
