@@ -52,7 +52,7 @@ const NavBar = () => {
         </NavLink>
       </li>
 
-      {/* user routes  */}
+      {/* no user routes  */}
       {!user && (
         <>
           <li>
@@ -71,6 +71,11 @@ const NavBar = () => {
       {/* employee routes */}
       {role === "employee" && user && (
         <>
+          <li>
+            <NavLink className="hover:bg-inherit" to="/dashboard">
+              Dashboard
+            </NavLink>
+          </li>
           <li>
             <NavLink className="hover:bg-inherit" to="/my_assets">
               My Assets
