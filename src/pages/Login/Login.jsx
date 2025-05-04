@@ -36,7 +36,7 @@ const Login = () => {
         timer: 1500,
       });
 
-      navigate(from, { replace: true }); // Redirect to `from` path or "/"
+      navigate(from, { replace: true });
     } catch (error) {
       setError("Invalid email or password. Please try again.");
       Swal.fire({
@@ -45,7 +45,18 @@ const Login = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-      form.password.value = ""; // Clear password field
+      form.password.value = "";
+    }
+  };
+
+  const handleDemoLogin = (role) => {
+    const form = document.querySelector("form");
+    if (role === "employee") {
+      form.email.value = "mehedi@emp.com";
+      form.password.value = "Mehedi123@emp";
+    } else if (role === "hr") {
+      form.email.value = "mehedi@hr.com";
+      form.password.value = "pr@y2Allah";
     }
   };
 
@@ -55,13 +66,13 @@ const Login = () => {
         <title>AssetFlow | Sign In</title>
       </Helmet>
 
-      <div className="flex min-h-screen bg-base-200 w-full my-24 items-center ">
+      <div className="flex min-h-screen bg-base-200 w-full my-24 items-center">
         <div className="w-full hidden lg:block">
           <Lottie animationData={LoginLottie} loop={true} />
         </div>
         <div className="w-full hero-content">
-          <div className="card md:w-2/3 w-full max--sm shadow-2xl bg-base-100">
-            <form onSubmit={handleLogin} className="card-body w-full h-[380px]">
+          <div className="card md:w-2/3 w-full max-w-sm shadow-2xl bg-base-100">
+            <form onSubmit={handleLogin} className="card-body w-full">
               <div className="text-center pt-2">
                 <motion.h1
                   initial={{ opacity: 0 }}
@@ -71,6 +82,29 @@ const Login = () => {
                 >
                   Login Now
                 </motion.h1>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex flex-col sm:flex-row gap-2 justify-center mb-4"
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    type="button"
+                    onClick={() => handleDemoLogin("employee")}
+                    className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white border-none text-[12px] capitalize"
+                  >
+                    Employee Credential
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    type="button"
+                    onClick={() => handleDemoLogin("hr")}
+                    className="btn btn-sm bg-indigo-500 hover:bg-indigo-600 text-white border-none text-[12px] capitalize"
+                  >
+                    HR Manager Credentials
+                  </motion.button>
+                </motion.div>
               </div>
 
               <motion.div
@@ -140,7 +174,7 @@ const Login = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="space-y-2"
+              className="space-y-2 pb-4"
             >
               <SocialLogin></SocialLogin>
             </motion.div>
