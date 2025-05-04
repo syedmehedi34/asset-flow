@@ -40,7 +40,7 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
       <div className="flex items-center space-x-4">
         <motion.div className="flex items-center space-x-2">
           <img
-            src="https://via.placeholder.com/50"
+            src="https://img.icons8.com/?size=100&id=fJ7hcfUGpKG7&format=png&color=000000"
             alt="Logo"
             className="h-14 md:h-14 object-contain"
           />
@@ -95,7 +95,10 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
                 </div>
               ) : (
                 <img
-                  src={user?.photoURL || "https://via.placeholder.com/150"}
+                  src={
+                    user?.photoURL ||
+                    "https://img.icons8.com/?size=100&id=fJ7hcfUGpKG7&format=png&color=000000"
+                  }
                   alt="User Profile"
                   className="w-full h-full object-cover"
                   onError={handleImageError}
