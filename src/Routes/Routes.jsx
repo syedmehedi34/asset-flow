@@ -150,7 +150,7 @@ export const router = createBrowserRouter([
     element: <Dashboard />,
     children: [
       {
-        path: "assets",
+        path: "my-profile",
         element: <div>Hello</div>,
       },
     ],

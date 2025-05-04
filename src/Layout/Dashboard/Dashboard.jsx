@@ -49,12 +49,18 @@ const Dashboard = () => {
 
   // Main dashboard layout
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar: Full height, fixed width, starts from top */}
+    <div className="flex min-h-screen relative">
+      {/* Sidebar: Drawer on mobile, fixed on large devices */}
       <div
         className={`${
-          isSidebarOpen ? "w-64" : "w-16"
-        } bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 h-full overflow-hidden z-10`}
+          isMobile
+            ? `${
+                isSidebarOpen ? "w-64" : "w-16"
+              } absolute top-0 left-0 h-full z-20`
+            : `${
+                isSidebarOpen ? "w-64" : "w-16"
+              } fixed top-0 left-0 h-full z-10`
+        } bg-gray-800 text-white transition-all duration-300 flex flex-col overflow-hidden`}
       >
         <Sidebar
           isSidebarOpen={isSidebarOpen}
@@ -63,11 +69,11 @@ const Dashboard = () => {
           isMobile={isMobile}
         />
       </div>
-      {/* Main content: Takes remaining space, adjusts for sidebar width */}
+      {/* Main content: Adjusts opacity on mobile when sidebar is open */}
       <div
         className={`flex-1 transition-all duration-300 ${
-          isSidebarOpen ? "ml-64" : "ml-16"
-        }`}
+          isMobile ? "ml-0" : isSidebarOpen ? "ml-64" : "ml-16"
+        } ${isMobile && isSidebarOpen ? "opacity-50" : "opacity-100"}`}
       >
         <Topbar
           isSidebarOpen={isSidebarOpen}
@@ -91,7 +97,7 @@ const Dashboard = () => {
                   <p className="text-2xl">45</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow">
-                  <h2 className="text-xl font-semibold">Pending Requests</h2>
+                  <h2 className="text-xl font-semibold"> Assets</h2>
                   <p className="text-2xl">12</p>
                 </div>
               </div>
@@ -99,6 +105,13 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      {/* Overlay for mobile when sidebar is open */}
+      {isMobile && isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10"
+          onClick={toggleSidebar}
+        ></div>
+      )}
     </div>
   );
 };
