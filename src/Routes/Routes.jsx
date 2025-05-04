@@ -153,6 +153,8 @@ export const router = createBrowserRouter([
         path: "my-profile",
         element: <MyProfile></MyProfile>,
       },
+
+      //* employee routes
       {
         path: "my_assets",
         element: <MyAssets></MyAssets>,
@@ -164,6 +166,44 @@ export const router = createBrowserRouter([
       {
         path: "request_assets",
         element: <AssetRequest></AssetRequest>,
+      },
+
+      // hr_manager routes
+      {
+        path: "assets_list",
+        element: <AssetList></AssetList>,
+      },
+      {
+        path: "add_asset",
+        element: (
+          <ManagerRoute>
+            <AddAsset></AddAsset>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "all_requests",
+        element: (
+          <ManagerRoute>
+            <AllRequest></AllRequest>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "employee_list",
+        element: (
+          <ManagerRoute>
+            <EmployeeList></EmployeeList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "add_employee",
+        element: (
+          <ManagerRoute>
+            <AddEmployee></AddEmployee>
+          </ManagerRoute>
+        ),
       },
     ],
   },

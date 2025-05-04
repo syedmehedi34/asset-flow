@@ -103,6 +103,11 @@ const NavBar = () => {
       {role === "hr_manager" && user && (
         <>
           <li>
+            <NavLink className="hover:bg-inherit" to="/dashboard">
+              Dashboard
+            </NavLink>
+          </li>
+          <li>
             <NavLink className="hover:bg-inherit" to="/assets_list">
               Asset List
             </NavLink>

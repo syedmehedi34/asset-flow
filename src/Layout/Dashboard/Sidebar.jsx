@@ -9,12 +9,7 @@ import {
   FaBars,
 } from "react-icons/fa";
 
-const Sidebar = ({
-  isSidebarOpen,
-  toggleSidebar,
-  userRole = "employee",
-  isMobile,
-}) => {
+const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
   const allNavItems = [
     {
       path: "/dashboard",
@@ -34,24 +29,60 @@ const Sidebar = ({
       icon: <FaUser />,
       roles: ["employee", "hr_manager", "admin"],
     },
+
+    //* employee routes
     {
       path: "/dashboard/my_assets",
       label: "My Assets",
       icon: <FaBox />,
-      roles: ["hr_manager"],
+      roles: ["employee"],
     },
     {
       path: "/dashboard/my_team",
       label: "My Team",
       icon: <FaUsers />,
-      roles: ["hr_manager"],
+      roles: ["employee"],
     },
     {
       path: "/dashboard/request_assets",
       label: "Request Assets",
       icon: <FaFileAlt />,
+      roles: ["employee"],
+    },
+
+    //* hr_manager routes
+    {
+      path: "/dashboard/assets_list",
+      label: "Asset List",
+      icon: <FaFileAlt />,
       roles: ["hr_manager"],
     },
+    {
+      path: "/dashboard/add_asset",
+      label: "Add an Asset",
+      icon: <FaFileAlt />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "/dashboard/all_requests",
+      label: "All Requests",
+      icon: <FaFileAlt />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "/dashboard/employee_list",
+      label: "Employee List",
+      icon: <FaFileAlt />,
+      roles: ["hr_manager"],
+    },
+    {
+      path: "/dashboard/add_employee",
+      label: "Add Employee",
+      icon: <FaFileAlt />,
+      roles: ["hr_manager"],
+    },
+
+    //* admin routes
     {
       path: "all-users",
       label: "All Users",
@@ -68,7 +99,7 @@ const Sidebar = ({
 
   const navItems = allNavItems.filter((item) =>
     item.roles.some(
-      (role) => role.toLowerCase() === (userRole || "employee").toLowerCase()
+      (role) => role.toLowerCase() === (userRole || "").toLowerCase()
     )
   );
 
