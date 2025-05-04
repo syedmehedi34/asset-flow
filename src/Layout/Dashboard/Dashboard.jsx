@@ -3,13 +3,17 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Topbar from "./Topbar";
 import Sidebar from "./Sidebar";
 import useAuth from "../../hooks/useAuth";
+import useRole from "../../hooks/useRole";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open for large devices
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Detect mobile
-  const [userRole, setUserRole] = useState(null);
+  // const [userRole, setUserRole] = useState(null);
   const { user, loading, logOut } = useAuth();
   const navigate = useNavigate();
+
+  const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
+  let userRole = isRole?.role;
 
   // Handle window resize to detect mobile/large device
   useEffect(() => {
@@ -25,12 +29,13 @@ const Dashboard = () => {
 
   // Wait for Firebase auth state and set dummy role
   useEffect(() => {
-    if (loading) return; // Wait until auth state is resolved
+    if (loading || isRoleLoading) return; // Wait until auth state is resolved
     if (user === null) {
       navigate("/");
       return;
     }
-    setUserRole("hr_manager"); // Customize here: "employee", "hr_manager", or "admin"
+    // setUserRole("hr_manager");
+    userRole = isRole?.role;
   }, [user, navigate, loading]);
 
   // Toggle sidebar visibility
@@ -39,7 +44,7 @@ const Dashboard = () => {
   };
 
   // Show loading spinner while checking auth
-  if (loading) {
+  if (loading || isRoleLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -60,7 +65,7 @@ const Dashboard = () => {
             : `${
                 isSidebarOpen ? "w-64" : "w-16"
               } fixed top-0 left-0 h-full z-10`
-        } bg-gray-800 text-white transition-all duration-300 flex flex-col overflow-hidden`}
+        } bg-gray-800 text-white transitionall duration300 flex flex-col overflow-hidden`}
       >
         <Sidebar
           isSidebarOpen={isSidebarOpen}
@@ -77,7 +82,7 @@ const Dashboard = () => {
       >
         <Topbar
           isSidebarOpen={isSidebarOpen}
-          userRole={userRole}
+          userRole={isRole}
           user={user}
           logOut={logOut}
         />

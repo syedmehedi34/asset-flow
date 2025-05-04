@@ -19,7 +19,7 @@ const useAllAssets = () =>
     const location = useLocation();
     const path = location?.pathname;
 
-    if (path === "/request_assets") {
+    if (path === "/request_assets" || path === "/dashboard/request_assets") {
       hr_email = isRole?.hr_email; // for employee route in the Request for a Asset page
     } else {
       hr_email = isRole?.email; // for HR route in the Asset List page
