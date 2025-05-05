@@ -123,7 +123,7 @@ const AssetList = () => {
         <title>AssetFlow | Assets List</title>
       </Helmet>
 
-      <div className="p-6 my-24">
+      <div className="px-6 my-24">
         <h1 className="text-3xl font-semibold mb-6">
           Asset Management - All Products
         </h1>

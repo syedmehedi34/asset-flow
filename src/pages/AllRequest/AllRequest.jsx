@@ -17,8 +17,10 @@ import Swal from "sweetalert2";
 import usePaginationFunction from "../../hooks/usePaginationFunction";
 import moment from "moment";
 import { Helmet } from "react-helmet-async";
+// import useRole from "../../hooks/useRole";
 
 const AllRequest = () => {
+  // const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
   const axiosSecure = useAxiosSecure();
   const [
     assetDistributionData,
@@ -70,7 +72,9 @@ const AllRequest = () => {
     setIsOpen(true);
   };
 
-  const handleReject = (_id) => {
+  const handleReject = (item) => {
+    const _id = item?._id;
+    console.log(item);
     // console.log("reject product with id:", _id);
 
     const requestStatus = "Rejected";
@@ -90,9 +94,13 @@ const AllRequest = () => {
         const res = await axiosSecure.patch("/asset_distribution", {
           _id,
           requestStatus,
+
+          assetID: item?.assetID,
+          email: item?.employeeEmail,
+          status: "Rejected",
+          // receivingDate: date,
         });
-        // console.log(res.data.modifiedCount);
-        if (res.data.modifiedCount) {
+        if (res.data.message === "Update successful") {
           refetchAssetDistributionData();
           Swal.fire({
             title: "Rejected!",
@@ -109,7 +117,7 @@ const AllRequest = () => {
   // Approve button works
   const handleApproveRequest = (item) => {
     const _id = item?._id;
-    console.log(item);
+    // console.log(item?.employeeEmail);
     // console.log(_id);
     const requestStatus = "Approved";
     const date = moment().format("DD/MM/YYYY");
@@ -131,9 +139,13 @@ const AllRequest = () => {
           approvalDate: date,
           assetID: item?.assetID,
           n: -1,
+
+          email: item?.employeeEmail,
+          status: "Approved",
+          receivingDate: date,
         });
-        // console.log(res.data.modifiedCount);
-        if (res.data.modifiedCount) {
+        // console.log(res.data);
+        if (res.data.message === "Update successful") {
           refetchAssetDistributionData();
           Swal.fire({
             title: "Approved!",
@@ -157,7 +169,7 @@ const AllRequest = () => {
         <title>AssetFlow | All Request</title>
       </Helmet>
 
-      <div className="p-6 my-24">
+      <div className="px-6 my-24">
         <h1 className="text-3xl font-semibold mb-6">
           Asset Management - All Products
         </h1>
@@ -304,7 +316,7 @@ const AllRequest = () => {
                       Approve
                     </button>
                     <button
-                      onClick={() => handleReject(item?._id)}
+                      onClick={() => handleReject(item)}
                       className="btn min-h-0 h-9 border-none w-fit px-3 text-[12px] rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
                     >
                       Reject
@@ -444,7 +456,7 @@ const AllRequest = () => {
 
                     <p className="text-gray-600 text-sm leading-relaxed">
                       <span className="font-bold">Description : </span>
-                      {modalData?.assetDescription}
+                      {modalData?.assetRequestMessage}
                     </p>
                   </motion.div>
                 </div>
@@ -456,7 +468,7 @@ const AllRequest = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       setIsOpen(false);
-                      handleReject(modalData?._id);
+                      handleReject(modalData);
                     }}
                     className="px-4 py-2 text-gray-600 hover:text-white hover:bg-red-600 font-medium bg-warning btn border-none"
                   >
