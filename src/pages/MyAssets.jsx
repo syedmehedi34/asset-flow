@@ -10,6 +10,7 @@ import PdfPage from "../components/PdfPage";
 import usePaginationFunction from "../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
 import useRole from "../hooks/useRole";
+import moment from "moment";
 
 const MyAssets = ({ isDashboard = false }) => {
   const [
@@ -23,15 +24,16 @@ const MyAssets = ({ isDashboard = false }) => {
   ] = useAssetDistributionData();
 
   const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
-  // console.log(isRole);
+  // console.log(isRole?.email);
   const axiosSecure = useAxiosSecure();
   const assets = assetDistributionData;
 
   // console.log(assetDistributionData);
 
-  // cancel a request
-  const handleCancelButton = (_id) => {
-    const requestStatus = "Cancelled";
+  // ?? cancel a request
+  const handleCancelButton = (asset) => {
+    const _id = asset._id;
+
     //
     Swal.fire({
       title: "Are you sure?",
@@ -45,10 +47,16 @@ const MyAssets = ({ isDashboard = false }) => {
       if (result.isConfirmed) {
         const res = await axiosSecure.patch("/asset_distribution", {
           _id,
-          requestStatus,
+          requestStatus: "cancelled",
+
+          //
+          assetID: asset?.assetID,
+          email: isRole?.email,
+          status: "cancelled",
+          cancellingDate: moment().format("DD-MM-YYYY"),
         });
         // console.log(res.data.modifiedCount);
-        if (res.data.modifiedCount) {
+        if (res.data.message === "Update successful") {
           refetchAssetDistributionData();
           Swal.fire({
             title: "Cancelled!",
@@ -61,6 +69,7 @@ const MyAssets = ({ isDashboard = false }) => {
       }
     });
   };
+  //??
 
   // return an asset
   const handleReturnAsset = (asset) => {
@@ -263,7 +272,7 @@ const MyAssets = ({ isDashboard = false }) => {
                         {asset?.requestStatus === "Pending" ? (
                           <>
                             <button
-                              onClick={() => handleCancelButton(asset._id)}
+                              onClick={() => handleCancelButton(asset)}
                               className="w-full btn min-h-0 h-10 border-none font-[600] btn-error"
                             >
                               Cancel
