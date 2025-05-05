@@ -156,22 +156,7 @@ const NavBar = () => {
               }
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Request for an Asset
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/employee_profile"
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg font-medium transition-all duration-300 text-teal-900 dark:text-[#E0E0E0] ${
-                  isActive
-                    ? "bg-teal-200 text-teal-900 dark:bg-[#6B6B6B] dark:text-white"
-                    : "hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-[#4A4A4A] dark:hover:text-white"
-                }`
-              }
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Profile
+              Request for Asset
             </NavLink>
           </li>
         </>
@@ -210,21 +195,6 @@ const NavBar = () => {
           </li>
           <li>
             <NavLink
-              to="/add_asset"
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg font-medium transition-all duration-300 text-teal-900 dark:text-[#E0E0E0] ${
-                  isActive
-                    ? "bg-teal-200 text-teal-900 dark:bg-[#6B6B6B] dark:text-white"
-                    : "hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-[#4A4A4A] dark:hover:text-white"
-                }`
-              }
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Add an Asset
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/all_requests"
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg font-medium transition-all duration-300 text-teal-900 dark:text-[#E0E0E0] ${
@@ -250,37 +220,7 @@ const NavBar = () => {
               }
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              My Employee List
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/add_employee"
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg font-medium transition-all duration-300 text-teal-900 dark:text-[#E0E0E0] ${
-                  isActive
-                    ? "bg-teal-200 text-teal-900 dark:bg-[#6B6B6B] dark:text-white"
-                    : "hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-[#4A4A4A] dark:hover:text-white"
-                }`
-              }
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Add an Employee
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/hr_profile"
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg font-medium transition-all duration-300 text-teal-900 dark:text-[#E0E0E0] ${
-                  isActive
-                    ? "bg-teal-200 text-teal-900 dark:bg-[#6B6B6B] dark:text-white"
-                    : "hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-[#4A4A4A] dark:hover:text-white"
-                }`
-              }
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Profile
+              Employee List
             </NavLink>
           </li>
         </>

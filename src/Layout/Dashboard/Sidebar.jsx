@@ -14,8 +14,10 @@ import {
   FaUsersCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
+  const { logOut } = useAuth();
   const allNavItems = [
     {
       path: "/dashboard",
@@ -158,6 +160,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       </div>
       <div className="p-4 border-t border-teal-500">
         <button
+          onClick={() => {
+            logOut();
+          }}
           className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-200 w-full ${
             isSidebarOpen
               ? "text-teal-100 hover:bg-teal-500 hover:text-white"
