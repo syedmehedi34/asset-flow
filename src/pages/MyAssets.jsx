@@ -12,19 +12,20 @@ import { Helmet } from "react-helmet-async";
 import useRole from "../hooks/useRole";
 
 const MyAssets = ({ isDashboard = false }) => {
-  // const [
-  //   assetDistributionData,
-  //   loadingAssetDistributionData,
-  //   refetchAssetDistributionData,
-  //   searchText,
-  //   setSearchText,
-  //   category,
-  //   setCategory,
-  // ] = useAssetDistributionData();
+  const [
+    assetDistributionData,
+    loadingAssetDistributionData,
+    refetchAssetDistributionData,
+    searchText,
+    setSearchText,
+    category,
+    setCategory,
+  ] = useAssetDistributionData();
 
   const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
+  // console.log(isRole);
   const axiosSecure = useAxiosSecure();
-  const assets = isRole?.assets;
+  const assets = assetDistributionData;
 
   // console.log(assetDistributionData);
 
@@ -216,9 +217,9 @@ const MyAssets = ({ isDashboard = false }) => {
                       Approval Date
                     </th>
 
-                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Request Status
-                    </th> */}
+                    </th>
 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -250,18 +251,16 @@ const MyAssets = ({ isDashboard = false }) => {
                         {asset?.assetPostDate}
                       </td>
 
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.receivingDate}
-                      </td> */}
-
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span className="badge bg-teal-400 border-none">
-                          {asset?.status}
-                        </span>
+                        {asset?.approvalDate}
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.status === "pending" ? (
+                        {asset?.requestStatus}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {asset?.requestStatus === "Pending" ? (
                           <>
                             <button
                               onClick={() => handleCancelButton(asset._id)}
@@ -270,7 +269,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancel
                             </button>
                           </>
-                        ) : asset?.status === "Approved" &&
+                        ) : asset?.requestStatus === "Approved" &&
                           asset?.assetType === "Returnable" ? (
                           <div className="flex items-center justify-center gap-1">
                             <PdfPage asset={asset}></PdfPage>
@@ -281,11 +280,11 @@ const MyAssets = ({ isDashboard = false }) => {
                               Return
                             </button>
                           </div>
-                        ) : asset?.status === "Approved" ? (
+                        ) : asset?.requestStatus === "Approved" ? (
                           <>
                             <PdfPage asset={asset}></PdfPage>
                           </>
-                        ) : asset?.status === "Cancelled" ? (
+                        ) : asset?.requestStatus === "Cancelled" ? (
                           <>
                             <button
                               disabled
@@ -294,7 +293,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancelled
                             </button>
                           </>
-                        ) : asset?.status === "Returned" ? (
+                        ) : asset?.requestStatus === "Returned" ? (
                           <>
                             <button
                               // onClick={() => handleReturnAsset(asset._id)}
