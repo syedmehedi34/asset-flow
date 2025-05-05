@@ -80,7 +80,9 @@ const AssetRequest = () => {
       assetPostDate: selectedAsset.assetPostDate,
       companyName: selectedAsset.companyName,
       requestStatus: "Pending",
-      approvalDate: "Not approved yet",
+      approvalDate: "Not approved",
+      cancellingDate: "Not Cancelled",
+      returningDate: "Not Returned",
     };
 
     // Post API for the asset request
