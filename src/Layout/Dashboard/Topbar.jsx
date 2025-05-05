@@ -42,7 +42,6 @@ const Topbar = ({ isSidebarOpen, isMobile, userRole, user, logOut }) => {
         setShowProfileMenu(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -64,9 +63,7 @@ const Topbar = ({ isSidebarOpen, isMobile, userRole, user, logOut }) => {
   return (
     <div
       className={`fixed top-0 z-20 flex items-center justify-between px-6 py-4 shadow-md bg-teal-900 backdrop-blur-md ${
-        isMobile
-          ? "left-16 w-[calc(100%-4rem)]"
-          : isSidebarOpen
+        isSidebarOpen
           ? "left-64 w-[calc(100%-16rem)]"
           : "left-16 w-[calc(100%-4rem)]"
       } transition-all duration-300`}

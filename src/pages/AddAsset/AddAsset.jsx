@@ -68,7 +68,7 @@ const AddAsset = ({ isDashboard = false }) => {
         <title>AssetFlow | Add Asset</title>
       </Helmet>
 
-      <div className={`px-6 ${isDashboard ? "my-5" : "my-24"}`}>
+      <div className={`px-6 ${isDashboard ? "my-" : "my-24"}`}>
         <PageTitle
           heading="Add a New Asset"
           subHeading="Fill in the details below to add a new asset to your inventory."
