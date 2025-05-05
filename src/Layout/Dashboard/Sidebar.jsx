@@ -18,7 +18,8 @@ import useAuth from "../../hooks/useAuth";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
   const { logOut } = useAuth();
-  const allNavItems = [
+
+  const navItems = [
     {
       path: "/dashboard",
       label: "Dashboard",
@@ -31,7 +32,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaUser />,
       roles: ["employee", "hr_manager", "admin"],
     },
-    //* employee routes
+    // Employee routes
     {
       path: "/dashboard/my_assets",
       label: "My Assets",
@@ -50,7 +51,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaClipboardList />,
       roles: ["employee"],
     },
-    //* hr_manager routes
+    // HR Manager routes
     {
       path: "/dashboard/assets_list",
       label: "Asset List",
@@ -81,7 +82,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaUserPlus />,
       roles: ["hr_manager"],
     },
-    //* admin routes
+    // Admin routes
     {
       path: "all-users",
       label: "All Users",
@@ -94,9 +95,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       icon: <FaBoxOpen />,
       roles: ["admin"],
     },
-  ];
-
-  const navItems = allNavItems.filter((item) =>
+  ].filter((item) =>
     item.roles.some(
       (role) => role.toLowerCase() === (userRole || "").toLowerCase()
     )
@@ -104,9 +103,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
 
   return (
     <div
-      className={`${
+      className={`fixed top-0 left-0 h-full z-10 ${
         isSidebarOpen ? "w-64" : "w-16"
-      } bg-gradient-to-b from-teal-800 to-teal-600 text-white transition-all duration-300 ease-in-out flex flex-col h-full shadow-xl`}
+      } bg-gradient-to-b from-teal-800 to-teal-600 text-white transition-all duration-300 flex flex-col shadow-xl`}
     >
       <div className="flex-1 overflow-y-auto">
         <div className="px-4 py-[22.6px] flex items-center justify-between border-b border-teal-500">
@@ -130,9 +129,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
           {navItems.map((item, index) => (
             <li key={index}>
               <NavLink
-                onClick={() => isMobile && !isSidebarOpen && toggleSidebar()}
                 to={item.path}
                 end
+                onClick={() => isMobile && !isSidebarOpen && toggleSidebar()}
                 className={({ isActive }) =>
                   `flex items-center space-x-3 p-2 rounded-md transition-all duration-200 ${
                     isSidebarOpen
@@ -160,9 +159,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, userRole, isMobile }) => {
       </div>
       <div className="p-4 border-t border-teal-500">
         <button
-          onClick={() => {
-            logOut();
-          }}
+          onClick={logOut}
           className={`flex items-center space-x-3 p-2 rounded-md transition-all duration-200 w-full ${
             isSidebarOpen
               ? "text-teal-100 hover:bg-teal-500 hover:text-white"
