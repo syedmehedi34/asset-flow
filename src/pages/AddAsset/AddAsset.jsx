@@ -9,7 +9,7 @@ import useRole from "../../hooks/useRole";
 import moment from "moment";
 import { Helmet } from "react-helmet-async";
 
-const AddAsset = () => {
+const AddAsset = ({ isDashboard = false }) => {
   const [quantity, setQuantity] = useState(0);
   const axiosSecure = useAxiosSecure();
   const [isRole] = useRole();
@@ -67,7 +67,7 @@ const AddAsset = () => {
         <title>AssetFlow | Add Asset</title>
       </Helmet>
 
-      <div className="my-24">
+      <div className={`px-6 ${isDashboard ? "my-5" : "my-24"}`}>
         <PageTitle
           heading="Add a New Asset"
           subHeading="Fill in the details below to add a new asset to your inventory."
@@ -75,7 +75,7 @@ const AddAsset = () => {
 
         <div className="container mx-auto p-6">
           <div className="bg-white shadow-lg rounded-lg p-8">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-6">
+            <h2 className="text-2xl font-semibold text-teal-700 mb-6">
               Add New Asset Information
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -220,7 +220,7 @@ const AddAsset = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
+                  className="bg-teal-500 text-white px-6 py-2 rounded-md hover:bg-teal-600 focus:ring-2 focus:ring-teal-400"
                 >
                   Add Asset
                 </button>

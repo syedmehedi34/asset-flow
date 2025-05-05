@@ -168,7 +168,7 @@ export const router = createBrowserRouter([
         element: <AssetRequest></AssetRequest>,
       },
 
-      // hr_manager routes
+      //* hr_manager routes
       {
         path: "assets_list",
         element: <AssetList></AssetList>,
@@ -177,7 +177,7 @@ export const router = createBrowserRouter([
         path: "add_asset",
         element: (
           <ManagerRoute>
-            <AddAsset></AddAsset>
+            <AddAsset isDashboard={true}></AddAsset>
           </ManagerRoute>
         ),
       },
