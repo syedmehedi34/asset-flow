@@ -77,10 +77,11 @@ const Dashboard = () => {
       <div
         className={`min-h-screen transition-all duration-300 ${
           isMobile ? "ml-16" : isSidebarOpen ? "ml-64" : "ml-16"
-        }`}
+        } mt-20`} // mt-20 to account for fixed Topbar height
       >
         <Topbar
           isSidebarOpen={isSidebarOpen}
+          isMobile={isMobile}
           userRole={isRole}
           user={user}
           logOut={logOut}
