@@ -98,7 +98,8 @@ const AllRequest = () => {
           requestStatus,
           assetID: item?.assetID,
           email: item?.employeeEmail,
-          status: "Rejected",
+          status: "rejected",
+          rejectingDate: moment().format("DD-MM-YYYY"),
         });
         if (res.data.message === "Update successful") {
           refetchAssetDistributionData();
