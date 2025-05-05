@@ -37,10 +37,11 @@ const AddAsset = ({ isDashboard = false }) => {
       hr_email,
       companyName,
       productRequest,
+      employeeUsed: [],
     };
     console.log(assetData);
 
-    // post api
+    // post the asset data to the server
     const res = await axiosSecure.post("/assets", assetData);
     console.log(res);
     if (res.data.insertedId) {
