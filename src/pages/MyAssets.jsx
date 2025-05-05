@@ -12,18 +12,17 @@ import { Helmet } from "react-helmet-async";
 import useRole from "../hooks/useRole";
 
 const MyAssets = ({ isDashboard = false }) => {
-  const [
-    assetDistributionData,
-    loadingAssetDistributionData,
-    refetchAssetDistributionData,
-    searchText,
-    setSearchText,
-    category,
-    setCategory,
-  ] = useAssetDistributionData();
+  // const [
+  //   assetDistributionData,
+  //   loadingAssetDistributionData,
+  //   refetchAssetDistributionData,
+  //   searchText,
+  //   setSearchText,
+  //   category,
+  //   setCategory,
+  // ] = useAssetDistributionData();
 
   const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
-  console.log(isRole.assets);
   const axiosSecure = useAxiosSecure();
   const assets = isRole?.assets;
 
