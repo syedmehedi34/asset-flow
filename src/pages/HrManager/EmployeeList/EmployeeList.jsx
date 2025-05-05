@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
-import useAllEmployees from "../../hooks/useAllEmployees";
+import PageTitle from "../../../components/PageTitle";
+import useAllEmployees from "../../../hooks/useAllEmployees";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import usePaginationFunction from "../../hooks/usePaginationFunction";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import usePaginationFunction from "../../../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
 
 const EmployeeList = () => {
@@ -136,6 +136,9 @@ const EmployeeList = () => {
                       className="px-4 py-2 rounded-md font-medium bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 ml-2"
                     >
                       Delete
+                    </button>
+                    <button className="px-4 py-2 rounded-md font-medium bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500 ml-2">
+                      Assets
                     </button>
                   </td>
                 </tr>
