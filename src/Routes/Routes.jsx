@@ -8,7 +8,7 @@ import AssetList from "../pages/AssetList/AssetList";
 import ManagerRoute from "./ManagerRoute";
 import AddAsset from "../pages/AddAsset/AddAsset";
 import AllRequest from "../pages/AllRequest/AllRequest";
-import EmployeeList from "../pages/EmployeeList/EmployeeList";
+import EmployeeList from "../pages/HrManager/EmployeeList/EmployeeList";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import UpdateAssetData from "../pages/UpdateAssetData";
 import EmployeeRoute from "./EmployeeRoute";
