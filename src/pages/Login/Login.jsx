@@ -5,15 +5,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
 import { motion } from "framer-motion";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, X } from "lucide-react";
 import LoginLottie from "../../assets/lottieFiles/login_page_lottie.json";
 import Lottie from "lottie-react";
 import { Helmet } from "react-helmet-async";
 
 const Login = () => {
-  const { user, signIn } = useContext(AuthContext);
+  const { user, signIn, resetPassword } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -58,6 +59,34 @@ const Login = () => {
       form.email.value = "mehedi@hr.com";
       form.password.value = "pr@y2Allah";
     }
+  };
+
+  const handleReset = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    // const reset = await resetPassword(email);
+    try {
+      await resetPassword(email);
+      Swal.fire({
+        icon: "success",
+        title: "Password reset email sent",
+        text: "Please check your inbox for instructions.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to send password reset email. Please try again.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+
+    form.reset();
   };
 
   return (
@@ -145,9 +174,13 @@ const Login = () => {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                   <label className="label">
-                    <a href="#" className="label-text-alt link link-hover">
+                    <button
+                      type="button"
+                      onClick={() => setShowResetModal(true)}
+                      className="label-text-alt link link-hover"
+                    >
                       Forgot password?
-                    </a>
+                    </button>
                   </label>
                 </div>
               </motion.div>
@@ -181,6 +214,54 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {/* Reset Password Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="bg-base-100 p-6 rounded-lg shadow-xl max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Reset Password
+              </h2>
+              <button
+                // onClick={() => setShowResetModal(false)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleReset} className="space-y-4">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Email</span>
+                </label>
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  className="input input-bordered w-full"
+                />
+              </div>
+              <div className="flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  className="btn btn-primary bg-blue-500 hover:bg-blue-600 text-white border-none"
+                >
+                  Reset Password
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };
