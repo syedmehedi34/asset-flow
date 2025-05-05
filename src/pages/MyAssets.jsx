@@ -121,7 +121,7 @@ const MyAssets = ({ isDashboard = false }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Asset Management
@@ -146,7 +146,7 @@ const MyAssets = ({ isDashboard = false }) => {
             </div>
 
             <div className="p-6 grid gap-6">
-              <div className={`flex items-center gap-4 flex-col`}>
+              <div className={`flex items-center gap-4`}>
                 {/* Name Search */}
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
