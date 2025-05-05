@@ -120,7 +120,7 @@ const AllRequest = () => {
     // console.log(item?.employeeEmail);
     // console.log(_id);
     const requestStatus = "Approved";
-    const date = moment().format("DD/MM/YYYY");
+    const date = moment().format("DD-MM-YYYY");
 
     // patch
     Swal.fire({
