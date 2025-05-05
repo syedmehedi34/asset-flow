@@ -21,6 +21,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import usePaginationFunction from "../../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
+import useAssetDistributionData from "../../hooks/useAssetDistributionData";
 
 const AssetRequest = () => {
   const [isRole] = useRole();
@@ -54,6 +55,20 @@ const AssetRequest = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  //?
+  const [
+    assetDistributionData,
+    loadingAssetDistributionData,
+    refetchAssetDistributionData,
+    // searchText,
+    // setSearchText,
+    // category,
+    // setCategory,
+  ] = useAssetDistributionData();
+  console.log(assetDistributionData);
+  console.log(assets);
+  //?
 
   // Handle form submission
 
