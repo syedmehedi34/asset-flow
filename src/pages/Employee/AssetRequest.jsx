@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { FaSquareArrowUpRight } from "react-icons/fa6";
-import useAllAssets from "../hooks/useAllAssets";
-import useRole from "../hooks/useRole";
+import useAllAssets from "../../hooks/useAllAssets";
+import useRole from "../../hooks/useRole";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import React from "react";
 import moment from "moment";
@@ -17,9 +17,9 @@ import {
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
-import useAxiosSecure from "../hooks/useAxiosSecure";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import usePaginationFunction from "../hooks/usePaginationFunction";
+import usePaginationFunction from "../../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
 
 const AssetRequest = () => {
@@ -59,11 +59,9 @@ const AssetRequest = () => {
 
   const onSubmit = async (data) => {
     setOpen(false);
-    const date = moment().format("YYYY-MM-DD");
-    // console.log(date);
-    // console.log(data);
+    const date = moment().format("DD-MM-YYYY");
+
     //
-    // console.log(data);
     const assetRequestData = {
       assetID: selectedAsset._id,
       employeeName: isRole.name,
@@ -81,14 +79,13 @@ const AssetRequest = () => {
       requestStatus: "Pending",
       approvalDate: "Not approved yet",
     };
-    // console.log(assetRequestData);
+    console.log(assetRequestData);
 
-    // post api
+    // post api for the asset request sending
     // todo : have to add a option for backend checking that,,,one employee can not add a single asset for multiple time at the asset request.
     const res = await axiosSecure.post("/asset_distribution", assetRequestData);
-    // console.log(res);
     if (res.data.insertedId) {
-      // onSubmit();
+      console.log(res.data);
       reset();
       Swal.fire({
         icon: "success",
@@ -116,7 +113,7 @@ const AssetRequest = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 my-24">
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto px-4">
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

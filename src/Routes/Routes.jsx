@@ -14,7 +14,7 @@ import UpdateAssetData from "../pages/UpdateAssetData";
 import EmployeeRoute from "./EmployeeRoute";
 import MyAssets from "../pages/MyAssets";
 import MyTeam from "../pages/MyTeam";
-import AssetRequest from "../pages/AssetRequest";
+import AssetRequest from "../pages/Employee/AssetRequest";
 import MyProfile from "../pages/MyProfile";
 import PaymentPage from "../pages/PaymentPage";
 import MainLayout from "../Layout/MainLayout";
