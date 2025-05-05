@@ -3,7 +3,7 @@ import { FaSun, FaMoon, FaBell, FaSearch } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
+const Topbar = ({ isSidebarOpen, isMobile, userRole, user, logOut }) => {
   const [darkMode, setDarkMode] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -62,7 +62,15 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
   };
 
   return (
-    <div className="h-auto w-full flex items-center justify-between px-6 py-4 shadow-md bg-teal-900 backdrop-blur-md">
+    <div
+      className={`fixed top-0 z-20 flex items-center justify-between px-6 py-4 shadow-md bg-teal-900 backdrop-blur-md ${
+        isMobile
+          ? "left-16 w-[calc(100%-4rem)]"
+          : isSidebarOpen
+          ? "left-64 w-[calc(100%-16rem)]"
+          : "left-16 w-[calc(100%-4rem)]"
+      } transition-all duration-300`}
+    >
       <div className="hidden lg:flex flex-1 mx-6">
         <div className="relative w-full max-w-md">
           <input
@@ -214,7 +222,7 @@ const Topbar = ({ isSidebarOpen, userRole, user, logOut }) => {
                         New asset request pending.
                       </p>
                     </div>
-                    <div className="p-2 emer bg-teal-700 rounded-lg hover:bg-teal-600 transition-colors duration-200">
+                    <div className="p-2 bg-teal-700 rounded-lg hover:bg-teal-600 transition-colors duration-200">
                       <p className="text-xs text-teal-100">
                         Employee profile updated.
                       </p>
