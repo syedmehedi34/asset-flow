@@ -35,8 +35,6 @@ const AssetRequest = () => {
     setCategory,
   ] = useAllAssets();
   const axiosSecure = useAxiosSecure();
-  // console.log(assets);
-  // console.log(assets);
 
   // Modal state
   const [open, setOpen] = React.useState(false);
@@ -56,27 +54,18 @@ const AssetRequest = () => {
     formState: { errors },
   } = useForm();
 
-  //?
+  // Asset distribution data
   const [
     assetDistributionData,
     loadingAssetDistributionData,
     refetchAssetDistributionData,
-    // searchText,
-    // setSearchText,
-    // category,
-    // setCategory,
   ] = useAssetDistributionData();
-  console.log(assetDistributionData);
-  console.log(assets);
-  //?
 
   // Handle form submission
-
   const onSubmit = async (data) => {
     setOpen(false);
     const date = moment().format("DD-MM-YYYY");
 
-    //
     const assetRequestData = {
       assetID: selectedAsset._id,
       employeeName: isRole.name,
@@ -84,7 +73,6 @@ const AssetRequest = () => {
       hr_email: isRole.hr_email,
       assetRequestingDate: date,
       assetRequestMessage: data.assetRequestMessage || "",
-
       assetName: selectedAsset.assetName,
       assetType: selectedAsset.assetType,
       assetQuantity: selectedAsset.assetQuantity,
@@ -94,13 +82,10 @@ const AssetRequest = () => {
       requestStatus: "Pending",
       approvalDate: "Not approved yet",
     };
-    console.log(assetRequestData);
 
-    // post api for the asset request sending
-    // todo : have to add a option for backend checking that,,,one employee can not add a single asset for multiple time at the asset request.
+    // Post API for the asset request
     const res = await axiosSecure.post("/asset_distribution", assetRequestData);
     if (res.data.insertedId) {
-      console.log(res.data);
       reset();
       Swal.fire({
         icon: "success",
@@ -117,7 +102,7 @@ const AssetRequest = () => {
     }
   };
 
-  // pagination
+  // Pagination
   const { paginate, paginatedItem, currentPage, itemsPerPage } =
     usePaginationFunction(assets, 10);
 
@@ -234,69 +219,78 @@ const AssetRequest = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Quantity
                     </th>
-
                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider w-[100px] text-left">
                       Request
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedItem.map((asset, index) => (
-                    <motion.tr
-                      key={index}
-                      className="border-b hover:bg-gray-50 transition-colors"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                    >
-                      <td className="w-[40px] px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.assetName}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {asset?.assetType}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.assetQuantity ? (
-                          <p className="badge bg-green-600 border-none">
-                            In Stock
-                          </p>
-                        ) : (
-                          <p className="badge bg-red-600 border-none">
-                            Out of Stock
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
-                        <div>
-                          {asset.assetQuantity ? (
-                            <motion.button
-                              className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
-                              onClick={() => handleOpen(asset)}
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              Request
-                            </motion.button>
+                  {paginatedItem.map((asset, index) => {
+                    // Check if the asset is Returnable and has a Pending request
+                    const isAlreadyRequested = assetDistributionData.some(
+                      (dist) =>
+                        dist.assetID === asset._id &&
+                        dist.employeeEmail === isRole.email &&
+                        asset.assetType === "Returnable" &&
+                        dist.requestStatus === "Pending"
+                    );
+
+                    return (
+                      <motion.tr
+                        key={index}
+                        className="border-b hover:bg-gray-50 transition-colors"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 + index * 0.1 }}
+                      >
+                        <td className="w-[40px] px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {asset?.assetName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {asset?.assetType}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {asset?.assetQuantity ? (
+                            <p className="badge bg-green-600 border-none">
+                              In Stock
+                            </p>
                           ) : (
-                            <motion.button
-                              className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
-                              onClick={() => handleOpen(asset)}
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.3 }}
-                              disabled
-                            >
-                              Request
-                            </motion.button>
+                            <p className="badge bg-red-600 border-none">
+                              Out of Stock
+                            </p>
                           )}
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right w-[auto]">
+                          <div>
+                            {asset.assetQuantity && !isAlreadyRequested ? (
+                              <motion.button
+                                className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                                onClick={() => handleOpen(asset)}
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                Request
+                              </motion.button>
+                            ) : (
+                              <motion.button
+                                className="btn btn-outline min-h-0 h-9 text-xs font-semibold"
+                                disabled
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                {isAlreadyRequested ? "Requested" : "Request"}
+                              </motion.button>
+                            )}
+                          </div>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -387,7 +381,7 @@ const AssetRequest = () => {
               variant="text"
               color="red"
               type="submit"
-              onClick={handleSubmit(onSubmit)} // Handle form submission
+              onClick={handleSubmit(onSubmit)}
               className="text-white bg-blue-gray-600 hover:border hover:border-blue-gray-600 hover:bg-teal-200 hover:text-blue-gray-800"
             >
               Request
