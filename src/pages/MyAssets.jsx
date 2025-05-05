@@ -9,6 +9,7 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 import PdfPage from "../components/PdfPage";
 import usePaginationFunction from "../hooks/usePaginationFunction";
 import { Helmet } from "react-helmet-async";
+import useRole from "../hooks/useRole";
 
 const MyAssets = ({ isDashboard = false }) => {
   const [
@@ -20,8 +21,11 @@ const MyAssets = ({ isDashboard = false }) => {
     category,
     setCategory,
   ] = useAssetDistributionData();
+
+  const [isRole, isRoleLoading, error, userRoleRefetch] = useRole();
+  console.log(isRole.assets);
   const axiosSecure = useAxiosSecure();
-  const assets = assetDistributionData;
+  const assets = isRole?.assets;
 
   // console.log(assetDistributionData);
 
@@ -213,9 +217,9 @@ const MyAssets = ({ isDashboard = false }) => {
                       Approval Date
                     </th>
 
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Request Status
-                    </th>
+                    </th> */}
 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -247,16 +251,18 @@ const MyAssets = ({ isDashboard = false }) => {
                         {asset?.assetPostDate}
                       </td>
 
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {asset?.receivingDate}
+                      </td> */}
+
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.approvalDate}
+                        <span className="badge bg-teal-400 border-none">
+                          {asset?.status}
+                        </span>
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.requestStatus}
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.requestStatus === "Pending" ? (
+                        {asset?.status === "pending" ? (
                           <>
                             <button
                               onClick={() => handleCancelButton(asset._id)}
@@ -265,7 +271,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancel
                             </button>
                           </>
-                        ) : asset?.requestStatus === "Approved" &&
+                        ) : asset?.status === "Approved" &&
                           asset?.assetType === "Returnable" ? (
                           <div className="flex items-center justify-center gap-1">
                             <PdfPage asset={asset}></PdfPage>
@@ -276,11 +282,11 @@ const MyAssets = ({ isDashboard = false }) => {
                               Return
                             </button>
                           </div>
-                        ) : asset?.requestStatus === "Approved" ? (
+                        ) : asset?.status === "Approved" ? (
                           <>
                             <PdfPage asset={asset}></PdfPage>
                           </>
-                        ) : asset?.requestStatus === "Cancelled" ? (
+                        ) : asset?.status === "Cancelled" ? (
                           <>
                             <button
                               disabled
@@ -289,7 +295,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancelled
                             </button>
                           </>
-                        ) : asset?.requestStatus === "Returned" ? (
+                        ) : asset?.status === "Returned" ? (
                           <>
                             <button
                               // onClick={() => handleReturnAsset(asset._id)}
