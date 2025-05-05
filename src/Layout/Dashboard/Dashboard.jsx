@@ -72,7 +72,8 @@ const Dashboard = () => {
           user={user}
           logOut={logOut}
         />
-        <div className="overflow-y-auto h-[calc(100vh-64px)] dark:bg-[#0B0716]">
+        {/* <div className="overflow-y-auto h-[calc(100vh-64px)] dark:bg-[#0B0716]"> */}
+        <div className="dark:bg-[#0B0716]">
           <Outlet />
           {/* Dashboard overview */}
           {!window.location.pathname.includes("/dashboard/") && (
