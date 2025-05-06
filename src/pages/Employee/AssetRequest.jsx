@@ -79,7 +79,7 @@ const AssetRequest = () => {
       assetDescription: selectedAsset.assetDescription,
       assetPostDate: selectedAsset.assetPostDate,
       companyName: selectedAsset.companyName,
-      requestStatus: "Pending",
+      requestStatus: "pending",
       approvalDate: "Not approved",
       cancellingDate: "Not Cancelled",
       returningDate: "Not Returned",

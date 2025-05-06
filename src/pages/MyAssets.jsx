@@ -269,7 +269,7 @@ const MyAssets = ({ isDashboard = false }) => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.requestStatus === "Pending" ? (
+                        {asset?.requestStatus === "pending" ? (
                           <>
                             <button
                               onClick={() => handleCancelButton(asset)}
@@ -293,7 +293,7 @@ const MyAssets = ({ isDashboard = false }) => {
                           <>
                             <PdfPage asset={asset}></PdfPage>
                           </>
-                        ) : asset?.requestStatus === "Cancelled" ? (
+                        ) : asset?.requestStatus === "cancelled" ? (
                           <>
                             <button
                               disabled
