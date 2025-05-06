@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         path: "hr_signup",
         element: <ManagerSignUp></ManagerSignUp>,
       },
-      // HR pages route
+      // * HR pages route
       {
         path: "assets_list",
         element: (
@@ -109,7 +109,10 @@ export const router = createBrowserRouter([
           </ManagerRoute>
         ),
       },
-      // employee pages route
+
+      //
+      //
+      // * employee pages route
       {
         path: "my_assets",
         element: (
@@ -171,7 +174,11 @@ export const router = createBrowserRouter([
       //* hr_manager routes
       {
         path: "assets_list",
-        element: <AssetList></AssetList>,
+        element: (
+          <ManagerRoute>
+            <AssetList></AssetList>
+          </ManagerRoute>
+        ),
       },
       {
         path: "add_asset",
