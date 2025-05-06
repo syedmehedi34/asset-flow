@@ -19,7 +19,7 @@ const Home = () => {
   // const [isRole] = useRole();
   const { user, loading } = useAuth();
   const [isRole, isRoleLoading] = useRole();
-  console.log(isRole);
+  // console.log(isRole);
 
   // pending requests
   // const pendingRequests = assetDistributionData

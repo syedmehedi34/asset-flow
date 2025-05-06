@@ -19,6 +19,7 @@ import MyProfile from "../pages/MyProfile";
 import PaymentPage from "../pages/PaymentPage";
 import MainLayout from "../Layout/MainLayout";
 import Dashboard from "../Layout/Dashboard/Dashboard";
+import AllAssetsOfAnEmployee from "../pages/HrManager/AllAssetsOfAnEmployee";
 // import Dashboard from "../pages/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
@@ -201,6 +202,14 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <EmployeeList></EmployeeList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "employee/:id",
+        element: (
+          <ManagerRoute>
+            <AllAssetsOfAnEmployee></AllAssetsOfAnEmployee>
           </ManagerRoute>
         ),
       },
