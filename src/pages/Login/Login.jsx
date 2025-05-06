@@ -53,11 +53,15 @@ const Login = () => {
   const handleDemoLogin = (role) => {
     const form = document.querySelector("form");
     if (role === "employee") {
-      form.email.value = "mehedi@emp.com";
-      form.password.value = "Mehedi123@emp";
-    } else if (role === "hr") {
-      form.email.value = "mehedi@hr.com";
-      form.password.value = "pr@y2Allah";
+      // form.email.value = "mehedi@emp.com";
+      // form.password.value = "Mehedi123@emp";
+      form.email.value = "emp_hasan@user.com";
+      form.password.value = "emp@User123";
+    } else if (role === "hr_manager") {
+      // form.email.value = "mehedi@hr.com";
+      // form.password.value = "pr@y2Allah";
+      form.email.value = "hr_mehedi@user.com";
+      form.password.value = "hr@User123";
     }
   };
 
@@ -128,7 +132,7 @@ const Login = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     type="button"
-                    onClick={() => handleDemoLogin("hr")}
+                    onClick={() => handleDemoLogin("hr_manager")}
                     className="btn btn-sm bg-indigo-500 hover:bg-indigo-600 text-white border-none text-[12px] capitalize"
                   >
                     HR Manager Credentials

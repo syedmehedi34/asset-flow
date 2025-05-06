@@ -24,7 +24,7 @@ const useAssetDistributionData = () =>
     // if (path === "/all_requests" || path === "/") {
     if (isRole?.role === "hr_manager") {
       hr_email = isRole?.email; // only for hr manager assets managements
-      requestStatus = "Pending";
+      requestStatus = "pending";
     } else {
       hr_email = isRole?.hr_email; // only for employee assets managements
       employeeEmail = isRole?.email;
