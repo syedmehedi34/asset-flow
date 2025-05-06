@@ -36,6 +36,7 @@ const AllRequest = () => {
     category,
     setCategory,
   ] = useAssetDistributionData();
+  console.log(assetDistributionData);
 
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
   const [modalData, setModalData] = useState(null);
@@ -81,7 +82,7 @@ const AllRequest = () => {
 
   const handleReject = (item) => {
     const _id = item?._id;
-    const requestStatus = "Rejected";
+    const requestStatus = "rejected";
 
     Swal.fire({
       title: "Are you sure?",
