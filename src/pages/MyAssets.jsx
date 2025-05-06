@@ -75,10 +75,10 @@ const MyAssets = ({ isDashboard = false }) => {
   const handleReturnAsset = (asset) => {
     const _id = asset._id;
     // const
-    const assetID = asset.assetID;
+    const assetID = asset?.assetID;
     console.log(asset);
 
-    const requestStatus = "Returned";
+    const requestStatus = "returned";
     //
     Swal.fire({
       title: "Are you sure?",
@@ -93,6 +93,13 @@ const MyAssets = ({ isDashboard = false }) => {
         const res = await axiosSecure.patch("/asset_distribution", {
           _id,
           requestStatus,
+
+          //
+          assetID,
+          n: 1,
+          email: isRole?.email,
+          status: "returned",
+          returningDate: moment().format("DD-MM-YYYY"),
         });
         // console.log(res.data.modifiedCount);
         if (res.data.modifiedCount) {
@@ -103,7 +110,7 @@ const MyAssets = ({ isDashboard = false }) => {
           const assetCollectionRes = await axiosSecure.patch("/assets", {
             assetID,
           });
-          console.log(assetCollectionRes);
+          // console.log(assetCollectionRes);
           if (assetCollectionRes.data.modifiedCount) {
             Swal.fire({
               title: "Returned!",
@@ -269,7 +276,7 @@ const MyAssets = ({ isDashboard = false }) => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {asset?.requestStatus === "Pending" ? (
+                        {asset?.requestStatus === "pending" ? (
                           <>
                             <button
                               onClick={() => handleCancelButton(asset)}
@@ -278,7 +285,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancel
                             </button>
                           </>
-                        ) : asset?.requestStatus === "Approved" &&
+                        ) : asset?.requestStatus === "approved" &&
                           asset?.assetType === "Returnable" ? (
                           <div className="flex items-center justify-center gap-1">
                             <PdfPage asset={asset}></PdfPage>
@@ -289,11 +296,11 @@ const MyAssets = ({ isDashboard = false }) => {
                               Return
                             </button>
                           </div>
-                        ) : asset?.requestStatus === "Approved" ? (
+                        ) : asset?.requestStatus === "approved" ? (
                           <>
                             <PdfPage asset={asset}></PdfPage>
                           </>
-                        ) : asset?.requestStatus === "Cancelled" ? (
+                        ) : asset?.requestStatus === "cancelled" ? (
                           <>
                             <button
                               disabled
@@ -302,7 +309,7 @@ const MyAssets = ({ isDashboard = false }) => {
                               Cancelled
                             </button>
                           </>
-                        ) : asset?.requestStatus === "Returned" ? (
+                        ) : asset?.requestStatus === "returned" ? (
                           <>
                             <button
                               // onClick={() => handleReturnAsset(asset._id)}

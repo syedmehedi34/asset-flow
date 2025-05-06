@@ -137,9 +137,11 @@ const EmployeeList = () => {
                     >
                       Delete
                     </button>
-                    <button className="px-4 py-2 rounded-md font-medium bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500 ml-2">
-                      Assets
-                    </button>
+                    <Link to={`/dashboard/employee/${employee._id}`}>
+                      <button className="px-4 py-2 rounded-md font-medium bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500 ml-2">
+                        Assets
+                      </button>
+                    </Link>
                   </td>
                 </tr>
               ))}

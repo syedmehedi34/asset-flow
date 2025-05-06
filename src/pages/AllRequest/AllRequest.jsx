@@ -36,6 +36,7 @@ const AllRequest = () => {
     category,
     setCategory,
   ] = useAssetDistributionData();
+  // console.log(assetDistributionData);
 
   const [assets, loadingAssets, refetchAssets] = useAllAssets();
   const [modalData, setModalData] = useState(null);
@@ -81,7 +82,7 @@ const AllRequest = () => {
 
   const handleReject = (item) => {
     const _id = item?._id;
-    const requestStatus = "Rejected";
+    const requestStatus = "rejected";
 
     Swal.fire({
       title: "Are you sure?",
@@ -117,7 +118,7 @@ const AllRequest = () => {
 
   const handleApproveRequest = (item) => {
     const _id = item?._id;
-    const requestStatus = "Approved";
+    const requestStatus = "approved";
     const date = moment().format("DD-MM-YYYY");
 
     Swal.fire({
@@ -137,7 +138,7 @@ const AllRequest = () => {
           assetID: item?.assetID,
           n: -1,
           email: item?.employeeEmail,
-          status: "Approved",
+          status: "approved",
           receivingDate: date,
         });
         if (res.data.message === "Update successful") {

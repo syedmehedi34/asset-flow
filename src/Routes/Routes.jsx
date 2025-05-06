@@ -19,6 +19,7 @@ import MyProfile from "../pages/MyProfile";
 import PaymentPage from "../pages/PaymentPage";
 import MainLayout from "../Layout/MainLayout";
 import Dashboard from "../Layout/Dashboard/Dashboard";
+import AllAssetsOfAnEmployee from "../pages/HrManager/AllAssetsOfAnEmployee";
 // import Dashboard from "../pages/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
@@ -44,7 +45,7 @@ export const router = createBrowserRouter([
         path: "hr_signup",
         element: <ManagerSignUp></ManagerSignUp>,
       },
-      // HR pages route
+      // * HR pages route
       {
         path: "assets_list",
         element: (
@@ -109,7 +110,10 @@ export const router = createBrowserRouter([
           </ManagerRoute>
         ),
       },
-      // employee pages route
+
+      //
+      //
+      // * employee pages route
       {
         path: "my_assets",
         element: (
@@ -171,7 +175,11 @@ export const router = createBrowserRouter([
       //* hr_manager routes
       {
         path: "assets_list",
-        element: <AssetList></AssetList>,
+        element: (
+          <ManagerRoute>
+            <AssetList></AssetList>
+          </ManagerRoute>
+        ),
       },
       {
         path: "add_asset",
@@ -194,6 +202,14 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <EmployeeList></EmployeeList>
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "employee/:id",
+        element: (
+          <ManagerRoute>
+            <AllAssetsOfAnEmployee></AllAssetsOfAnEmployee>
           </ManagerRoute>
         ),
       },
