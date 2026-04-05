@@ -17,6 +17,9 @@ import {
   Mail,
   Upload,
   User,
+  CreditCard,
+  Users,
+  Zap,
 } from "lucide-react";
 import usePaymentData from "../../hooks/usePaymentData";
 import { Elements } from "@stripe/react-stripe-js";
@@ -38,10 +41,8 @@ const ManagerSignUp = () => {
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [companyImageFile, setCompanyImageFile] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  // const [packageName, setPackageName] = useState(null);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [transactionId, setTransactionId] = useState("");
-  // console.log(transactionId);
   const [
     selectedPackage,
     setSelectedPackage,
@@ -52,116 +53,101 @@ const ManagerSignUp = () => {
     isPayment,
     setIsPayment,
   ] = usePaymentData();
-  useEffect(() => {
-    if (isPayment) {
-      setPaymentComplete(true);
-    }
-  }, [selectedPackage, setIsPayment]);
-  // console.log(isPayment);
+  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+  useEffect(() => {
+    if (isPayment) setPaymentComplete(true);
+  }, [selectedPackage, setIsPayment]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+      setProfileImage(URL.createObjectURL(file));
       setProfileImageFile(file);
     }
   };
-  // console.log(packageName);
-
-  //api key for imgBB
-  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
-  // const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
   const packages = [
     {
       packageId: "starter",
       packagePrice: 5,
-      packageName: "Starter Package - 5 Members",
-      description:
-        "Perfect for small teams. Manage up to 5 members for just $5",
+      packageName: "Starter",
+      tagline: "Perfect for small teams",
       packageMemberLimit: 5,
-      color: "from-blue-500 to-blue-600",
+      icon: <Users size={20} />,
+      accent: "#0d9488",
+      bg: "from-teal-500 to-teal-600",
     },
     {
       packageId: "basic",
       packagePrice: 8,
-      packageName: "Growth Package - 10 Members",
-      description: "Scale up with ease. Manage up to 10 members for only $8",
+      packageName: "Growth",
+      tagline: "Scale up with ease",
       packageMemberLimit: 10,
-      color: "from-purple-500 to-purple-600",
+      icon: <Zap size={20} />,
+      accent: "#0891b2",
+      bg: "from-cyan-500 to-blue-500",
+      popular: true,
     },
     {
       packageId: "pro",
       packagePrice: 15,
-      packageName: "Pro Package - 20 Members",
-      description:
-        "deal for larger teams. Manage up to 20 members for just $15.",
+      packageName: "Pro",
+      tagline: "For larger teams",
       packageMemberLimit: 20,
-      color: "from-indigo-500 to-indigo-600",
+      icon: <CheckCircle2 size={20} />,
+      accent: "#6366f1",
+      bg: "from-indigo-500 to-violet-600",
     },
   ];
 
   const onSubmit = async (data) => {
     if (!profileImageFile) {
-      alert("Please select an image.");
+      Swal.fire({
+        icon: "warning",
+        title: "Please upload a profile photo",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
-    // console.log(data);
 
-    // send first image
-    const formDataUserImage = new FormData();
-    formDataUserImage.append("image", profileImageFile);
-    const responseUserImage = await fetch(
-      `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
-      {
-        method: "POST",
-        body: formDataUserImage,
-      }
-    );
-    const resultUserImage = await responseUserImage.json();
+    const uploadImg = async (file) => {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch(
+        `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
+        { method: "POST", body: fd },
+      );
+      return await res.json();
+    };
 
-    // send 2nd image
-    const formDataCompanyImage = new FormData();
-    formDataCompanyImage.append("image", companyImageFile);
-    const responseCompanyImage = await fetch(
-      `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
-      {
-        method: "POST",
-        body: formDataCompanyImage,
-      }
-    );
-    const resultCompanyImage = await responseCompanyImage.json();
+    const [resultUser, resultCompany] = await Promise.all([
+      uploadImg(profileImageFile),
+      uploadImg(companyImageFile),
+    ]);
 
-    // console.log(resultUserImage.data.url, resultCompanyImage.data.url);
-    //
-    //
-    if (resultUserImage.success && resultCompanyImage.success) {
-      createUser(data.email, data.password).then((result) => {
-        const loggedUser = result.user;
-        // console.log(loggedUser);
-        // updateUserProfile(data?.name, data?.photoURL)
-        updateUserProfile(data?.name, resultUserImage.data.url)
+    if (resultUser.success && resultCompany.success) {
+      createUser(data.email, data.password).then((r) => {
+        updateUserProfile(data.name, resultUser.data.url)
           .then(() => {
-            // create user entry in the database
             const userInfo = {
               name: data.name,
               email: data.email,
-              photo: resultUserImage.data.url,
+              photo: resultUser.data.url,
               dob: data.dateOfBirth,
               companyName: data.companyName,
-              companyLogo: resultCompanyImage.data.url,
+              companyLogo: resultCompany.data.url,
               role: "hr_manager",
               package: data.package,
             };
             axiosPublic.post("/users", userInfo).then((res) => {
               if (res.data.insertedId) {
-                // console.log("user added to the database");
                 reset();
                 Swal.fire({
                   position: "top-end",
                   icon: "success",
-                  title: "User created successfully.",
+                  title: "Account created!",
                   showConfirmButton: false,
                   timer: 1500,
                 });
@@ -170,436 +156,604 @@ const ManagerSignUp = () => {
               }
             });
           })
-          .catch((error) => console.log(error));
+          .catch(console.log);
       });
     }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.38, ease: "easeOut" },
+    },
   };
 
   return (
     <>
       <Helmet>
-        <title>AssetFlow | Sign Up</title>
+        <title>AssetFlow | Join as HR Manager</title>
       </Helmet>
 
-      <div className="">
-        <div className="md:w-3/4 w-full mx-auto  bg-base-200 mt-24">
-          {/* Header */}
-          <div className="text-center mb-1 pt-10">
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text mb-4"
-            >
-              Join as a Manager
-            </motion.h1>
-            <p className="text-gray-600">
-              Create your manager account and start managing your team
-            </p>
-          </div>
+      <style>{`
+        .signup-page { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .signup-bg {
+          background: radial-gradient(ellipse at 10% 30%, #f0fdfa 0%, transparent 55%),
+                      radial-gradient(ellipse at 90% 70%, #eff6ff 0%, transparent 50%), #f8fafc;
+          min-height: 100vh;
+        }
+        .dark .signup-bg { background: radial-gradient(ellipse at 10% 30%, #042f2e18 0%, transparent 55%), #0a0f1a; }
+        .signup-card {
+          background: rgba(255,255,255,0.97);
+          border: 1px solid rgba(226,232,240,0.9);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 50px rgba(13,148,136,0.06);
+        }
+        .dark .signup-card { background: rgba(15,23,42,0.97); border-color: rgba(51,65,85,0.6); }
+        .su-label {
+          display: block; font-size: 11px; font-weight: 700;
+          letter-spacing: 0.07em; text-transform: uppercase; color: #64748b; margin-bottom: 6px;
+        }
+        .dark .su-label { color: #94a3b8; }
+        .su-input {
+          width: 100%; padding: 10px 14px; border-radius: 10px;
+          border: 1.5px solid #e2e8f0; background: #f8fafc;
+          font-size: 14px; font-weight: 500; color: #1e293b; outline: none;
+          transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .su-input:focus { border-color: #14b8a6; background: #fff; box-shadow: 0 0 0 3px rgba(20,184,166,0.12); }
+        .su-input::placeholder { color: #94a3b8; font-weight: 400; }
+        .dark .su-input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        .dark .su-input:focus { border-color: #14b8a6; background: #1a2744; box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
+        .su-input-icon { position: relative; }
+        .su-input-icon .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+        .su-input-icon .su-input { padding-left: 38px; }
+        .su-error { font-size: 12px; color: #ef4444; margin-top: 4px; font-weight: 500; }
+        .su-btn {
+          width: 100%; padding: 12px; border-radius: 12px;
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          color: white; font-size: 15px; font-weight: 700; letter-spacing: 0.02em;
+          border: none; cursor: pointer; display: flex; align-items: center;
+          justify-content: center; gap: 8px; transition: all 0.2s;
+          box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .su-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,148,136,0.42); }
+        .su-btn:disabled { opacity: 0.55; cursor: not-allowed; background: linear-gradient(135deg, #94a3b8, #94a3b8); box-shadow: none; }
+        .avatar-upload-ring {
+          width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
+          border: 3px solid #e2e8f0; background: #f1f5f9;
+          display: flex; align-items: center; justify-content: center;
+          transition: border-color 0.2s; position: relative;
+        }
+        .avatar-upload-ring:hover { border-color: #14b8a6; }
+        .avatar-upload-btn {
+          position: absolute; bottom: 0; right: 0;
+          width: 28px; height: 28px;
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          cursor: pointer; border: 2px solid white; transition: transform 0.15s;
+        }
+        .avatar-upload-btn:hover { transform: scale(1.1); }
+        .section-divider {
+          display: flex; align-items: center; gap: 12px; margin: 24px 0 20px;
+        }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+        .dark .section-divider::before, .dark .section-divider::after { background: #334155; }
+        .section-divider span { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: #94a3b8; text-transform: uppercase; }
+        .su-checkbox { width: 16px; height: 16px; border-radius: 4px; accent-color: #0d9488; cursor: pointer; }
 
-          <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-            {/*  */}
-            {/* image upload */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col items-center mb-3"
-            >
-              <div className="relative w-32 h-32">
-                <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-blue-500">
-                  {profileImage ? (
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-16 h-16 text-gray-400" />
-                  )}
-                </div>
-                <label
-                  htmlFor="profile-upload"
-                  className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors"
-                >
-                  <Upload className="w-4 h-4 text-white" />
-                </label>
-                <input
-                  type="file"
-                  id="profile-upload"
-                  className="hidden"
-                  accept="image/*"
-                  // {...register("image", { required: true })}
-                  onChange={handleImageUpload} // Handle the file input change
-                />
+        /* Package cards */
+        .pkg-card {
+          position: relative; border-radius: 16px; padding: 20px;
+          border: 2px solid #e2e8f0; background: white;
+          cursor: pointer; transition: all 0.2s; overflow: hidden;
+        }
+        .dark .pkg-card { background: #1e293b; border-color: #334155; }
+        .pkg-card:hover { border-color: #14b8a6; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,0.12); }
+        .pkg-card.selected { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.15), 0 8px 24px rgba(13,148,136,0.12); }
+        .pkg-popular-badge {
+          position: absolute; top: 12px; right: 12px;
+          background: linear-gradient(135deg, #0891b2, #6366f1);
+          color: white; font-size: 9px; font-weight: 800;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          padding: 2px 8px; border-radius: 99px;
+        }
+        .pkg-icon-wrap {
+          width: 40px; height: 40px; border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          color: white; margin-bottom: 12px;
+        }
+        .pkg-check {
+          width: 20px; height: 20px; border-radius: 50%;
+          border: 2px solid #e2e8f0; background: white;
+          display: flex; align-items: center; justify-content: center;
+          position: absolute; top: 12px; left: 12px;
+          transition: all 0.2s;
+        }
+        .dark .pkg-check { background: #1e293b; border-color: #334155; }
+        .pkg-card.selected .pkg-check { background: #0d9488; border-color: #0d9488; }
+
+        /* Page header badge */
+        .page-header-badge {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 4px 12px; border-radius: 99px;
+          background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+          color: #0369a1; font-size: 11px; font-weight: 700;
+          letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px;
+        }
+
+        /* Payment card */
+        .payment-card {
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .dark .payment-card { background: #1e293b; border-color: #334155; }
+        .payment-header {
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          padding: 16px 20px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* File input */
+        .su-file-input {
+          width: 100%; padding: 9px 12px;
+          border-radius: 10px; border: 1.5px dashed #cbd5e1;
+          background: #f8fafc; font-size: 13px; color: #64748b;
+          cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .su-file-input:hover { border-color: #14b8a6; background: #f0fdfa; color: #0f766e; }
+      `}</style>
+
+      <div className="signup-page signup-bg pt-20 pb-12">
+        <div className="max-w-2xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
+            {/* Page header */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center">
+                <span className="page-header-badge">
+                  <Building2 size={11} />
+                  HR Manager Registration
+                </span>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
-                Upload your profile photo
+              <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                Join as HR Manager
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                Set up your company account and manage your team's assets
               </p>
-            </motion.div>
-
-            {/* information section  */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="space-y-6"
-              >
-                {/* full name  */}
-                <div className="form-control">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      {...register("name", {
-                        required: true,
-                      })}
-                      // name="name"
-                      placeholder="Name"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Full name is required
-                    </p>
-                  )}
-                </div>
-
-                {/* company name  */}
-                <div className="form-control">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Company Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <Building2 className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      {...register("companyName", { required: true })}
-                      // name="name"
-                      placeholder="Company Name"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  {errors.companyName && (
-                    <span className="mt-1 text-sm text-red-500">
-                      Name is required
-                    </span>
-                  )}
-                </div>
-
-                {/*  company logo  */}
-                <div className="form-control">
-                  <label className=" block text-sm font-medium text-gray-700 mb-1">
-                    Company Logo URL
-                  </label>
-                  <input
-                    type="file"
-                    className="file-input file-input-bordered file-input-md w-full max-w-xs"
-                    accept="image/*"
-                    onChange={(e) => setCompanyImageFile(e.target.files[0])}
-                  />
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="space-y-6"
-              >
-                {/* email  */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="email"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      placeholder="Enter your email"
-                      {...register("email", { required: true })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <span className="mt-1 text-sm text-red-500">
-                      Email is required
-                    </span>
-                  )}
-                </div>
-
-                {/* password  */}
-                <div className="form-control">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register("password", {
-                        required: true,
-                        minLength: 6,
-                        maxLength: 20,
-                        pattern:
-                          /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
-                      })}
-                      placeholder="Enter your password"
-                      className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-3 flex items-center"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password?.type === "required" && (
-                    <p className="text-red-600">Password is required</p>
-                  )}
-                  {errors.password?.type === "minLength" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must be 6 characters
-                    </p>
-                  )}
-                  {errors.password?.type === "maxLength" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must be less than 20 characters
-                    </p>
-                  )}
-                  {errors.password?.type === "pattern" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must have one Uppercase one lower case, one
-                      number and one special character.
-                    </p>
-                  )}
-                </div>
-
-                {/* dob  */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date of Birth
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <Calendar className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <Controller
-                      control={control}
-                      name="dateOfBirth"
-                      rules={{ required: "Date of birth is required" }}
-                      render={({ field }) => (
-                        <input
-                          type="date"
-                          onChange={field.onChange}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.dateOfBirth && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.dateOfBirth.message}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
             </div>
 
-            {/* package section  */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <label className="block text-lg font-medium text-gray-700 mb-4">
-                Select Package
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {packages.map((pkg, index) => (
-                  <motion.label
-                    key={pkg.packageId}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 + index * 0.1 }}
-                    className="relative"
+            {/* Main Card */}
+            <div className="signup-card rounded-2xl overflow-hidden">
+              <div className="h-1.5 w-full bg-gradient-to-r from-teal-500 via-cyan-400 to-indigo-500" />
+
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="p-8">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
                   >
-                    <input
-                      type="radio"
-                      {...register("package", {
-                        required: "Please select a package",
-                      })}
-                      value={pkg.packageId}
-                      className="absolute opacity-0 peer"
-                      onChange={(e) => setSelectedPackage(pkg)}
-                    />
-                    <div
-                      className={`cursor-pointer h-full p-6 rounded-xl border-2 transition-all duration-200 bg-white peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white border-gray-200 hover:border-blue-500`}
+                    {/* Avatar Upload */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="flex flex-col items-center mb-8"
                     >
-                      <div
-                        className={`inline-block p-3 rounded-lg bg-gradient-to-r ${pkg.color} mb-4`}
-                      >
-                        <CheckCircle2 className="h-6 w-6 text-white" />
+                      <div className="relative">
+                        <div className="avatar-upload-ring">
+                          {profileImage ? (
+                            <img
+                              src={profileImage}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User size={36} className="text-slate-300" />
+                          )}
+                        </div>
+                        <label
+                          htmlFor="profile-upload"
+                          className="avatar-upload-btn"
+                        >
+                          <Upload size={13} color="white" />
+                        </label>
+                        <input
+                          type="file"
+                          id="profile-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                        />
                       </div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        {pkg.packageName}
-                      </h3>
-                      <p className="text-3xl font-bold mb-2">
-                        ${pkg.packagePrice}
-                        <span className={`text-sm font-normal text-gray-500 `}>
-                          /month
-                        </span>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-2">
+                        {profileImage
+                          ? "Photo selected ✓"
+                          : "Upload profile photo"}
                       </p>
-                      <p className="text-gray-600">
-                        {pkg.packageMemberLimit} team members
+                    </motion.div>
+
+                    {/* Personal Info */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="section-divider"
+                    >
+                      <span>Personal Info</span>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {/* Full Name */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Full Name</label>
+                        <div className="su-input-icon">
+                          <User size={15} className="icon" />
+                          <input
+                            type="text"
+                            placeholder="Your full name"
+                            className="su-input"
+                            {...register("name", { required: true })}
+                          />
+                        </div>
+                        {errors.name && (
+                          <p className="su-error">Full name is required</p>
+                        )}
+                      </motion.div>
+
+                      {/* Date of Birth */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Date of Birth</label>
+                        <div className="su-input-icon">
+                          <Calendar size={15} className="icon" />
+                          <Controller
+                            control={control}
+                            name="dateOfBirth"
+                            rules={{ required: "Date of birth is required" }}
+                            render={({ field }) => (
+                              <input
+                                type="date"
+                                onChange={field.onChange}
+                                className="su-input"
+                              />
+                            )}
+                          />
+                        </div>
+                        {errors.dateOfBirth && (
+                          <p className="su-error">
+                            {errors.dateOfBirth.message}
+                          </p>
+                        )}
+                      </motion.div>
+
+                      {/* Email */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Email Address</label>
+                        <div className="su-input-icon">
+                          <Mail size={15} className="icon" />
+                          <input
+                            type="email"
+                            placeholder="you@company.com"
+                            className="su-input"
+                            {...register("email", { required: true })}
+                          />
+                        </div>
+                        {errors.email && (
+                          <p className="su-error">Email is required</p>
+                        )}
+                      </motion.div>
+
+                      {/* Password */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Password</label>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Min 6 chars, 1 upper, 1 special"
+                            className="su-input pr-10"
+                            {...register("password", {
+                              required: true,
+                              minLength: 6,
+                              maxLength: 20,
+                              pattern:
+                                /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
+                            })}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((p) => !p)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={16} />
+                            ) : (
+                              <Eye size={16} />
+                            )}
+                          </button>
+                        </div>
+                        {errors.password?.type === "required" && (
+                          <p className="su-error">Password is required</p>
+                        )}
+                        {errors.password?.type === "minLength" && (
+                          <p className="su-error">
+                            At least 6 characters required
+                          </p>
+                        )}
+                        {errors.password?.type === "maxLength" && (
+                          <p className="su-error">Max 20 characters</p>
+                        )}
+                        {errors.password?.type === "pattern" && (
+                          <p className="su-error">
+                            Must include uppercase, lowercase, number & special
+                            char
+                          </p>
+                        )}
+                      </motion.div>
+                    </div>
+
+                    {/* Company Info */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="section-divider"
+                    >
+                      <span>Company Info</span>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {/* Company Name */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Company Name</label>
+                        <div className="su-input-icon">
+                          <Building2 size={15} className="icon" />
+                          <input
+                            type="text"
+                            placeholder="Your company"
+                            className="su-input"
+                            {...register("companyName", { required: true })}
+                          />
+                        </div>
+                        {errors.companyName && (
+                          <p className="su-error">Company name is required</p>
+                        )}
+                      </motion.div>
+
+                      {/* Company Logo */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Company Logo</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="su-file-input"
+                          onChange={(e) =>
+                            setCompanyImageFile(e.target.files[0])
+                          }
+                        />
+                        <p className="text-xs text-slate-400 mt-1">
+                          PNG, JPG up to 5MB
+                        </p>
+                      </motion.div>
+                    </div>
+
+                    {/* Package Selection */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="section-divider"
+                    >
+                      <span>Choose Package</span>
+                    </motion.div>
+
+                    <motion.div
+                      variants={itemVariants}
+                      className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+                    >
+                      {packages.map((pkg) => (
+                        <label
+                          key={pkg.packageId}
+                          className="relative cursor-pointer"
+                        >
+                          <input
+                            type="radio"
+                            className="sr-only"
+                            {...register("package", {
+                              required: "Please select a package",
+                            })}
+                            value={pkg.packageId}
+                            onChange={() => setSelectedPackage(pkg)}
+                          />
+                          <div
+                            className={`pkg-card ${selectedPackage?.packageId === pkg.packageId ? "selected" : ""}`}
+                          >
+                            {/* Check circle */}
+                            <div className="pkg-check">
+                              {selectedPackage?.packageId === pkg.packageId && (
+                                <CheckCircle2 size={14} color="white" />
+                              )}
+                            </div>
+
+                            {pkg.popular && (
+                              <span className="pkg-popular-badge">Popular</span>
+                            )}
+
+                            {/* Icon */}
+                            <div
+                              className={`pkg-icon-wrap bg-gradient-to-br ${pkg.bg}`}
+                            >
+                              {pkg.icon}
+                            </div>
+
+                            <h3 className="text-base font-black text-slate-800 dark:text-white">
+                              {pkg.packageName}
+                            </h3>
+                            <p className="text-2xl font-black text-slate-800 dark:text-white mt-1">
+                              ${pkg.packagePrice}
+                              <span className="text-xs font-normal text-slate-400">
+                                /mo
+                              </span>
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                              Up to {pkg.packageMemberLimit} members
+                            </p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 italic">
+                              {pkg.tagline}
+                            </p>
+                          </div>
+                        </label>
+                      ))}
+                    </motion.div>
+                    {errors.package && (
+                      <p className="su-error mt-2">{errors.package.message}</p>
+                    )}
+
+                    {/* Terms */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="flex items-center gap-3 mt-6"
+                    >
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        className="su-checkbox"
+                        {...register("termsAccepted", {
+                          required: "You must accept the terms",
+                        })}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        I agree to the{" "}
+                        <a
+                          href="#"
+                          className="text-teal-600 dark:text-teal-400 font-semibold hover:underline"
+                        >
+                          Terms & Conditions
+                        </a>
+                      </label>
+                    </motion.div>
+                    {errors.termsAccepted && (
+                      <p className="su-error">{errors.termsAccepted.message}</p>
+                    )}
+
+                    {/* Submit */}
+                    <motion.div variants={itemVariants} className="mt-7">
+                      <button
+                        type="submit"
+                        className="su-btn"
+                        disabled={!transactionId}
+                      >
+                        {transactionId ? (
+                          <>
+                            <CheckCircle2 size={17} /> Create Manager Account
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard size={17} /> Complete Payment First
+                          </>
+                        )}
+                      </button>
+                      {!transactionId && (
+                        <p className="text-center text-xs text-slate-400 mt-2">
+                          Select a package and complete payment below to
+                          continue
+                        </p>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </form>
+            </div>
+
+            {/* Payment Section */}
+            {selectedPackage && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+                className="mt-6"
+              >
+                <div className="payment-card">
+                  {/* Payment header */}
+                  <div className="payment-header">
+                    <div className="flex items-center gap-3 text-white">
+                      <CreditCard size={20} className="opacity-80" />
+                      <div>
+                        <p className="text-sm font-black">Payment</p>
+                        <p className="text-xs opacity-70">
+                          Secure checkout via Stripe
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right text-white">
+                      <p className="text-xl font-black">
+                        ${selectedPackage.packagePrice}
+                      </p>
+                      <p className="text-xs opacity-70 capitalize">
+                        {selectedPackage.packageId} plan / month
                       </p>
                     </div>
-                  </motion.label>
-                ))}
-              </div>
+                  </div>
 
-              {errors.package && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.package.message}
-                </p>
-              )}
-            </motion.div>
-
-            {/* terms and conditions  */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="flex items-center space-x-2 mt-4"
-            >
-              <input
-                type="checkbox"
-                {...register("termsAccepted", {
-                  required: "You must accept the terms and conditions",
-                })}
-                id="terms"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="terms" className="text-sm text-gray-600">
-                I accept the{" "}
-                <a href="" className="text-blue-600 hover:underline">
-                  Terms and Conditions
-                </a>
-              </label>
-            </motion.div>
-            {errors.termsAccepted && (
-              <p className="text-sm text-red-500">
-                {errors.termsAccepted.message}
-              </p>
-            )}
-
-            {/* submit  */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="flex justify-center mt-8"
-            >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={!transactionId}
-                className={`inline-flex items-center px-8 py-3  text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 
-                  ${!transactionId ? "bg-gray-300 cursor-not-allowed" : ""}`}
-              >
-                {/* Create Account */}
-                {!transactionId ? "Please Pay First" : "Create Account"}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </motion.button>
-            </motion.div>
-          </form>
-
-          {/* // ? payment portion  */}
-          {selectedPackage && (
-            <div>
-              <div className="text-center mt-8">
-                <h2 className="text-2xl font-semibold text-gray-700">
-                  Payment Information
-                </h2>
-                <p className="text-gray-600">
-                  Please complete the payment to register, and{" "}
-                  <span className="font-bold underline text-purple-500">
-                    don't refresh
-                  </span>{" "}
-                  the page.
-                </p>
-              </div>
-              <div className="flex justify-center mt-8">
-                <div className="w-3/4">
-                  <div className="bg-white shadow-md rounded-lg p-6">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between  mb-4 gap-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <User className="h-8 w-8 text-gray-400" />
+                  {/* Payment summary */}
+                  <div className="p-5 border-b border-slate-100 dark:border-slate-700">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center text-white bg-gradient-to-br ${selectedPackage.bg}`}
+                        >
+                          {selectedPackage.icon}
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-700 uppercase">
-                            {selectedPackage?.packageId}
-                          </h3>
-                          <p className="text-gray-600">HR Manager Package</p>
+                          <p className="text-sm font-bold text-slate-700 dark:text-slate-200 uppercase">
+                            {selectedPackage.packageId}
+                          </p>
+                          <p className="text-xs text-slate-400">
+                            Up to {selectedPackage.packageMemberLimit} members
+                          </p>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-gray-700">
-                          {selectedPackage?.packagePrice || 0}
-                          /month
-                        </p>
-                      </div>
-                    </div>
-                    <hr className="my-4 border-gray-200" />
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700">
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
                           Total
-                        </h3>
-                      </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-gray-700">
-                          {selectedPackage?.packagePrice || 0}
+                        </p>
+                        <p className="text-lg font-black text-teal-600">
+                          ${selectedPackage.packagePrice}
                         </p>
                       </div>
                     </div>
+                  </div>
 
-                    {/* //todo */}
-                    <div className="mt-8">
-                      <Elements stripe={stripePromise}>
-                        <RegisterCheckout
-                          selectedPackage={selectedPackage}
-                          setOpen={setOpen}
-                          transactionId={transactionId}
-                          setTransactionId={setTransactionId}
-                        ></RegisterCheckout>
-                      </Elements>
-                    </div>
-                    {/* //todo */}
+                  {/* Warning */}
+                  <div className="mx-5 mt-4 px-4 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+                    <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">
+                      ⚠️ Please do not refresh the page after selecting a
+                      package
+                    </p>
+                  </div>
+
+                  {/* Stripe form */}
+                  <div className="p-5">
+                    <Elements stripe={stripePromise}>
+                      <RegisterCheckout
+                        selectedPackage={selectedPackage}
+                        setOpen={setOpen}
+                        transactionId={transactionId}
+                        setTransactionId={setTransactionId}
+                      />
+                    </Elements>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-          {/* // ? payment portion  */}
+              </motion.div>
+            )}
+          </motion.div>
         </div>
       </div>
     </>

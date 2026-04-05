@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useRole from "../../hooks/useRole";
-import "react-datepicker/dist/react-datepicker.css";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -22,8 +21,9 @@ import {
 const EmployeeSignUp = () => {
   const [, , , userRoleRefetch] = useRole();
   const [showPassword, setShowPassword] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
-
   const axiosPublic = useAxiosPublic();
   const {
     register,
@@ -35,50 +35,50 @@ const EmployeeSignUp = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfileImage(URL.createObjectURL(file));
+      setProfileImageFile(file);
+    }
+  };
+
   const onSubmit = async (data) => {
     if (!profileImageFile) {
-      alert("Please select an image.");
+      Swal.fire({
+        icon: "warning",
+        title: "Please upload a profile photo",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
-
-    console.log(data);
-
-    // send image to imbb
-    const formDataUserImage = new FormData();
-    formDataUserImage.append("image", profileImageFile);
-    const responseUserImage = await fetch(
+    const formData = new FormData();
+    formData.append("image", profileImageFile);
+    const res = await fetch(
       `https://api.imgbb.com/1/upload?key=${image_hosting_key}`,
-      {
-        method: "POST",
-        body: formDataUserImage,
-      }
+      { method: "POST", body: formData },
     );
-    const resultUserImage = await responseUserImage.json();
-    console.log(resultUserImage);
-    //
-    //
-    createUser(data.email, data.password).then((result) => {
-      const loggedUser = result.user;
-      console.log(loggedUser);
-      updateUserProfile(data.name, resultUserImage.data.url)
+    const result = await res.json();
+
+    createUser(data.email, data.password).then((r) => {
+      updateUserProfile(data.name, result.data.url)
         .then(() => {
-          // create user entry in the database
           const userInfo = {
             name: data.name,
             email: data.email,
-            photo: resultUserImage.data.url,
+            photo: result.data.url,
             role: "employee",
             hr_email: "unaffiliated@hostname.com",
             dob: data.dateOfBirth,
           };
           axiosPublic.post("/users", userInfo).then((res) => {
             if (res.data.insertedId) {
-              // console.log("user added to the database");
               reset();
               Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: "User created successfully.",
+                title: "Account created!",
                 showConfirmButton: false,
                 timer: 1500,
               });
@@ -87,276 +87,402 @@ const EmployeeSignUp = () => {
             }
           });
         })
-        .catch((error) => console.log(error));
+        .catch(console.log);
     });
   };
 
-  // ?
-  const [profileImage, setProfileImage] = useState(null);
-  const [profileImageFile, setProfileImageFile] = useState(null);
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-      setProfileImageFile(file);
-    }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
   };
 
   return (
     <>
       <Helmet>
-        <title>AssetFlow | Sign Up</title>
+        <title>AssetFlow | Join as Employee</title>
       </Helmet>
 
-      <div className="mt-16 bg-base-200">
-        <div className="w-full md:w-3/4 mx-auto  bg-white shadow-2xl mt-10">
-          {/* header  */}
-          <div className="text-center mb-1 pt-10">
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text mb-4"
-            >
-              Join as a Employee
-            </motion.h1>
-            <p className="text-gray-600">
-              Create your employee account and start a good team collaboration
-            </p>
-          </div>
+      <style>{`
+        .signup-page { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .signup-bg {
+          background: radial-gradient(ellipse at 10% 30%, #f0fdfa 0%, transparent 55%),
+                      radial-gradient(ellipse at 90% 70%, #e0f2fe22 0%, transparent 50%), #f8fafc;
+          min-height: 100vh;
+        }
+        .dark .signup-bg {
+          background: radial-gradient(ellipse at 10% 30%, #042f2e18 0%, transparent 55%), #0a0f1a;
+        }
+        .signup-card {
+          background: rgba(255,255,255,0.97);
+          border: 1px solid rgba(226,232,240,0.9);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 50px rgba(13,148,136,0.06);
+        }
+        .dark .signup-card {
+          background: rgba(15,23,42,0.97);
+          border-color: rgba(51,65,85,0.6);
+        }
+        .su-label {
+          display: block;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+          color: #64748b;
+          margin-bottom: 6px;
+        }
+        .dark .su-label { color: #94a3b8; }
+        .su-input {
+          width: 100%;
+          padding: 10px 14px;
+          border-radius: 10px;
+          border: 1.5px solid #e2e8f0;
+          background: #f8fafc;
+          font-size: 14px;
+          font-weight: 500;
+          color: #1e293b;
+          outline: none;
+          transition: all 0.2s;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .su-input:focus { border-color: #14b8a6; background: #fff; box-shadow: 0 0 0 3px rgba(20,184,166,0.12); }
+        .su-input::placeholder { color: #94a3b8; font-weight: 400; }
+        .dark .su-input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        .dark .su-input:focus { border-color: #14b8a6; background: #1a2744; box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
+        .su-input-icon { position: relative; }
+        .su-input-icon .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+        .su-input-icon .su-input { padding-left: 38px; }
+        .su-error { font-size: 12px; color: #ef4444; margin-top: 4px; font-weight: 500; }
+        .su-btn {
+          width: 100%;
+          padding: 12px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          color: white;
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: 0.02em;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+          box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .su-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,148,136,0.42); }
+        .su-btn:active { transform: translateY(0); }
 
-          <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-            {/* image upload */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col items-center mb-3"
-            >
-              <div className="relative w-32 h-32">
-                <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-blue-500">
-                  {profileImage ? (
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-16 h-16 text-gray-400" />
-                  )}
-                </div>
-                <label
-                  htmlFor="profile-upload"
-                  className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors"
-                >
-                  <Upload className="w-4 h-4 text-white" />
-                </label>
-                <input
-                  type="file"
-                  id="profile-upload"
-                  className="hidden"
-                  accept="image/*"
-                  // {...register("image", { required: true })}
-                  onChange={handleImageUpload} // Handle the file input change
-                />
+        /* Avatar upload */
+        .avatar-upload-ring {
+          width: 100px; height: 100px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 3px solid #e2e8f0;
+          background: #f1f5f9;
+          display: flex; align-items: center; justify-content: center;
+          transition: border-color 0.2s;
+          position: relative;
+        }
+        .avatar-upload-ring:hover { border-color: #14b8a6; }
+        .avatar-upload-btn {
+          position: absolute; bottom: 0; right: 0;
+          width: 28px; height: 28px;
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; border: 2px solid white;
+          transition: transform 0.15s;
+        }
+        .avatar-upload-btn:hover { transform: scale(1.1); }
+
+        /* Section divider */
+        .section-divider {
+          display: flex; align-items: center; gap: 12px; margin: 24px 0 20px;
+        }
+        .section-divider::before, .section-divider::after {
+          content: ''; flex: 1; height: 1px; background: #e2e8f0;
+        }
+        .dark .section-divider::before, .dark .section-divider::after { background: #334155; }
+        .section-divider span {
+          font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+          color: #94a3b8; text-transform: uppercase;
+        }
+
+        /* Step badge */
+        .step-badge {
+          display: inline-flex; align-items: center; justify-content: center;
+          width: 24px; height: 24px; border-radius: 50%;
+          background: linear-gradient(135deg, #0d9488, #0891b2);
+          color: white; font-size: 11px; font-weight: 800;
+          flex-shrink: 0;
+        }
+
+        /* Checkbox */
+        .su-checkbox {
+          width: 16px; height: 16px;
+          border-radius: 4px;
+          accent-color: #0d9488;
+          cursor: pointer;
+        }
+
+        /* Page header accent */
+        .page-header-badge {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 4px 12px;
+          border-radius: 99px;
+          background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+          color: #0f766e;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          margin-bottom: 10px;
+        }
+        .dark .page-header-badge { background: linear-gradient(135deg, #134e4a, #0f766e); color: #5eead4; }
+      `}</style>
+
+      <div className="signup-page signup-bg pt-20 pb-12">
+        <div className="max-w-2xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
+            {/* Page header */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center">
+                <span className="page-header-badge">
+                  <User size={11} />
+                  Employee Registration
+                </span>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
-                Upload your profile photo
+              <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                Join as an Employee
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                Create your account and connect with your HR manager
               </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="space-y-6"
-              >
-                {/* full name  */}
-                <div className="form-control">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      {...register("name", {
-                        required: true,
-                      })}
-                      // name="name"
-                      placeholder="Name"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Full name is required
-                    </p>
-                  )}
-                </div>
-
-                {/* dob  */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date of Birth
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <Calendar className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <Controller
-                      control={control}
-                      name="dateOfBirth"
-                      rules={{ required: "Date of birth is required" }}
-                      render={({ field }) => (
-                        <input
-                          type="date"
-                          onChange={field.onChange}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.dateOfBirth && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.dateOfBirth.message}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="space-y-6"
-              >
-                {/* email  */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="email"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      placeholder="Enter your email"
-                      {...register("email", { required: true })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <span className="mt-1 text-sm text-red-500">
-                      Email is required
-                    </span>
-                  )}
-                </div>
-
-                {/* password  */}
-                <div className="form-control">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register("password", {
-                        required: true,
-                        minLength: 6,
-                        maxLength: 20,
-                        pattern:
-                          /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
-                      })}
-                      placeholder="Enter your password"
-                      className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-3 flex items-center"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password?.type === "required" && (
-                    <p className="text-red-600">Password is required</p>
-                  )}
-                  {errors.password?.type === "minLength" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must be 6 characters
-                    </p>
-                  )}
-                  {errors.password?.type === "maxLength" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must be less than 20 characters
-                    </p>
-                  )}
-                  {errors.password?.type === "pattern" && (
-                    <p className="mt-1 text-sm text-red-500">
-                      Password must have one Uppercase one lower case, one
-                      number and one special character.
-                    </p>
-                  )}
-                </div>
-              </motion.div>
             </div>
 
-            {/* terms and conditions  */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="flex items-center space-x-2 mt-4"
-            >
-              <input
-                type="checkbox"
-                {...register("termsAccepted", {
-                  required: "You must accept the terms and conditions",
-                })}
-                id="terms"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="terms" className="text-sm text-gray-600">
-                I accept the{" "}
-                <a href="" className="text-blue-600 hover:underline">
-                  Terms and Conditions
-                </a>
-              </label>
-            </motion.div>
-            {errors.termsAccepted && (
-              <p className="text-sm text-red-500">
-                {errors.termsAccepted.message}
-              </p>
-            )}
+            {/* Card */}
+            <div className="signup-card rounded-2xl overflow-hidden">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Top colored strip */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-teal-500 via-cyan-400 to-teal-600" />
 
-            {/* submit  */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="flex justify-center mt-8"
-            >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                className="inline-flex items-center px-8 py-3  text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
-              >
-                Create Account
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </motion.button>
-            </motion.div>
-          </form>
+                <div className="p-8">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {/* Avatar Upload */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="flex flex-col items-center mb-8"
+                    >
+                      <div className="relative">
+                        <div className="avatar-upload-ring">
+                          {profileImage ? (
+                            <img
+                              src={profileImage}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User size={36} className="text-slate-300" />
+                          )}
+                        </div>
+                        <label
+                          htmlFor="profile-upload"
+                          className="avatar-upload-btn"
+                        >
+                          <Upload size={13} color="white" />
+                        </label>
+                        <input
+                          type="file"
+                          id="profile-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                        />
+                      </div>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-2">
+                        {profileImage
+                          ? "Photo selected ✓"
+                          : "Upload profile photo"}
+                      </p>
+                    </motion.div>
+
+                    {/* Section label */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="section-divider"
+                    >
+                      <span>Personal Info</span>
+                    </motion.div>
+
+                    {/* Fields grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {/* Full Name */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Full Name</label>
+                        <div className="su-input-icon">
+                          <User size={15} className="icon" />
+                          <input
+                            type="text"
+                            placeholder="Your full name"
+                            className="su-input"
+                            {...register("name", { required: true })}
+                          />
+                        </div>
+                        {errors.name && (
+                          <p className="su-error">Full name is required</p>
+                        )}
+                      </motion.div>
+
+                      {/* Date of Birth */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Date of Birth</label>
+                        <div className="su-input-icon">
+                          <Calendar size={15} className="icon" />
+                          <Controller
+                            control={control}
+                            name="dateOfBirth"
+                            rules={{ required: "Date of birth is required" }}
+                            render={({ field }) => (
+                              <input
+                                type="date"
+                                onChange={field.onChange}
+                                className="su-input"
+                              />
+                            )}
+                          />
+                        </div>
+                        {errors.dateOfBirth && (
+                          <p className="su-error">
+                            {errors.dateOfBirth.message}
+                          </p>
+                        )}
+                      </motion.div>
+
+                      {/* Email */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Email Address</label>
+                        <div className="su-input-icon">
+                          <Mail size={15} className="icon" />
+                          <input
+                            type="email"
+                            placeholder="you@company.com"
+                            className="su-input"
+                            {...register("email", { required: true })}
+                          />
+                        </div>
+                        {errors.email && (
+                          <p className="su-error">Email is required</p>
+                        )}
+                      </motion.div>
+
+                      {/* Password */}
+                      <motion.div variants={itemVariants}>
+                        <label className="su-label">Password</label>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Min 6 chars, 1 upper, 1 special"
+                            className="su-input pr-10"
+                            {...register("password", {
+                              required: true,
+                              minLength: 6,
+                              maxLength: 20,
+                              pattern:
+                                /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
+                            })}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((p) => !p)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600 transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={16} />
+                            ) : (
+                              <Eye size={16} />
+                            )}
+                          </button>
+                        </div>
+                        {errors.password?.type === "required" && (
+                          <p className="su-error">Password is required</p>
+                        )}
+                        {errors.password?.type === "minLength" && (
+                          <p className="su-error">
+                            At least 6 characters required
+                          </p>
+                        )}
+                        {errors.password?.type === "maxLength" && (
+                          <p className="su-error">Max 20 characters</p>
+                        )}
+                        {errors.password?.type === "pattern" && (
+                          <p className="su-error">
+                            Must include uppercase, lowercase, number & special
+                            char
+                          </p>
+                        )}
+                      </motion.div>
+                    </div>
+
+                    {/* Terms */}
+                    <motion.div
+                      variants={itemVariants}
+                      className="flex items-center gap-3 mt-6"
+                    >
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        className="su-checkbox"
+                        {...register("termsAccepted", {
+                          required: "You must accept the terms",
+                        })}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm text-slate-600 dark:text-slate-400"
+                      >
+                        I agree to the{" "}
+                        <a
+                          href="#"
+                          className="text-teal-600 dark:text-teal-400 font-semibold hover:underline"
+                        >
+                          Terms & Conditions
+                        </a>
+                      </label>
+                    </motion.div>
+                    {errors.termsAccepted && (
+                      <p className="su-error">{errors.termsAccepted.message}</p>
+                    )}
+
+                    {/* Submit */}
+                    <motion.div variants={itemVariants} className="mt-7">
+                      <button type="submit" className="su-btn">
+                        Create Employee Account
+                        <ArrowRight size={17} />
+                      </button>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </form>
+            </div>
+          </motion.div>
         </div>
       </div>
     </>

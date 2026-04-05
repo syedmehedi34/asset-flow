@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+.navbar-root {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* Active nav link */
+a.nav-active span {
+  color: #0d9488;
+}
+.dark a.nav-active span {
+  color: #2dd4bf;
+}
+a.nav-active .nav-underline {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.nav-underline {
+  position: absolute;
+  bottom: 2px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #0d9488, #14b8a6);
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s;
+  transform-origin: left;
+}
+
+a:hover .nav-underline {
+  transform: scaleX(1);
+  opacity: 0.5;
+}
+a.nav-active:hover .nav-underline {
+  opacity: 1;
+}
+
+/* Avatar ring pulse */
+.avatar-ring {
+  position: relative;
+}
+.avatar-ring::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid #14b8a6;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.avatar-ring:hover::after {
+  opacity: 1;
+}
+
+/* Role badge */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+  color: #0f766e;
+}
+.dark .role-badge {
+  background: linear-gradient(135deg, #134e4a, #0f766e);
+  color: #5eead4;
+}
+
+/* Mobile nav item */
+.mobile-nav-item {
+  position: relative;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #334155;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+.dark .mobile-nav-item {
+  color: #cbd5e1;
+}
+a.nav-active .mobile-nav-item {
+  background: linear-gradient(90deg, #f0fdfa, transparent);
+  border-left-color: #14b8a6;
+  color: #0d9488;
+}
+.dark a.nav-active .mobile-nav-item {
+  background: linear-gradient(90deg, #042f2e33, transparent);
+  color: #2dd4bf;
+}
+.mobile-nav-item:hover {
+  background: #f0fdfa;
+  color: #0d9488;
+}
+.dark .mobile-nav-item:hover {
+  background: #0f2a2a55;
+  color: #2dd4bf;
+}
+
+/* Divider */
+.nav-divider {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(to bottom, transparent, #cbd5e1, transparent);
+  margin: 0 4px;
+}
+.dark .nav-divider {
+  background: linear-gradient(to bottom, transparent, #334155, transparent);
+}
+
+/* Logo mark */
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: white;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px #0d948855;
+}

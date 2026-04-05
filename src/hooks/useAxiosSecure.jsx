@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5002",
-  // baseURL: "https://assetflow-livid.vercel.app",
+  // baseURL: "http://localhost:5002",
+  baseURL: "https://assetflow-livid.vercel.app",
 });
 const useAxiosSecure = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const useAxiosSecure = () => {
     function (error) {
       // Do something with request error
       return Promise.reject(error);
-    }
+    },
   );
 
   // intercepts 401 and 403 status
@@ -38,7 +38,7 @@ const useAxiosSecure = () => {
         navigate("/login");
       }
       return Promise.reject(error);
-    }
+    },
   );
 
   return axiosSecure;
